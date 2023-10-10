@@ -4,8 +4,7 @@
 /*MODOS DE JUEGO A SELECCIONAR*/
 enum game_modes {MIRRORED, BLANKING, NO_EMPTY, START};
 
-
-game_mode_t p_game_mode(element_t *elem)
+void p_game_mode(element_t *elem, window_state_t *state, game_mode_t *game_mode)
 {
     al_clear_to_color(al_map_rgb(20, 20, 20));
         
@@ -35,45 +34,45 @@ game_mode_t p_game_mode(element_t *elem)
     
     //esperamos a alguna selección
     ALLEGRO_EVENT ev;
-    game_mode_t estado = {0, false, false, false, false, false};
+    bool waitingForUpdate = true;
     bool draw = false;
             
-    while(!estado.window && !estado.start)
+    while(waitingForUpdate)
     {
         al_get_next_event(elem->event_queue, &ev);//pedimos el evento que venga
         
         //analizamos si se cerró la ventana
         if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
-            estado.window = true;
+            *state = CLOSE_DISPLAY;
+            waitingForUpdate = false;
         }
-        
+
         //analizamos si se pulso algún botón
         else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
             if(botones[BLANKING]->press)
             {
-                estado.blanking = !estado.blanking; //se cambia el estado y el color cuando no esta pulsado
-                botones[BLANKING]->color_uprs = estado.blanking? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
+                game_mode->blanking = !game_mode->blanking; //se cambia el estado y el color cuando no esta pulsado
+                botones[BLANKING]->color_uprs = game_mode->blanking? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
                 draw = true;
             }
             else if(botones[MIRRORED]->press)
             {
-                estado.mirrored = !estado.mirrored;
-                botones[MIRRORED]->color_uprs = estado.mirrored? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
+                game_mode->mirrored = !game_mode->mirrored;
+                botones[MIRRORED]->color_uprs = game_mode->mirrored? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
                 draw = true;
             }
             else if(botones[NO_EMPTY]->press)
             {
-                estado.no_empty = !estado.no_empty;
-                botones[NO_EMPTY]->color_uprs = estado.no_empty? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
+                game_mode->no_empty = !game_mode->no_empty;
+                botones[NO_EMPTY]->color_uprs = game_mode->no_empty? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
                 draw = true;
             }
             else if(botones[START]->press)
             {
-                estado.start = true;
-                botones[START]->color_uprs = estado.start? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
-                draw = true;
+                *state = GAME;
+                waitingForUpdate = false;
             }
         }
         
@@ -118,9 +117,5 @@ game_mode_t p_game_mode(element_t *elem)
             draw = false; 
         }
     }
-    
-    return estado;
 }
-
-
 

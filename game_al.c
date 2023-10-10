@@ -1,5 +1,6 @@
 #include "game_al.h"
 #include "botones.h"
+#include "juego.h"
 
 #define BOARD_WIDTH 12
 #define BOARD_LENGHT 18
@@ -17,12 +18,23 @@
 
 #define SQUARE_SIZE_WINDOWS 15
 
+#define GIRAR_AL     ALLEGRO_KEY_W
+#define DERECHA_AL   ALLEGRO_KEY_D
+#define IZQUIERDA_AL ALLEGRO_KEY_A
+#define BAJAR_AL     ALLEGRO_KEY_S
 
 enum pieces_code {EMPTY, I, J, O, L, S, Z, T, WALL};
 
 static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[]);
 static void init_board_colors(ALLEGRO_COLOR square_colors[9]);
 static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[9]);
+
+/* DRAW_BOARD()
+*
+*
+*
+*
+*/
 
 static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[])
 {
@@ -46,7 +58,7 @@ static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squa
     
 }
 
-static void draw_next_piece(char piece,ALLEGRO_COLOR square_colors[] )
+static void draw_next_piece(char piece,ALLEGRO_COLOR square_colors[] ) //falta terminar
 {
     int i;
     int j;
@@ -78,37 +90,77 @@ static void init_board_colors(ALLEGRO_COLOR square_colors[])
     square_colors[WALL] = al_map_rgb(11,13,23);
 }
 
-int play_game(element_t *elem, game_mode_t mode)
+void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
 {
     al_clear_to_color(al_map_rgb(20, 20, 20));
-    
+
     //creamos e inicializamos un arreglo con los colores de las distintas piezas
     ALLEGRO_COLOR square_colors[9];
     init_board_colors(square_colors);
     
-    char board [BOARD_LENGHT][BOARD_WIDTH] = { {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,3,0,0,0,0,0,8},
-                                              {8,0,0,0,0,3,0,0,0,0,0,8},
-                                              {8,0,0,0,0,3,0,0,0,0,0,8},
-                                              {8,0,0,0,0,3,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,0,0,0,0,0,0,0,0,0,0,8},
-                                              {8,8,8,8,8,8,8,8,8,8,8,8}
-                                            };
-    
-    while(1)
-    {
-        draw_board(board,square_colors);
-    }
+    ALLEGRO_EVENT ev;
+    bool playing = true;
+    bool draw = true;
 
+    srand(time(NULL));
+    inicializarTiempo();
+    char matris[18][12];
+    for (int i = 0; i < 18; i++)  //llena de 0 la matriz el interior y define los bordes
+    {
+        for (int j = 0; j < 12; j++)
+        {
+            if (i==0 || i==17 || j==0 || j==11)
+            {
+                matris[i][j]=BORDE;
+            }
+            else
+            {
+                matris[i][j]=NADA;
+            }
+            
+        }
+    }
+    int puntaje = 0;
+
+    bloque_t pieza = Crear_Pieza();
+
+    while(playing)
+    {
+        al_get_next_event(elem->event_queue, &ev);//pedimos el evento que venga
+
+        if(ev.type == ALLEGRO_EVENT_KEY_UP)
+        {
+            switch(ev.keyboard.keycode)
+            {
+                case GIRAR_AL:
+                    playing = !jugarTetris('w', &pieza, matris, &puntaje);
+                    break;
+                case BAJAR_AL:
+                    playing = !jugarTetris('s', &pieza, matris, &puntaje);
+                    break;
+                case DERECHA_AL:
+                    playing = !jugarTetris('d', &pieza, matris, &puntaje);
+                    break;
+                case IZQUIERDA_AL:
+                    playing = !jugarTetris('a', &pieza, matris, &puntaje);
+                    break;
+            }
+
+            draw = true;
+        }
+
+        else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+        {
+            *state = CLOSE_DISPLAY;
+            playing = false;
+        }
+
+
+
+        if(draw)
+        {
+            draw_board(matris, square_colors);
+            draw = false;
+        }
+    }
 }

@@ -28,7 +28,7 @@ const int wall_kick_matrix_i[4][4][2] = {		//saltos preestablecidos par solucion
 	};
 
 /*BLOQUE_T()
-* Función encargada de crear y devolver la estructura de una pieza
+* Funciï¿½n encargada de crear y devolver la estructura de una pieza
 * Recibe: -
 * Devuelve: estructura bloque_t con la pieza creada
 */
@@ -54,7 +54,7 @@ bloque_t Crear_Pieza(void)
 }
 
 /*GIRAR_PIEZA()
-* Función encargada de rotar una pieza
+* Funciï¿½n encargada de rotar una pieza
 * Recibe: estructura bloque_t con la pieza a girar y char matris [][12]
 * con tablero del juego.
 * Devuelve: -
@@ -90,7 +90,7 @@ void Girar_Pieza(bloque_t *pieza, char matris[][12]) // funcion para rotar una p
 }
 
 /*CHOQUE()
-* Función encargada de comprobar si una pieza choco contra un borde
+* Funciï¿½n encargada de comprobar si una pieza choco contra un borde
 * Recibe: char matris[][12] con tablero del juego y bloque_t con la pieza
 * Devuelve: int que indica si hubo o no un choque
 */
@@ -113,8 +113,8 @@ int choque(char matris[][12], bloque_t *pieza)
 }
 
 /*MOVER_PIEZA()
-* Función encargada de mover a los lados la pieza
-* Recibe: bloque_t con la pieza a mover, int con la dirección de movimiento,
+* Funciï¿½n encargada de mover a los lados la pieza
+* Recibe: bloque_t con la pieza a mover, int con la direcciï¿½n de movimiento,
 * char matris[][12] con el tablero de juego
 * Devuelve: -
 */
@@ -131,12 +131,12 @@ void Mover_Pieza(bloque_t *pieza, int direccion, char matris[][12])
 }
 
 /* BAJAR_PIEZA()
-* Función encargada de mover una pieza hacia abajo
+* Funciï¿½n encargada de mover una pieza hacia abajo
 * Recibe: bloque_t pieza a bajar, char matris[][12]
 * tablero del juego
-* Devuelve: -
+* Devuelve: un flag en caso de no poder bajar, false es que no pudo realizar el movimiento
 */
-void Bajar_Pieza(bloque_t *pieza, char matris[][12])		//REVISAR SI NO CONVIENE QUE AVISE EN EL CASO DE QUE NO PUEDA BAJAR MAS PARA INICIAR EL TIMER ANTES DE ESTACIONARLA <3 FACU
+bool Bajar_Pieza(bloque_t *pieza, char matris[][12])		//REVISAR SI NO CONVIENE QUE AVISE EN EL CASO DE QUE NO PUEDA BAJAR MAS PARA INICIAR EL TIMER ANTES DE ESTACIONARLA <3 FACU
 {
 	bloque_t pieza_temp = *pieza;							//creamos una estructura pieza temporal con la que trabajar
 	pieza_temp.fila = pieza_temp.fila + 1;					//suma a la fila la direccion
@@ -144,17 +144,20 @@ void Bajar_Pieza(bloque_t *pieza, char matris[][12])		//REVISAR SI NO CONVIENE Q
 	if (choque(matris, &pieza_temp) == BIEN)				//se fija si no hay un choque
 	{
 		*pieza = pieza_temp;								//si se soluciona copia la pieza temporal con la direccion
+		return true;							
 	}
+	return false;
 }
 
 /* ESTACIONAR()
-* Función encargada de guardar una pieza en su posición final
+* Funciï¿½n encargada de guardar una pieza en su posiciï¿½n final
 * Recibe: bloque_t pieza a "estacionar", char matris [][12]
 * tablero del juego actual
-* Devuelve: -
+* Devuelve: si se estaciono la pieza por fuera de la matris del juego
 */
-void Estacionar(bloque_t *pieza, char matris[][12]) 
+char Estacionar(bloque_t *pieza, char matris[][12]) 
 {
+	int conflicto = BIEN;
 	for (int i = 0; i < 4; i++)			//recorre la matris de la pieza
 	{
 		for (int j = 0; j < 4; j++)
@@ -163,13 +166,19 @@ void Estacionar(bloque_t *pieza, char matris[][12])
 			{
 				matris[pieza->fila + i][pieza->columna + j] = (pieza->matrix_pieza[i][j]); //pega la pieza en la matris del juego
 			}
+			else if (pieza->matrix_pieza[i][j] != NADA)		//detecta cuando la pieza este superpuesta con un borde
+			{
+				conflicto = MAL;		//termina el juego 
+				return conflicto;
+			}
 		}
 	}
+	return conflicto;
 }
 
 /* WALL_KICK()
-* Función encargada de comprobar si al girar una pieza esta choca un borde y
-* si esto sucede la acomode
+* FunciÃ³n encargada de comprobar si al girar una pieza esta choca contra un borde y
+* si esto sucede la acomoda
 * Recibe: bloque_t pieza a "estacionar", char matris [][12]
 * tablero del juego actual
 * Devuelve: si logro solucionar el choque
@@ -217,10 +226,10 @@ int wall_kick(bloque_t *pieza, char matris[][12])
 }
 
 /* BORRARFILA()
-* Función encargada de borrar las filas que se completaron 
+* FunciÃ³n encargada de borrar las filas que se completaron 
 * Recibe: char tablero[18][12] con el tablero actual
 * Devuelve: Puntaje que suma, dependiendo de la cantidad de filas
-* que se borraron (considerando el caso de "hacer TETRIS")
+* que se borraron (considerando el caso de "hacer TETRIS", elim)nar 4 filas de un movimiento
 */
 int borrarFila (char tablero[18][12])
 {
@@ -260,11 +269,11 @@ int borrarFila (char tablero[18][12])
 		
 		
 	}
-	return puntaje>4000? puntaje*2 : puntaje;
+	return puntaje >= 4000? puntaje * 2 : puntaje;
 }
 
 /* INICIALIZARTIEMPO()
-* Función encargada de inicializar el timer
+* FunciÃ³n encargada de inicializar el timer
 * Recibe: -
 * Devuelve: -
 */
@@ -274,11 +283,20 @@ void inicializarTiempo(void)
 }
 
 /* TIEMPO_TRANSCURRIDO()
-* 
-* Recibe: -
-* Devuelve: double 
+* FunciÃ³n encargada de devolver el tiempo transcurrido
+* Recibe: double con el timestep
+* Devuelve: booleano que indica si pudo obtener el tiempo transcurrido
 */
-double tiempo_transcurrido(void)
-{
-	return difftime(tiempo_ini,time(NULL));
+
+bool tiempo_transcurrido(double timestep)
+{	
+	if (difftime(tiempo_ini,time(NULL) >= timestep))
+	{
+		inicializarTiempo();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

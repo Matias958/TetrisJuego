@@ -8,10 +8,10 @@
 #define STEP 120
 
 /*MENU*/
-enum menu_options {PLAY, HIGHSCORE};
+enum menu_options {JUGAR, PUNTAJE};
 
 
-menu_state_t p_menu(element_t * elem)
+void p_menu(element_t * elem, window_state_t *state)
 {
     //música
     al_play_sample(elem->sample_menu, 3.0, 1.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
@@ -47,17 +47,18 @@ menu_state_t p_menu(element_t * elem)
     
     //esperamos a alguna selección
     ALLEGRO_EVENT ev;
-    menu_state_t estado = {false, false, false};
+    bool waitingForUpdate = true;
     bool draw = false;
             
-    while(!estado.window && !estado.play && !estado.highscore)
+    while(waitingForUpdate)
     {
         al_get_next_event(elem->event_queue, &ev);//pedimos el evento que venga
         
         //analizamos si se cerró la ventana
         if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
-            estado.window = true;
+            *state = CLOSE_DISPLAY;
+            waitingForUpdate = false;
         }
         
         //vemos si se posicionó el mouse sobre un botón
@@ -95,20 +96,22 @@ menu_state_t p_menu(element_t * elem)
         //analizamos si se pulso algún botón
         else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            if(ev.mouse.x <= botones[PLAY]->x_center + botones[PLAY]->width 
-                && ev.mouse.x >= botones[PLAY]->x_center - botones[PLAY]->width
-                && ev.mouse.y <= botones[PLAY]->y_center + botones[PLAY]->height
-                && ev.mouse.y >= botones[PLAY]->y_center - botones[PLAY]->height)
+            if(ev.mouse.x <= botones[JUGAR]->x_center + botones[JUGAR]->width 
+                && ev.mouse.x >= botones[JUGAR]->x_center - botones[JUGAR]->width
+                && ev.mouse.y <= botones[JUGAR]->y_center + botones[JUGAR]->height
+                && ev.mouse.y >= botones[JUGAR]->y_center - botones[JUGAR]->height)
             {
-                estado.play = true;
+                *state = GAME_SEL;
+                waitingForUpdate = false;
             }
             
-            else if(ev.mouse.x <= botones[HIGHSCORE]->x_center + botones[HIGHSCORE]->width 
-                && ev.mouse.x >= botones[HIGHSCORE]->x_center - botones[HIGHSCORE]->width
-                && ev.mouse.y <= botones[HIGHSCORE]->y_center + botones[HIGHSCORE]->height
-                && ev.mouse.y >= botones[HIGHSCORE]->y_center - botones[HIGHSCORE]->height)
+            else if(ev.mouse.x <= botones[PUNTAJE]->x_center + botones[PUNTAJE]->width 
+                && ev.mouse.x >= botones[PUNTAJE]->x_center - botones[PUNTAJE]->width
+                && ev.mouse.y <= botones[PUNTAJE]->y_center + botones[PUNTAJE]->height
+                && ev.mouse.y >= botones[PUNTAJE]->y_center - botones[PUNTAJE]->height)
             {
-                estado.highscore = true;
+                *state = HIGHSCORE;
+                waitingForUpdate = false;
             } 
         }
         
@@ -120,6 +123,4 @@ menu_state_t p_menu(element_t * elem)
             draw = false; //cambiamos el estado de draw
         }
     }
-    
-    return estado;
 }

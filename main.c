@@ -9,68 +9,40 @@
 /*BIBLIOTECAS STANDARD*/
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct
-{
-    ALLEGRO_EVENT ev;
-    bool close_display;
-    bool menu;
-    bool game_sel;
-    bool highscore;
-    bool game;
-}window_state_t;
+#include "game_state_al.h"
 
 int main(int argc, char * argv[])
 {
     //ELEMENTOS DE ALLEGRO
     element_t elem = {NULL, NULL, NULL, NULL, NULL, NULL, NULL}; 
-    window_state_t estado = {.close_display = false, true, false, false, false};
-    game_mode_t modo;
+
+    //ESTADO DEL DISPLAY
+    window_state_t estado = MENU;
+
+    //MODOS DE JUEGO Y DIFICULTAD
+    game_mode_t game_mode = {EASY, false, false, false};
     
     if(inicializa_al(&elem) == EXIT_FAILURE)
     {
         printf("ERROR: no se pudieron inicializar los elementos de Allegro\n");
         return EXIT_FAILURE; //si no pudo inicilizar correctamente, 
     }
-    
-    while(!estado.close_display)
+
+    while(estado != CLOSE_DISPLAY)
     {
-        if(estado.menu)
+        switch (estado)
         {
-            /*MENU*/
-            menu_state_t estado_menu = p_menu(&elem);
-            
-            estado.close_display = estado_menu.window;
-            estado.game_sel = estado_menu.play;
-            estado.highscore = estado_menu.highscore;
-            
-            estado.menu = false;
-        }
-        
-        else if(estado.game_sel)
-        {
-            modo = p_game_mode(&elem);
-            
-            estado.close_display = modo.window;
-            estado.game = modo.start;
-            
-            estado.game_sel = false;
-        }
-        
-        else if(estado.game)
-        {
-            play_game(&elem, modo);
-        }
-        
-        if(al_get_next_event(elem.event_queue, &estado.ev))
-        {
-            switch(estado.ev.type)
-                /*EVENTOS DE DISPLAY*/
-                case ALLEGRO_EVENT_DISPLAY_CLOSE:
-                {
-                    estado.close_display = true;
-                }
+        case MENU:
+            p_menu(&elem, &estado);
+            break;
+        case GAME_SEL:
+            p_game_mode(&elem, &estado, &game_mode);
+            break;
+        case GAME:
+            play_game(&elem, game_mode, &estado);
+            break;
         }
     }
+
     return EXIT_SUCCESS;
 }

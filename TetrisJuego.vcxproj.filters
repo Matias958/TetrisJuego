@@ -53,6 +53,9 @@
     <ClCompile Include="menu_al.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="juego.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="piezas.h">
@@ -74,6 +77,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="menu_al.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="juego.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game_state_al.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
