@@ -12,7 +12,7 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
             break;
         case 's':
             bool flag_bajar = Bajar_Pieza(pieza, matris);
-            inicializarTiempo();
+            //inicializarTiempo();
             if (flag_bajar == false)
             {
                 char flag_estacionar = Estacionar (pieza, matris);     //temporal en realidad habria que darle un tiempo
@@ -26,13 +26,16 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
                 }
             }
             break;
+
         case 'w': 
             Girar_Pieza(pieza, matris);
             break;
+
         default:
             break;
     }
-    if(tiempo_transcurrido( 1.0 /(1+ *puntaje/50000)))
+    
+    if(tiempo_transcurrido( 1.0 /(1.0 + *puntaje/50000)))
     {
         bool flag = Bajar_Pieza(pieza, matris);
         if (flag == false)

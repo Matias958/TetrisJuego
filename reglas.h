@@ -13,6 +13,9 @@
 #define DERECHA 1
 #define BIEN 0
 #define MAL 1
+
+#define LARGO_TABLERO 18
+#define ANCHO_TABLERO 12
  
 //headers
 bloque_t Crear_Pieza (void);
