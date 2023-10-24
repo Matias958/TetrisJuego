@@ -6,6 +6,11 @@
 /*TIEMPO DE PARPADEO*/
 #define FPS    5  
 
+/*INICIALIZA_AL()
+* Función encargada de inicializar los elementos de allegro.
+* Recibe: Una estructura element_t con los elementos a inicializar.
+* Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
+*/
 int inicializa_al(element_t* elem) 
 {
     /*NOMBRE DE LA VENTANA*/

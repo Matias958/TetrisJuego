@@ -7,8 +7,8 @@
 #define CENTER_Y (SCREEN_H * 0.25)
 #define STEP 120
 
-/*MENU*/
-enum menu_options {JUGAR, PUNTAJE};
+
+enum menu_options {JUGAR, PUNTAJE}; //menu
 
 
 void p_menu(element_t * elem, window_state_t *state)
@@ -31,7 +31,7 @@ void p_menu(element_t * elem, window_state_t *state)
     }
     
     //botones 
-    button_t play = {"JUGAR",SCREEN_W/2, SCREEN_H*0.65, 130, 40, 20,
+    button_t play = {"PLAY",SCREEN_W/2, SCREEN_H*0.65, 130, 40, 20,
                     false, al_map_rgb(100,110,200), al_map_rgb(100,0,200),
                     elem->buttons};
     

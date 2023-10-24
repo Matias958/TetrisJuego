@@ -87,7 +87,7 @@ void Girar_Pieza(bloque_t *pieza, char matris[][12]) // funcion para rotar una p
 }
 
 /*CHOQUE()
- * Funci�n encargada de comprobar si una pieza choco contra un borde
+ * Función encargada de comprobar si una pieza choco contra un borde
  * Recibe: char matris[][12] con tablero del juego y bloque_t con la pieza
  * Devuelve: int que indica si hubo o no un choque
  */
@@ -147,7 +147,7 @@ bool Bajar_Pieza(bloque_t *pieza, char matris[][12]) // REVISAR SI NO CONVIENE Q
 }
 
 /* ESTACIONAR()
- * Funcion encargada de guardar una pieza en su posici�n final
+ * Función encargada de guardar una pieza en su posición final
  * Recibe: bloque_t pieza a "estacionar", char matris [][12]
  * tablero del juego actual
  * Devuelve: si se estaciono la pieza por fuera de la matris del juego
@@ -273,6 +273,7 @@ int borrarFila(char tablero[18][12])
 	}
 	return puntaje >= 4000 ? puntaje * 2 : puntaje;
 }
+
 
 /* INICIALIZARTIEMPO()
  * Función encargada de inicializar el timer

@@ -1,6 +1,7 @@
 #include "game_al.h"
 #include "botones.h"
 #include "juego.h"
+#include <stdlib.h>
 
 #define BOARD_WIDTH 12
 #define BOARD_LENGHT 18
@@ -13,19 +14,21 @@
 #define NEXT_PIECE_POS_X (BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE)
 #define NEXT_PIECE_POS_Y (BOARD_START_Y + BOARD_LENGHT * SQUARE_SIZE)
 
-#define NEXT_PIECE_WIDTH 10
-#define NEXT_PIECE_LENGHT 10
-
-#define SQUARE_SIZE_WINDOWS 15
+#define TAMANO_DE_VENTANA_PUNTAJE 100
+#define PUNTAJE_VENTANA_X (BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE + 20)
+#define PUNTAJE_VENTANA_Y BOARD_START_Y
 
 #define GIRAR_AL ALLEGRO_KEY_W
 #define DERECHA_AL ALLEGRO_KEY_D
 #define IZQUIERDA_AL ALLEGRO_KEY_A
 #define BAJAR_AL ALLEGRO_KEY_S
+#define PAUSE ALLEGRO_KEY_ESCAPE
+#define BAJAR_TODO ALLEGRO_KEY_SPACE
 
 static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[]);
 static void init_board_colors(ALLEGRO_COLOR square_colors[9]);
 static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[9]);
+static void mostrar_puntaje(element_t *elem, int puntaje);
 
 /* DRAW_BOARD()
  *
@@ -53,20 +56,28 @@ static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squa
 
     al_flip_display();
 }
+static void mostrar_puntaje(element_t *elem, int puntaje)
+{
+    al_draw_filled_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE, al_map_rgb(18, 55, 107));
+    char buffer[6];
+    _itoa_s(puntaje, buffer,6, 10);
+    al_draw_text(elem->buttons, al_map_rgb(11, 13, 23), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE / 2, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE / 5, 1, buffer);
+    al_flip_display();
+}
 
 static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[]) // falta terminar
 {
-    int i;
-    int j;
+    // int i;
+    // int j;
 
-    for (i = 0; i < NEXT_PIECE_LENGHT; i++)
-    {
-        for (j = 0; j < NEXT_PIECE_WIDTH; j++)
-        {
-            float x1 = NEXT_PIECE_POS_X + j * SQUARE_SIZE_WINDOWS;
-            float y1 = NEXT_PIECE_POS_Y + i * SQUARE_SIZE_WINDOWS;
-        }
-    }
+    // for (i = 0; i < NEXT_PIECE_LENGHT; i++)
+    // {
+    //     for (j = 0; j < NEXT_PIECE_WIDTH; j++)
+    //     {
+    //         float x1 = NEXT_PIECE_POS_X + j * SQUARE_SIZE_WINDOWS;
+    //         float y1 = NEXT_PIECE_POS_Y + i * SQUARE_SIZE_WINDOWS;
+    //     }
+    // }
 }
 
 static void init_board_colors(ALLEGRO_COLOR square_colors[])
@@ -88,12 +99,7 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
 
     // creamos e inicializamos un arreglo con los colores de las distintas piezas
     ALLEGRO_COLOR square_colors[9];
-    init_board_colors(square_colors);
-
-    ALLEGRO_EVENT ev;
-    bool playing = true;
-    bool draw = true;
-
+    init_board_colors(square_colors); 
     srand(time(NULL));
     inicializarTiempo();
     char matris[BOARD_LENGHT][BOARD_WIDTH];
@@ -114,11 +120,24 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
         }
     }
 
+    if(mode.no_empty)
+    {
+        crearTablero(matris);
+    }
     int puntaje = 0;
     int veces = 0;
 
     inicializarTiempo();
     bloque_t pieza = Crear_Pieza();
+
+    ALLEGRO_EVENT ev;
+    bool playing = true;
+    bool draw = true;
+    bool pause = false;
+
+    button_t pause_botton = {"JUGAR", SCREEN_W / 2, SCREEN_H * 0.65, 130, 40, 20,
+                            false, al_map_rgb(100, 110, 200), al_map_rgb(100, 0, 200),
+                            elem->buttons};
 
     while (playing)
     {
@@ -140,12 +159,23 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
             case IZQUIERDA_AL:
                 playing = !jugarTetris('a', &pieza, matris, &puntaje);
                 break;
+            case BAJAR_TODO:
+                playing = !jugarTetris(' ', &pieza, matris, &puntaje);
+                break;
+            case PAUSE:
+                pause = !pause;
+                break;
             }
-            
+
             draw = true;
         }
 
-        playing = !jugarTetris('\0', &pieza, matris, &puntaje); //actualizamos
+        if (!pause) // si no está pausado, actualizamos el juego
+        {
+            playing = !jugarTetris('\0', &pieza, matris, &puntaje); // actualizamos
+            puntaje += borrarFila(matris);
+        }
+
         veces++;
 
         if (veces % 1000)
@@ -154,21 +184,25 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
             draw = true;
         }
 
-        if (draw)
+        if (draw && playing)
         {
-            int i,j;
-            //copia la matris de juego en una auxiliar para mostrar
-            for (i = 0; i < BOARD_LENGHT; i++)
+            if (!pause)
             {
-                for (j = 0; j < BOARD_WIDTH; j++)
+                int i, j;
+                // copia la matris de juego en una auxiliar para mostrar
+                for (i = 0; i < BOARD_LENGHT; i++)
                 {
-                    matris_auxiliar[i][j] = matris[i][j];
+                    for (j = 0; j < BOARD_WIDTH; j++)
+                    {
+                        matris_auxiliar[i][j] = matris[i][j];
+                    }
                 }
+
+                Estacionar(&pieza, matris_auxiliar); // estacionamos la pieza que se esta moviendo para visializarla
             }
-
-            Estacionar(&pieza, matris_auxiliar); //estacionamos la pieza que se esta moviendo para visializarla
-
             draw_board(matris_auxiliar, square_colors);
+            mostrar_puntaje(elem, puntaje);
+
             draw = false;
         }
 
@@ -178,5 +212,10 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
             playing = false;
         }
     }
-    *state = CLOSE_DISPLAY; //poner una pantalla de game over
+    *state = CLOSE_DISPLAY; // poner una pantalla de game over
+}
+
+static void draw_pause_menu(ALLEGRO_EVENT *ev, element_t *elem)
+{
+
 }

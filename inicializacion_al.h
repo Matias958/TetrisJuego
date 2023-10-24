@@ -1,7 +1,7 @@
 #ifndef INICIALIZACION_AL_H
 #define INICIALIZACION_AL_H
 
-/*BIBLIOTECAS DE ALEGRO*/
+/************** HEADERS ***************/
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
@@ -10,14 +10,15 @@
 #include <allegro5/allegro_audio.h> 
 #include <allegro5/allegro_acodec.h> //Extensiones con acodec .wav, .flac, .ogg, .it, .mod, .s3m, .xm.
 
-/*MACROS*/
+/************** MACROS ***************/
 
 /*TAMAÑO DE LA PANTALLA*/
 #define SCREEN_W  1260
 #define SCREEN_H  720
 
 
-/*ESTRUCTURAS*/
+/************** ESTRUCTURAS ***************/
+
 typedef struct
 {
     ALLEGRO_DISPLAY *display;
@@ -31,8 +32,13 @@ typedef struct
     ALLEGRO_SAMPLE *sample3;
 }element_t;
 
-/*PROTOTIPOS*/
+/************** PROTOTIPOS ***************/
+
+/*INICIALIZA_AL()
+* Función encargada de inicializar los elementos de allegro.
+* Recibe: Una estructura element_t con los elementos a inicializar.
+* Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
+*/
 int inicializa_al(element_t* elem); 
 
-#endif /* INICIALIZACION_AL_H */
-
+#endif // INICIALIZACION_AL_H

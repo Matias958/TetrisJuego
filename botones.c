@@ -2,9 +2,7 @@
 
 /*DRAW_BUTTONS()
 * Función encargada de dibujar todos los botones de un arreglo, colocando el texto en el color dado
-*
 * Recibe: arreglo de botones a dibjuar y color de texto (en formato de ALLEGRO_COLOR)
-* 
 * Devuelve: -
  */
 void draw_buttons(button_t *botones[],  ALLEGRO_COLOR text)

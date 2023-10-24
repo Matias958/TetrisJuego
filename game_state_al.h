@@ -1,9 +1,12 @@
-#ifndef GAME_STATE_AL
-#define GAME_STATE_AL
+#ifndef GAME_STATE_AL_H
+#define GAME_STATE_AL_H
 
 /*ESTADO DEL DISPLAY*/
+
 enum game_state {CLOSE_DISPLAY, MENU, GAME_SEL, HIGHSCORE, GAME};
 enum difficulty {EASY, MEDIUM, HARD};
+
+/************** ESTRUCTURAS ***************/
 
 typedef struct
 {
@@ -15,4 +18,4 @@ typedef struct
 
 typedef char window_state_t;
  
-#endif
+#endif // GAME_STATE_AL_H
