@@ -61,18 +61,21 @@ void p_game_mode(element_t *elem, window_state_t *state, game_mode_t *game_mode)
             {
                 game_mode->blanking = !game_mode->blanking; //se cambia el estado y el color cuando no esta pulsado
                 botones[BLANKING]->color_uprs = game_mode->blanking? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
+                al_play_sample(elem->effect_select, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 draw = true;
             }
             else if(botones[MIRRORED]->press)
             {
                 game_mode->mirrored = !game_mode->mirrored;
                 botones[MIRRORED]->color_uprs = game_mode->mirrored? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
+                al_play_sample(elem->effect_select, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 draw = true;
             }
             else if(botones[NO_EMPTY]->press)
             {
                 game_mode->no_empty = !game_mode->no_empty;
                 botones[NO_EMPTY]->color_uprs = game_mode->no_empty? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
+                al_play_sample(elem->effect_select, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 draw = true;
             }
             else if(botones[START]->press)
@@ -97,6 +100,7 @@ void p_game_mode(element_t *elem, window_state_t *state, game_mode_t *game_mode)
                     {
                         draw = true;
                     }
+                    al_play_sample(elem->effect_cursor, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     botones[i]->press = true;// actualizamos el estado del botón
                 }
 

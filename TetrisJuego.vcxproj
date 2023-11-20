@@ -144,7 +144,13 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="cursor.wav" />
     <Media Include="Dance-of-the-Sugar-Plum-Fairy.wav" />
+    <Media Include="game.wav" />
+    <Media Include="menu.wav" />
+    <Media Include="play.wav" />
+    <Media Include="select.wav" />
+    <Media Include="tetris.wav" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="game_over.ttf" />

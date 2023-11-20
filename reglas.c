@@ -228,7 +228,7 @@ int wall_kick(bloque_t *pieza, char matris[][12])
  * Devuelve: Puntaje que suma, dependiendo de la cantidad de filas
  * que se borraron (considerando el caso de "hacer TETRIS", elim)nar 4 filas de un movimiento
  */
-int borrarFila(char tablero[18][12])
+int borrarFila(char tablero[18][12], char filas_tetris[18], bool *tetris)
 {
 	int puntaje = 0;
 	int i, contador;
@@ -248,6 +248,9 @@ int borrarFila(char tablero[18][12])
 
 		if (contador == 10)
 		{
+			filas_tetris[i] = 1;
+			*tetris = true;
+
 			//borramos la fila completada
 			for (int m = 1; m < ANCHO_TABLERO - 1; m++)
 			{
@@ -270,9 +273,14 @@ int borrarFila(char tablero[18][12])
 			}
 
 		}
+		else
+		{
+			filas_tetris[i] = 0;
+		}
 	}
 	return puntaje >= 4000 ? puntaje * 2 : puntaje;
 }
+
 
 
 /* INICIALIZARTIEMPO()

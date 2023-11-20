@@ -29,6 +29,7 @@ static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squa
 static void init_board_colors(ALLEGRO_COLOR square_colors[9]);
 static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[9]);
 static void mostrar_puntaje(element_t *elem, int puntaje);
+static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[]);
 
 /* DRAW_BOARD()
  *
@@ -65,6 +66,33 @@ static void mostrar_puntaje(element_t *elem, int puntaje)
     al_flip_display();
 }
 
+static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[])
+{
+    int i;
+    for (i = 1; i < BOARD_LENGHT - 1 ; i++)
+    {
+        if (filas_tetris[i])
+        {
+            int times;
+            for (times = 0; times < 4; times++)
+            {
+                int j;
+                for (j = 1; j < BOARD_WIDTH - 1; j++)
+                {
+                    float x1 = BOARD_START_X + j * SQUARE_SIZE;
+                    float y1 = BOARD_START_Y + i * SQUARE_SIZE;
+
+                    al_draw_filled_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, times % 2 ? al_map_rgb(220, 20, 60) : al_map_rgb(35,235,195));
+                    al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, square_colors[NADA], 2);
+                    al_flip_display();
+                }
+
+                al_rest(0.200);
+            }
+        }
+    }
+}
+
 static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[]) // falta terminar
 {
     // int i;
@@ -96,14 +124,21 @@ static void init_board_colors(ALLEGRO_COLOR square_colors[])
 void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
 {
     al_clear_to_color(al_map_rgb(20, 20, 20));
+    al_stop_samples();
+    al_play_sample(elem->effect_play, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+    al_play_sample(elem->sample_game, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+
 
     // creamos e inicializamos un arreglo con los colores de las distintas piezas
     ALLEGRO_COLOR square_colors[9];
     init_board_colors(square_colors); 
     srand(time(NULL));
     inicializarTiempo();
+
     char matris[BOARD_LENGHT][BOARD_WIDTH];
     char matris_auxiliar[BOARD_LENGHT][BOARD_WIDTH];
+
+    char filas_tetris[BOARD_LENGHT];
 
     for (int i = 0; i < BOARD_LENGHT; i++) // llena de 0 la matriz el interior y define los bordes
     {
@@ -134,6 +169,7 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
     bool playing = true;
     bool draw = true;
     bool pause = false;
+    bool tetris = false;
 
     button_t pause_botton = {"JUGAR", SCREEN_W / 2, SCREEN_H * 0.65, 130, 40, 20,
                             false, al_map_rgb(100, 110, 200), al_map_rgb(100, 0, 200),
@@ -173,12 +209,11 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
         if (!pause) // si no está pausado, actualizamos el juego
         {
             playing = !jugarTetris('\0', &pieza, matris, &puntaje); // actualizamos
-            puntaje += borrarFila(matris);
         }
 
         veces++;
 
-        if (veces % 1000)
+        if (veces % 1000 || tetris)
         {
             veces = 0;
             draw = true;
@@ -186,6 +221,7 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
 
         if (draw && playing)
         {
+
             if (!pause)
             {
                 int i, j;
@@ -198,9 +234,19 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
                     }
                 }
 
-                Estacionar(&pieza, matris_auxiliar); // estacionamos la pieza que se esta moviendo para visializarla
+                Estacionar(&pieza, matris_auxiliar); // estacionamos la pieza que se esta moviendo para visualizarla
             }
+
             draw_board(matris_auxiliar, square_colors);
+            puntaje += borrarFila(matris, filas_tetris, &tetris);
+
+            if (tetris)
+            {
+                al_play_sample(elem->effect_tetris, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                es_tetris_animación(filas_tetris, square_colors);
+                tetris = false;
+            }
+
             mostrar_puntaje(elem, puntaje);
 
             draw = false;

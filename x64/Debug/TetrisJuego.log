@@ -1,2 +1,8 @@
 ﻿  game_al.c
+  game_sel_al.c
+  inicializacion_al.c
+  main.c
+C:\Users\herra\OneDrive\Documentos\GitHub\TetrisJuego\main.c(42,13): warning C4013: 'play_game' sin definir; se supone que extern devuelve como resultado int
+  menu_al.c
+  Generando código...
   TetrisJuego.vcxproj -> C:\Users\herra\OneDrive\Documentos\GitHub\TetrisJuego\x64\Debug\TetrisJuego.exe

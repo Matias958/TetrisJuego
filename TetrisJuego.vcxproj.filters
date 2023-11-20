@@ -90,5 +90,23 @@
     <Media Include="Dance-of-the-Sugar-Plum-Fairy.wav">
       <Filter>Source Files</Filter>
     </Media>
+    <Media Include="menu.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="game.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="tetris.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="play.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="cursor.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="select.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

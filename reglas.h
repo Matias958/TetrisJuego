@@ -75,7 +75,7 @@ char Estacionar (bloque_t* pieza, char matris[][12]);
  * que se borraron (considerando el caso de "hacer TETRIS", elim)nar 4 filas de un movimiento
  */
 
-int borrarFila (char matrisw[18][12]);
+int borrarFila (char matrisw[18][12], char filas_tetris[18], bool *tetris);
 
 /* WALL_KICK()
  * Función encargada de comprobar si al girar una pieza esta choca contra un borde y

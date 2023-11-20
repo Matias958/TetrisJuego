@@ -104,7 +104,7 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
-    elem->sample_menu = al_load_sample("Dance-of-the-Sugar-Plum-Fairy.wav"); //cargamos el audio para el modo parpadeo
+    elem->sample_menu = al_load_sample("menu.wav"); //cargamos el audio para el menu
 
     if(!elem->sample_menu) 
     {
@@ -112,22 +112,43 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
     
-    /*sample2 = al_load_sample("mixkit-arcade-video-game-pop-2887.wav"); //cargamos el audio para el click
+    elem->sample_game = al_load_sample("game.wav"); //cargamos el audio para el juego
 
-    if(!sample2) 
+    if(!elem->sample_game) 
     {
-        printf("No se cargo el audio 2!\n");
+        printf("No se cargo el audio del juego!\n");
         return EXIT_FAILURE;
     }
     
-    sample3 = al_load_sample("mixkit-funny-fail-low-tone-2876.wav"); //cargamos el audio para el salir
-    if(!sample3) 
+    
+    elem->effect_tetris = al_load_sample("tetris.wav"); //cargamos el audio para el efector de tetris
+    if(!elem->effect_tetris) 
     {
-        printf("No se cargo el audio 2!\n");
+        printf("No se cargo el audio del efecto: tetris\n");
         return EXIT_FAILURE;
     }
-    */
     
+    elem->effect_play = al_load_sample("play.wav"); //cargamos el audio para el efecto de play
+    if (!elem->effect_play)
+    {
+        printf("No se cargo el audio del efecto: play\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->effect_cursor = al_load_sample("cursor.wav"); //cargamos el audio para el cursor
+    if (!elem->effect_cursor)
+    {
+        printf("No se cargo el audio del efecto: cursor\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->effect_select = al_load_sample("select.wav"); //cargamos el audio para el effect select
+    if (!elem->effect_cursor)
+    {
+        printf("No se cargo el audio del efecto: select\n");
+        return EXIT_FAILURE;
+    }
+
     
     
     /*PRIMITIVAS*/

@@ -14,7 +14,7 @@
 int main(int argc, char * argv[])
 {
     //ELEMENTOS DE ALLEGRO
-    element_t elem = {NULL, NULL, NULL, NULL, NULL, NULL, NULL}; 
+    element_t elem = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}; 
 
     //ESTADO DEL DISPLAY
     window_state_t estado = MENU;
