@@ -84,7 +84,7 @@ static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR 
                 al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, square_colors[NADA], 2);
             }
             al_draw_text(elem->font_in_game, al_map_rgb(255, 255, 255), BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE,
-                BOARD_START_Y + filas_tetris[i] * SQUARE_SIZE - SQUARE_SIZE + SQUARE_SIZE / 4, 0, "+1000");
+                BOARD_START_Y + filas_tetris[i] * SQUARE_SIZE - SQUARE_SIZE + SQUARE_SIZE / 4, 0, "+100");
         }
         al_flip_display();
         al_rest(0.200);

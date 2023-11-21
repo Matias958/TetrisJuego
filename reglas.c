@@ -258,7 +258,7 @@ int borrarFila(char tablero[18][12], char filas_tetris[18], bool *tetris)
 				tablero[i][m] = NADA; 
 			}
 
-			puntaje += 1000;
+			puntaje += 100;
 
 			//baja las filas superiores a la borrada
 			int k, g;
@@ -279,7 +279,7 @@ int borrarFila(char tablero[18][12], char filas_tetris[18], bool *tetris)
 	}
 
 	filas_tetris[filas_con_tetris] = FINAL_DEL_ARREGLO;
-	return puntaje >= 4000 ? puntaje * 2 : puntaje;
+	return puntaje >= 400 ? puntaje * 2 : puntaje;
 }
 
 
