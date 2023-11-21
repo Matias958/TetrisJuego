@@ -30,6 +30,7 @@
     <Font Include="Ice Mirror in Winter Kei.ttf">
       <Filter>Source Files</Filter>
     </Font>
+    <Font Include="ShortBaby-Mg2w.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -106,6 +107,15 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="select.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="rotate.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="se_game_move.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="se_game_landing.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

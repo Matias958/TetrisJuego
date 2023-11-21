@@ -16,6 +16,8 @@
 #define BIEN 0
 #define MAL 1
 
+#define FINAL_DEL_ARREGLO -1
+
 #define LARGO_TABLERO 18
 #define ANCHO_TABLERO 12
  

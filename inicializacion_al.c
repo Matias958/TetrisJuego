@@ -82,6 +82,15 @@ int inicializa_al(element_t* elem)
         al_destroy_font(elem->title);
         return EXIT_FAILURE; 
     }
+
+    elem->font_in_game = al_load_ttf_font("ShortBaby-Mg2w.ttf", 20,0);
+
+    if(!elem->title)
+    {
+        fprintf(stderr, "Falla al crear la fuente de puntaje en juego");
+        al_destroy_font(elem->title);
+        return EXIT_FAILURE; 
+    }
     
     
     
@@ -149,8 +158,29 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
+    elem->effect_rotate = al_load_sample("rotate.wav"); //cargamos el audio para el effect rotate
+    if (!elem->effect_rotate)
+    {
+        printf("No se cargo el audio del efecto: rotacion\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->effect_move = al_load_sample("se_game_move.wav"); //cargamos el audio para el effect move
+    if (!elem->effect_move)
+    {
+        printf("No se cargo el audio del efecto: movimiento\n");
+        return EXIT_FAILURE;
+    }
+
+
+    elem->effect_landing = al_load_sample("se_game_landing.wav"); //cargamos el audio para el effect landing
+    if (!elem->effect_landing)
+    {
+        printf("No se cargo el audio del efecto: caida\n");
+        return EXIT_FAILURE;
+    }
     
-    
+
     /*PRIMITIVAS*/
     if(!al_init_primitives_addon())
     {

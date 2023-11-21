@@ -27,12 +27,16 @@ typedef struct
     ALLEGRO_FONT *title;
     ALLEGRO_FONT *buttons;
     ALLEGRO_FONT *game_modes;
+    ALLEGRO_FONT *font_in_game;
     ALLEGRO_SAMPLE *sample_menu;
     ALLEGRO_SAMPLE *sample_game;
     ALLEGRO_SAMPLE *effect_tetris;
     ALLEGRO_SAMPLE *effect_play;
     ALLEGRO_SAMPLE *effect_cursor;
     ALLEGRO_SAMPLE *effect_select;
+    ALLEGRO_SAMPLE *effect_rotate;
+    ALLEGRO_SAMPLE *effect_move;
+    ALLEGRO_SAMPLE *effect_landing;
 }element_t;
 
 /************** PROTOTIPOS ***************/
