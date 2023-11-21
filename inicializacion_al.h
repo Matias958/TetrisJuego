@@ -24,12 +24,17 @@ typedef struct
     ALLEGRO_DISPLAY *display;
     ALLEGRO_EVENT_QUEUE *event_queue;
     ALLEGRO_TIMER *timer;
+
     ALLEGRO_FONT *title;
     ALLEGRO_FONT *buttons;
     ALLEGRO_FONT *game_modes;
     ALLEGRO_FONT *font_in_game;
+    ALLEGRO_FONT *game_over;
+
     ALLEGRO_SAMPLE *sample_menu;
     ALLEGRO_SAMPLE *sample_game;
+    ALLEGRO_SAMPLE* sample_game_over;
+
     ALLEGRO_SAMPLE *effect_tetris;
     ALLEGRO_SAMPLE *effect_play;
     ALLEGRO_SAMPLE *effect_cursor;
@@ -38,6 +43,7 @@ typedef struct
     ALLEGRO_SAMPLE *effect_move;
     ALLEGRO_SAMPLE *effect_landing;
     ALLEGRO_SAMPLE *effect_pause;
+    ALLEGRO_SAMPLE *effect_game_over;
 }element_t;
 
 /************** PROTOTIPOS ***************/

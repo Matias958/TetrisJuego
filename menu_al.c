@@ -14,7 +14,7 @@ enum menu_options {JUGAR, PUNTAJE}; //menu
 void p_menu(element_t * elem, window_state_t *state)
 {
     //música
-    al_play_sample(elem->sample_menu, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+    al_play_sample(elem->sample_menu, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
     
     //brillo de fondo
     al_clear_to_color(al_map_rgb(20, 20, 20));
@@ -76,7 +76,7 @@ void p_menu(element_t * elem, window_state_t *state)
                         draw = true;
                     }
                     botones[i]->press = true;// actualizamos el estado del botón
-                    al_play_sample(elem->effect_cursor, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                    al_play_sample(elem->effect_cursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 }
 
                 else if (botones[i]->press && (ev.mouse.x > botones[i]->x_center + botones[i]->width 
@@ -103,7 +103,7 @@ void p_menu(element_t * elem, window_state_t *state)
                 && ev.mouse.y >= botones[JUGAR]->y_center - botones[JUGAR]->height)
             {
                 *state = GAME_SEL;
-                al_play_sample(elem->effect_play, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 waitingForUpdate = false;
             }
             
@@ -113,7 +113,7 @@ void p_menu(element_t * elem, window_state_t *state)
                 && ev.mouse.y >= botones[PUNTAJE]->y_center - botones[PUNTAJE]->height)
             {
                 *state = HIGHSCORE;
-                al_play_sample(elem->effect_play, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 waitingForUpdate = false;
             } 
         }

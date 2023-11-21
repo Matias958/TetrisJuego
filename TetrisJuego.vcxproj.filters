@@ -122,5 +122,11 @@
     <Media Include="se_game_pause.wav">
       <Filter>Resource Files</Filter>
     </Media>
+    <Media Include="me_game_gameover.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="game_over.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>
