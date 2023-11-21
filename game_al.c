@@ -14,7 +14,8 @@
 #define NEXT_PIECE_POS_X (BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE)
 #define NEXT_PIECE_POS_Y (BOARD_START_Y + BOARD_LENGHT * SQUARE_SIZE)
 
-#define TAMANO_DE_VENTANA_PUNTAJE 100
+#define TAMANO_DE_VENTANA_PUNTAJE_X 150
+#define TAMANO_DE_VENTANA_PUNTAJE_Y 100
 #define PUNTAJE_VENTANA_X (BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE + 20)
 #define PUNTAJE_VENTANA_Y BOARD_START_Y
 
@@ -25,9 +26,12 @@
 #define PAUSE ALLEGRO_KEY_ESCAPE
 #define BAJAR_TODO ALLEGRO_KEY_SPACE
 
-static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[]);
-static void init_board_colors(ALLEGRO_COLOR square_colors[9]);
-static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[9]);
+enum bordes { NADA_B = BORDE + 1, PIEZA_I_B, PIEZA_J_B, PIEZA_L_B, PIEZA_O_B, PIEZA_S_B, PIEZA_T_B, PIEZA_Z_B, BORDE_B };
+
+static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[]);
+static void init_board_colors(ALLEGRO_COLOR square_colors[]);
+static void init_board_border_colors(ALLEGRO_COLOR square_colors[]);
+static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[]);
 static void mostrar_puntaje(element_t *elem, int puntaje);
 static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem);
 
@@ -38,7 +42,7 @@ static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR 
  *
  */
 
-static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[])
+static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[])
 {
     int i;
     int j;
@@ -51,7 +55,7 @@ static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squa
 
             al_draw_filled_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, square_colors[board[i][j]]);
 
-            al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, square_colors[NADA], 2);
+            al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, square_border_colors[board[i][j]], 2);
         }
     }
 
@@ -59,10 +63,13 @@ static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squa
 }
 static void mostrar_puntaje(element_t *elem, int puntaje)
 {
-    al_draw_filled_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE, al_map_rgb(66, 67, 62));
+
+    al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y - 3 * TAMANO_DE_VENTANA_PUNTAJE_Y / 5, 1, "SCORE");
+    al_draw_filled_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(66, 67, 62));
+    al_draw_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(124, 121, 108), 6);
     char buffer[6];
     _itoa_s(puntaje, buffer,6, 10);
-    al_draw_text(elem->buttons, al_map_rgb(124, 121, 108), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE / 2, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE / 5, 1, buffer);
+    al_draw_text(elem->buttons, al_map_rgb(124, 121, 108), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y / 5, 1, buffer);
     al_flip_display();
 }
 
@@ -112,13 +119,27 @@ static void init_board_colors(ALLEGRO_COLOR square_colors[])
     
     square_colors[NADA] = al_map_rgb(66, 67, 62);
     square_colors[PIEZA_I] = al_map_rgb(0, 255, 255);
-    square_colors[PIEZA_J] = al_map_rgb(0, 0, 255);
+    square_colors[PIEZA_J] = al_map_rgb(0, 200, 245);
     square_colors[PIEZA_O] = al_map_rgb(255, 255, 0);
-    square_colors[PIEZA_L] = al_map_rgb(255, 127, 0);
-    square_colors[PIEZA_S] = al_map_rgb(0, 255, 0);
+    square_colors[PIEZA_L] = al_map_rgb(250, 150, 50);
+    square_colors[PIEZA_S] = al_map_rgb(0, 255, 127);
+    square_colors[PIEZA_Z] = al_map_rgb(250, 50, 50);
+    square_colors[PIEZA_T] = al_map_rgb(200, 30, 200);
+    square_colors[BORDE] = al_map_rgb(124, 121, 108);
+}
+
+static void init_board_border_colors(ALLEGRO_COLOR square_colors[])
+{
+    square_colors[NADA] = al_map_rgb(124, 121, 108);
+    square_colors[PIEZA_I] = al_map_rgb(0, 150, 150);
+    square_colors[PIEZA_J] = al_map_rgb(0, 125, 150);
+    square_colors[PIEZA_O] = al_map_rgb(150, 150, 0);
+    square_colors[PIEZA_L] = al_map_rgb(200, 110, 0);
+    square_colors[PIEZA_S] = al_map_rgb(0, 155, 80);
     square_colors[PIEZA_Z] = al_map_rgb(255, 0, 0);
     square_colors[PIEZA_T] = al_map_rgb(128, 0, 128);
-    square_colors[BORDE] = al_map_rgb(124, 121, 108);
+    square_colors[BORDE] = al_map_rgb(66, 67, 62);
+    
 }
 
 void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
@@ -131,7 +152,10 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
 
     // creamos e inicializamos un arreglo con los colores de las distintas piezas
     ALLEGRO_COLOR square_colors[9];
+    ALLEGRO_COLOR square_border_colors[9];
     init_board_colors(square_colors); 
+    init_board_border_colors(square_border_colors);
+
     srand(time(NULL));
     inicializarTiempo();
 
@@ -204,6 +228,7 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
                 al_play_sample(elem->effect_landing, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 break;
             case PAUSE:
+                al_play_sample(elem->effect_pause, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 pause = !pause;
                 break;
             }
@@ -241,7 +266,7 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
                 Estacionar(&pieza, matris_auxiliar); // estacionamos la pieza que se esta moviendo para visualizarla
             }
 
-            draw_board(matris_auxiliar, square_colors);
+            draw_board(matris_auxiliar, square_colors, square_border_colors);
             puntaje += borrarFila(matris, filas_tetris, &tetris);
 
             if (tetris)

@@ -83,16 +83,14 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE; 
     }
 
-    elem->font_in_game = al_load_ttf_font("ShortBaby-Mg2w.ttf", 20,0);
+    elem->font_in_game = al_load_ttf_font("AovelSansRounded-rdDL.ttf", 22,0);
 
-    if(!elem->title)
+    if(!elem->font_in_game)
     {
         fprintf(stderr, "Falla al crear la fuente de puntaje en juego");
-        al_destroy_font(elem->title);
+        al_destroy_font(elem->font_in_game);
         return EXIT_FAILURE; 
     }
-    
-    
     
     /*INICIAIZACIÓN DE AUDIO*/
     if (!al_install_audio())//inicializamos el audio
@@ -179,7 +177,14 @@ int inicializa_al(element_t* elem)
         printf("No se cargo el audio del efecto: caida\n");
         return EXIT_FAILURE;
     }
-    
+
+    elem->effect_pause = al_load_sample("se_game_pause.wav"); //cargamos el audio para el effect pause
+    if (!elem->effect_landing)
+    {
+        printf("No se cargo el audio del efecto: pausa\n");
+        return EXIT_FAILURE;
+    }
+
 
     /*PRIMITIVAS*/
     if(!al_init_primitives_addon())

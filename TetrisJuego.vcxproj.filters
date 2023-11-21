@@ -31,6 +31,7 @@
       <Filter>Source Files</Filter>
     </Font>
     <Font Include="ShortBaby-Mg2w.ttf" />
+    <Font Include="AovelSansRounded-rdDL.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -116,6 +117,9 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="se_game_landing.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="se_game_pause.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

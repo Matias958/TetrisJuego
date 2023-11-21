@@ -37,6 +37,7 @@ typedef struct
     ALLEGRO_SAMPLE *effect_rotate;
     ALLEGRO_SAMPLE *effect_move;
     ALLEGRO_SAMPLE *effect_landing;
+    ALLEGRO_SAMPLE *effect_pause;
 }element_t;
 
 /************** PROTOTIPOS ***************/

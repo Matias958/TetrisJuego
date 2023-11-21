@@ -110,7 +110,7 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
                     {
                         draw = true;
                     }
-                    if (mouseClick)
+                    if (!mouseClick)
                     {
                         al_play_sample(elem->effect_cursor, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     }
