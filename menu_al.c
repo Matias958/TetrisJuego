@@ -14,7 +14,7 @@ enum menu_options {JUGAR, PUNTAJE}; //menu
 void p_menu(element_t * elem, window_state_t *state)
 {
     //música
-    al_play_sample(elem->sample_menu, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+    al_play_sample(elem->sample_menu, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
     
     //brillo de fondo
     al_clear_to_color(al_map_rgb(20, 20, 20));

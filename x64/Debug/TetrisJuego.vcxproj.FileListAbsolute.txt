@@ -1,2 +1,3 @@
 C:\Users\matia\OneDrive\Documentos\Programacion\TetrisJuego\x64\Debug\TetrisJuego.exe
 C:\Users\herra\OneDrive\Documentos\GitHub\TetrisJuego\x64\Debug\TetrisJuego.exe
+C:\dev\TetrisJuego\x64\Debug\TetrisJuego.exe

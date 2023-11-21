@@ -105,7 +105,7 @@ void crearTablero (char matris[][12])
                 }
             }
 
-            if(!(movimiento % 2))
+            if(!(movimiento % 5))
             {
                 Girar_Pieza(&pieza, matris);
             }
@@ -115,7 +115,7 @@ void crearTablero (char matris[][12])
                 Mover_Pieza ( &pieza, DERECHA, matris);
             }
 
-            if(!(movimiento % 5))
+            if(!(movimiento % 2))
             {
                 Mover_Pieza ( &pieza, IZQUIERDA, matris);
             }
