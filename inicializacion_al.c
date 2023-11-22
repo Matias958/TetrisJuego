@@ -100,6 +100,15 @@ int inicializa_al(element_t* elem)
         al_destroy_font(elem->game_over);
         return EXIT_FAILURE;
     }
+
+    elem->pause_menu = al_load_ttf_font("fonts/THE-GLITCH.ttf", 100, 0);
+
+    if (!elem->pause_menu)
+    {
+        fprintf(stderr, "Falla al crear la fuente del menu de pausa");
+        al_destroy_font(elem->pause_menu);
+        return EXIT_FAILURE;
+    }
     
     /*INICIAIZACIÓN DE AUDIO*/
     if (!al_install_audio())//inicializamos el audio

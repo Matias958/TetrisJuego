@@ -164,6 +164,7 @@
     <Font Include="fonts\Ice Mirror in Winter Kei.ttf" />
     <Font Include="fonts\Retronoid.ttf" />
     <Font Include="fonts\ShortBaby-Mg2w.ttf" />
+    <Font Include="fonts\THE-GLITCH.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="botones.c" />

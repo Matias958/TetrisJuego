@@ -234,6 +234,7 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state)
 				al_play_sample(elem->effect_landing, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 				break;
 			case PAUSE:
+				al_stop_sample(elem->effect_pause);
 				draw_pause_menu(state, elem, &playing);
 				al_clear_to_color(al_map_rgb(20, 20, 20));
 				al_flip_display();
@@ -308,8 +309,8 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje)
 
 	char buffer[6];
 	_itoa_s(puntaje, buffer, 6, 10);
-	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 20, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
-	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
+	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 40, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
+	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 30, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
 
 	int times;
 	for (times = 0; times < 4; times++)
@@ -442,7 +443,9 @@ static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playin
 
 	// Dibujar el bitmap en el display
 	al_draw_bitmap(elem->bitmap, SCREEN_W / 4, SCREEN_H / 4, 0);
-	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2, SCREEN_H * 0.30, ALLEGRO_ALIGN_CENTRE, "PAUSE");
+	al_draw_rectangle(SCREEN_W / 4, SCREEN_H / 4, SCREEN_W / 4 + SCREEN_W / 2, SCREEN_H / 4 +SCREEN_H / 2, al_map_rgb(255, 255, 255), 4);
+	al_draw_text(elem->pause_menu, al_map_rgb(195, 44, 23), SCREEN_W / 2, SCREEN_H * 0.30, ALLEGRO_ALIGN_CENTRE, "PAUSE");
+
 	//botones 
 	button_t resume = { "RESUME", SCREEN_W / 2, SCREEN_H * 0.50, 130, 40, 20,
 					false, al_map_rgb(100,110,200), al_map_rgb(100,0,200),
@@ -525,6 +528,15 @@ static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playin
 				*playing = false;
 			}
 		}
+
+		if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == PAUSE)
+		{
+			al_play_sample(elem->effect_pause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			al_rest(0.4);
+			waitingForUpdate = false;
+
+		}
+
 
 		//redibujamos si es necesario
 		if (draw)
