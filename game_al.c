@@ -308,8 +308,10 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje)
 
     char buffer[6];
     _itoa_s(puntaje, buffer, 6, 10);
-    al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 25, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
-    al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 50, SCREEN_H  / 6 + SIZE_OF_TITLE, 0, buffer);
+    char buffer2[12] = "SCORE: ";
+    strcat_s(buffer2, 12, buffer);
+    al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, buffer2);
+    //al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
 
     int times;
     for (times = 0; times < 4; times++)
