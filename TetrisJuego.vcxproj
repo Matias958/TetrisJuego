@@ -144,26 +144,26 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="game_over.wav" />
-    <Media Include="cursor.wav" />
-    <Media Include="Dance-of-the-Sugar-Plum-Fairy.wav" />
-    <Media Include="game.wav" />
-    <Media Include="menu.wav" />
-    <Media Include="me_game_gameover.wav" />
-    <Media Include="play.wav" />
-    <Media Include="rotate.wav" />
-    <Media Include="select.wav" />
-    <Media Include="se_game_landing.wav" />
-    <Media Include="se_game_move.wav" />
-    <Media Include="se_game_pause.wav" />
-    <Media Include="tetris.wav" />
+    <Media Include="audio\cursor.wav" />
+    <Media Include="audio\Dance-of-the-Sugar-Plum-Fairy.wav" />
+    <Media Include="audio\game.wav" />
+    <Media Include="audio\game_over.wav" />
+    <Media Include="audio\menu.wav" />
+    <Media Include="audio\me_game_gameover.wav" />
+    <Media Include="audio\play.wav" />
+    <Media Include="audio\rotate.wav" />
+    <Media Include="audio\select.wav" />
+    <Media Include="audio\se_game_landing.wav" />
+    <Media Include="audio\se_game_move.wav" />
+    <Media Include="audio\se_game_pause.wav" />
+    <Media Include="audio\tetris.wav" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="AovelSansRounded-rdDL.ttf" />
-    <Font Include="game_over.ttf" />
-    <Font Include="Ice Mirror in Winter Kei.ttf" />
-    <Font Include="Retronoid.ttf" />
-    <Font Include="ShortBaby-Mg2w.ttf" />
+    <Font Include="fonts\AovelSansRounded-rdDL.ttf" />
+    <Font Include="fonts\game_over.ttf" />
+    <Font Include="fonts\Ice Mirror in Winter Kei.ttf" />
+    <Font Include="fonts\Retronoid.ttf" />
+    <Font Include="fonts\ShortBaby-Mg2w.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="botones.c" />

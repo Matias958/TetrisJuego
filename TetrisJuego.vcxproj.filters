@@ -21,17 +21,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Retronoid.ttf">
-      <Filter>Source Files</Filter>
-    </Font>
-    <Font Include="game_over.ttf">
-      <Filter>Source Files</Filter>
-    </Font>
-    <Font Include="Ice Mirror in Winter Kei.ttf">
-      <Filter>Source Files</Filter>
-    </Font>
-    <Font Include="ShortBaby-Mg2w.ttf" />
-    <Font Include="AovelSansRounded-rdDL.ttf" />
+    <Font Include="fonts\AovelSansRounded-rdDL.ttf" />
+    <Font Include="fonts\game_over.ttf" />
+    <Font Include="fonts\Ice Mirror in Winter Kei.ttf" />
+    <Font Include="fonts\Retronoid.ttf" />
+    <Font Include="fonts\ShortBaby-Mg2w.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -89,43 +83,43 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="Dance-of-the-Sugar-Plum-Fairy.wav">
-      <Filter>Source Files</Filter>
-    </Media>
-    <Media Include="menu.wav">
+    <Media Include="audio\game_over.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="game.wav">
+    <Media Include="audio\cursor.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="tetris.wav">
+    <Media Include="audio\Dance-of-the-Sugar-Plum-Fairy.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="play.wav">
+    <Media Include="audio\game.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="cursor.wav">
+    <Media Include="audio\me_game_gameover.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="select.wav">
+    <Media Include="audio\menu.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="rotate.wav">
+    <Media Include="audio\play.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="se_game_move.wav">
+    <Media Include="audio\rotate.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="se_game_landing.wav">
+    <Media Include="audio\se_game_landing.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="se_game_pause.wav">
+    <Media Include="audio\se_game_move.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="me_game_gameover.wav">
+    <Media Include="audio\se_game_pause.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="game_over.wav">
+    <Media Include="audio\select.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="audio\tetris.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

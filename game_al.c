@@ -38,6 +38,7 @@ static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[]);
 static void mostrar_puntaje(element_t *elem, int puntaje);
 static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem);
 static void game_over(window_state_t* state, element_t* elem, int puntaje);
+static void draw_pause_menu(ALLEGRO_EVENT* ev, element_t* elem);
 
 /* DRAW_BOARD()
  *
@@ -233,7 +234,7 @@ void play_game(element_t *elem, game_mode_t mode, window_state_t *state)
                 break;
             case PAUSE:
                 al_play_sample(elem->effect_pause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-                pause = !pause;
+                draw_pause_menu(&ev,elem);
                 break;
             }
 
@@ -308,10 +309,8 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje)
 
     char buffer[6];
     _itoa_s(puntaje, buffer, 6, 10);
-    char buffer2[12] = "SCORE: ";
-    strcat_s(buffer2, 12, buffer);
-    al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, buffer2);
-    //al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
+    al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 20, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
+    al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
 
     int times;
     for (times = 0; times < 4; times++)
@@ -396,8 +395,11 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje)
                 && ev.mouse.y <= botones[JUGAR]->y_center + botones[JUGAR]->height
                 && ev.mouse.y >= botones[JUGAR]->y_center - botones[JUGAR]->height)
             {
-                *state = GAME;
+                *state = GAME_SEL;
                 al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                al_rest(0.4);
+                al_stop_samples();
+                al_play_sample(elem->sample_menu, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
                 waitingForUpdate = false;
             }
 
@@ -425,5 +427,9 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje)
 
 static void draw_pause_menu(ALLEGRO_EVENT *ev, element_t *elem)
 {
+    bool waitingForUpdate = true;
+    while(waitingForUpdate)
+    {
 
+    }
 }

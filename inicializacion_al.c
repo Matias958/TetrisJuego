@@ -56,7 +56,7 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
     
-    elem->title = al_load_ttf_font("Retronoid.ttf", 180,0);
+    elem->title = al_load_ttf_font("fonts/Retronoid.ttf", 180,0);
 
     if(!elem->title)
     {
@@ -65,7 +65,7 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE; 
     }
     
-    elem->buttons = al_load_ttf_font("game_over.ttf", 100,0);
+    elem->buttons = al_load_ttf_font("fonts/game_over.ttf", 100,0);
     
     if(!elem->buttons)
     {
@@ -74,7 +74,7 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE; 
     }
     
-    elem->game_modes = al_load_ttf_font("Ice Mirror in Winter Kei.ttf", 20,0);
+    elem->game_modes = al_load_ttf_font("fonts/Ice Mirror in Winter Kei.ttf", 20,0);
 
     if(!elem->title)
     {
@@ -83,7 +83,7 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE; 
     }
 
-    elem->font_in_game = al_load_ttf_font("AovelSansRounded-rdDL.ttf", 22,0);
+    elem->font_in_game = al_load_ttf_font("fonts/AovelSansRounded-rdDL.ttf", 22,0);
 
     if(!elem->font_in_game)
     {
@@ -92,7 +92,7 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE; 
     }
 
-    elem->game_over = al_load_ttf_font("game_over.ttf", 180, 0);
+    elem->game_over = al_load_ttf_font("fonts/game_over.ttf", 180, 0);
 
     if (!elem->game_over)
     {
@@ -120,7 +120,7 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
-    elem->sample_menu = al_load_sample("menu.wav"); //cargamos el audio para el menu
+    elem->sample_menu = al_load_sample("audio/menu.wav"); //cargamos el audio para el menu
 
     if(!elem->sample_menu) 
     {
@@ -128,7 +128,7 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
     
-    elem->sample_game = al_load_sample("game.wav"); //cargamos el audio para el juego
+    elem->sample_game = al_load_sample("audio/game.wav"); //cargamos el audio para el juego
 
     if(!elem->sample_game) 
     {
@@ -137,42 +137,42 @@ int inicializa_al(element_t* elem)
     }
     
     
-    elem->effect_tetris = al_load_sample("tetris.wav"); //cargamos el audio para el efector de tetris
+    elem->effect_tetris = al_load_sample("audio/tetris.wav"); //cargamos el audio para el efector de tetris
     if(!elem->effect_tetris) 
     {
         printf("No se cargo el audio del efecto: tetris\n");
         return EXIT_FAILURE;
     }
     
-    elem->effect_play = al_load_sample("play.wav"); //cargamos el audio para el efecto de play
+    elem->effect_play = al_load_sample("audio/play.wav"); //cargamos el audio para el efecto de play
     if (!elem->effect_play)
     {
         printf("No se cargo el audio del efecto: play\n");
         return EXIT_FAILURE;
     }
 
-    elem->effect_cursor = al_load_sample("cursor.wav"); //cargamos el audio para el cursor
+    elem->effect_cursor = al_load_sample("audio/cursor.wav"); //cargamos el audio para el cursor
     if (!elem->effect_cursor)
     {
         printf("No se cargo el audio del efecto: cursor\n");
         return EXIT_FAILURE;
     }
 
-    elem->effect_select = al_load_sample("select.wav"); //cargamos el audio para el effect select
+    elem->effect_select = al_load_sample("audio/select.wav"); //cargamos el audio para el effect select
     if (!elem->effect_cursor)
     {
         printf("No se cargo el audio del efecto: select\n");
         return EXIT_FAILURE;
     }
 
-    elem->effect_rotate = al_load_sample("rotate.wav"); //cargamos el audio para el effect rotate
+    elem->effect_rotate = al_load_sample("audio/rotate.wav"); //cargamos el audio para el effect rotate
     if (!elem->effect_rotate)
     {
         printf("No se cargo el audio del efecto: rotacion\n");
         return EXIT_FAILURE;
     }
 
-    elem->effect_move = al_load_sample("se_game_move.wav"); //cargamos el audio para el effect move
+    elem->effect_move = al_load_sample("audio/se_game_move.wav"); //cargamos el audio para el effect move
     if (!elem->effect_move)
     {
         printf("No se cargo el audio del efecto: movimiento\n");
@@ -180,28 +180,28 @@ int inicializa_al(element_t* elem)
     }
 
 
-    elem->effect_landing = al_load_sample("se_game_landing.wav"); //cargamos el audio para el effect landing
+    elem->effect_landing = al_load_sample("audio/se_game_landing.wav"); //cargamos el audio para el effect landing
     if (!elem->effect_landing)
     {
         printf("No se cargo el audio del efecto: caida\n");
         return EXIT_FAILURE;
     }
 
-    elem->effect_pause = al_load_sample("se_game_pause.wav"); //cargamos el audio para el effect pause
+    elem->effect_pause = al_load_sample("audio/se_game_pause.wav"); //cargamos el audio para el effect pause
     if (!elem->effect_landing)
     {
         printf("No se cargo el audio del efecto: pausa\n");
         return EXIT_FAILURE;
     }
 
-    elem->effect_game_over = al_load_sample("me_game_gameover.wav"); //cargamos el audio para el effect pause
+    elem->effect_game_over = al_load_sample("audio/me_game_gameover.wav"); //cargamos el audio para el effect pause
     if (!elem->effect_game_over)
     {
         printf("No se cargo el audio del efecto: game over\n");
         return EXIT_FAILURE;
     }
 
-    elem->sample_game_over = al_load_sample("game_over.wav"); //cargamos el audio para el effect pause
+    elem->sample_game_over = al_load_sample("audio/game_over.wav"); //cargamos el audio para el effect pause
     if (!elem->sample_game_over)
     {
         printf("No se cargo el audio del audio de menu de game over\n");

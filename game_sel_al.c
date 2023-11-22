@@ -13,7 +13,7 @@ enum game_modes {MIRRORED, BLANKING, NO_EMPTY, START};
 void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
 {
     al_clear_to_color(al_map_rgb(20, 20, 20));
-
+    
     //botones 
     button_t  mirrored = { "MIRRORED",SCREEN_W / 4, SCREEN_H * 0.4, 100, 200, 30,
                     false, al_map_rgb(100,110,200), al_map_rgb(201,193,181),
@@ -41,7 +41,7 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
     //esperamos a alguna selección
     ALLEGRO_EVENT ev;
     bool waitingForUpdate = true;
-    bool draw = false;
+    bool draw = true;
     bool mouseClick = false;
 
     while (waitingForUpdate)
@@ -67,21 +67,18 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
             if(botones[BLANKING]->press && !mouseClick)
             {
                 game_mode->blanking = !game_mode->blanking; //se cambia el estado y el color cuando no esta pulsado
-                botones[BLANKING]->color_uprs = game_mode->blanking? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
                 al_play_sample(elem->effect_select, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 draw = true;
             }
             else if(botones[MIRRORED]->press && !mouseClick)
             {
                 game_mode->mirrored = !game_mode->mirrored;
-                botones[MIRRORED]->color_uprs = game_mode->mirrored? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
                 al_play_sample(elem->effect_select, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 draw = true;
             }
             else if(botones[NO_EMPTY]->press && !mouseClick)
             {
                 game_mode->no_empty = !game_mode->no_empty;
-                botones[NO_EMPTY]->color_uprs = game_mode->no_empty? al_map_rgb(17,108,110) : al_map_rgb(201,193,181);
                 al_play_sample(elem->effect_select, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 draw = true;
             }
@@ -135,6 +132,9 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
         //redibujamos si es necesario
         if(draw)
         {
+            botones[BLANKING]->color_uprs = game_mode->blanking ? al_map_rgb(17, 108, 110) : al_map_rgb(201, 193, 181);
+            botones[MIRRORED]->color_uprs = game_mode->mirrored ? al_map_rgb(17, 108, 110) : al_map_rgb(201, 193, 181);
+            botones[NO_EMPTY]->color_uprs = game_mode->no_empty ? al_map_rgb(17, 108, 110) : al_map_rgb(201, 193, 181);
             draw_buttons(botones, al_color_name("white"));      
             al_flip_display(); //cargamos el buffer en el display
             draw = false; 
