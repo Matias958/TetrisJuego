@@ -144,10 +144,12 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="game_over.wav" />
     <Media Include="cursor.wav" />
     <Media Include="Dance-of-the-Sugar-Plum-Fairy.wav" />
     <Media Include="game.wav" />
     <Media Include="menu.wav" />
+    <Media Include="me_game_gameover.wav" />
     <Media Include="play.wav" />
     <Media Include="rotate.wav" />
     <Media Include="select.wav" />

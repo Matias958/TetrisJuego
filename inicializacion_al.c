@@ -91,6 +91,15 @@ int inicializa_al(element_t* elem)
         al_destroy_font(elem->font_in_game);
         return EXIT_FAILURE; 
     }
+
+    elem->game_over = al_load_ttf_font("game_over.ttf", 180, 0);
+
+    if (!elem->game_over)
+    {
+        fprintf(stderr, "Falla al crear la fuente del game over");
+        al_destroy_font(elem->game_over);
+        return EXIT_FAILURE;
+    }
     
     /*INICIAIZACIÓN DE AUDIO*/
     if (!al_install_audio())//inicializamos el audio
@@ -182,6 +191,20 @@ int inicializa_al(element_t* elem)
     if (!elem->effect_landing)
     {
         printf("No se cargo el audio del efecto: pausa\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->effect_game_over = al_load_sample("me_game_gameover.wav"); //cargamos el audio para el effect pause
+    if (!elem->effect_game_over)
+    {
+        printf("No se cargo el audio del efecto: game over\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->sample_game_over = al_load_sample("game_over.wav"); //cargamos el audio para el effect pause
+    if (!elem->sample_game_over)
+    {
+        printf("No se cargo el audio del audio de menu de game over\n");
         return EXIT_FAILURE;
     }
 
