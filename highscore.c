@@ -8,6 +8,7 @@
 
 bool get_highscore(int highscores [NUMBER_OF_PLAYERS], char nameOfHighscores [NUMBER_OF_PLAYERS][CHARACTERS + 1])
 {
+	/*
 	FILE *highscoreFile;
 	highscoreFile = fopen("highscore.txt", "w");
 
@@ -24,6 +25,7 @@ bool get_highscore(int highscores [NUMBER_OF_PLAYERS], char nameOfHighscores [NU
 		fgets(nameOfHighscores[i], 3, highscoreFile);
 		nameOfHighscores[i][4] = '\0';
 	}
+	*/
 
 
 
