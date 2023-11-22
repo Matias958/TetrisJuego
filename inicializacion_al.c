@@ -228,6 +228,15 @@ int inicializa_al(element_t* elem)
         al_destroy_timer(elem->timer);
         return EXIT_FAILURE;
     }
+
+    elem->bitmap = al_create_bitmap(SCREEN_W/2, SCREEN_H/2);
+    if (!elem->bitmap) {
+        fprintf(stderr, "Falla al crear el bitmap.\n");
+        al_destroy_event_queue(elem->event_queue);
+        al_destroy_timer(elem->timer);
+        al_destroy_display(elem->display);
+        return EXIT_FAILURE;
+    }
     
     
     
