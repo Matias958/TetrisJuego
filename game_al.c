@@ -38,7 +38,7 @@ static void init_board_border_colors(ALLEGRO_COLOR square_colors[]);
 static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[]);
 static void mostrar_puntaje(element_t* elem, int puntaje);
 static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem);
-static void game_over(window_state_t* state, element_t* elem, int puntaje);
+static void game_over(window_state_t* state, element_t* elem, int puntaje, highscore_t *highscore);
 static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playing);
 
 /* DRAW_BOARD()
@@ -148,7 +148,7 @@ static void init_board_border_colors(ALLEGRO_COLOR square_colors[])
 
 }
 
-void play_game(element_t* elem, game_mode_t mode, window_state_t* state)
+void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highscore_t *highscore)
 {
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 	al_stop_samples();
@@ -295,15 +295,22 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state)
 
 	if (*state != CLOSE_DISPLAY)
 	{
-		game_over(state, elem, puntaje);
+		game_over(state, elem, puntaje, highscore);
 	}
 }
 
-static void game_over(window_state_t* state, element_t* elem, int puntaje)
+static void game_over(window_state_t* state, element_t* elem, int puntaje, highscore_t *highScore)
 {
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 	al_flip_display();
-
+	
+	/*TEST++
+	if (is_highscore(puntaje, highScore) <= NUMBER_OF_PLAYERS)
+	{
+		set_highscore(highScore, puntaje, "MAT");
+	}
+	TEST--*/
+	
 	al_stop_samples();
 	al_play_sample(elem->effect_game_over, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 

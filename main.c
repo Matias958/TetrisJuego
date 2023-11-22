@@ -10,8 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "game_state_al.h"
+#include "highscore.h"
 
-int main(int argc, char * argv[])
+int main(void)
 {
     //ELEMENTOS DE ALLEGRO
     element_t elem;
@@ -21,6 +22,13 @@ int main(int argc, char * argv[])
 
     //MODOS DE JUEGO Y DIFICULTAD
     game_mode_t game_mode = {EASY, false, false, false};
+
+    //HIGHSCORE
+    highscore_t highscore;
+    if (!get_highscore(&highscore))
+    {
+        return EXIT_FAILURE;
+    }
     
     if(inicializa_al(&elem) == EXIT_FAILURE)
     {
@@ -39,10 +47,11 @@ int main(int argc, char * argv[])
             p_game_mode(&elem, &estado, &game_mode);
             break;
         case GAME:
-            play_game(&elem, game_mode, &estado);
+            play_game(&elem, game_mode, &estado, &highscore);
             break;
+        case HIGHSCORE:
+            estado = CLOSE_DISPLAY;
         }
     }
-
     return EXIT_SUCCESS;
 }
