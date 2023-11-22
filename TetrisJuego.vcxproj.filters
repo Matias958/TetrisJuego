@@ -53,6 +53,9 @@
     <ClCompile Include="juego.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="highscore.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="piezas.h">
@@ -80,6 +83,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game_state_al.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="highscore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -123,5 +129,8 @@
     <Media Include="audio\tetris.wav">
       <Filter>Resource Files</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="highscore.txt" />
   </ItemGroup>
 </Project>

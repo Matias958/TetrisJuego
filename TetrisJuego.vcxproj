@@ -170,6 +170,7 @@
     <ClCompile Include="botones.c" />
     <ClCompile Include="game_al.c" />
     <ClCompile Include="game_sel_al.c" />
+    <ClCompile Include="highscore.c" />
     <ClCompile Include="inicializacion_al.c" />
     <ClCompile Include="juego.c" />
     <ClCompile Include="main.c" />
@@ -181,11 +182,15 @@
     <ClInclude Include="game_al.h" />
     <ClInclude Include="game_sel_al.h" />
     <ClInclude Include="game_state_al.h" />
+    <ClInclude Include="highscore.h" />
     <ClInclude Include="inicializacion_al.h" />
     <ClInclude Include="juego.h" />
     <ClInclude Include="menu_al.h" />
     <ClInclude Include="piezas.h" />
     <ClInclude Include="reglas.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="highscore.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
