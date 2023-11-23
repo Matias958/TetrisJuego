@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="fonts\AovelSansRounded-rdDL.ttf" />
+    <Font Include="fonts\budmo jiggler.otf" />
     <Font Include="fonts\game_over.ttf" />
     <Font Include="fonts\Ice Mirror in Winter Kei.ttf" />
     <Font Include="fonts\Retronoid.ttf" />

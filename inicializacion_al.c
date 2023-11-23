@@ -109,6 +109,15 @@ int inicializa_al(element_t* elem)
         al_destroy_font(elem->pause_menu);
         return EXIT_FAILURE;
     }
+
+    elem->highscore_news = al_load_ttf_font("fonts/budmo jiggler.otf", 30, 0);
+
+    if (!elem->highscore_news)
+    {
+        fprintf(stderr, "Falla al crear la fuente de la noticia de highscore");
+        al_destroy_font(elem->highscore_news);
+        return EXIT_FAILURE;
+    }
     
     /*INICIAIZACIÓN DE AUDIO*/
     if (!al_install_audio())//inicializamos el audio

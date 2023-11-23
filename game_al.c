@@ -1,7 +1,8 @@
+#include <stdlib.h>
 #include "game_al.h"
 #include "botones.h"
 #include "juego.h"
-#include <stdlib.h>
+
 
 #define BOARD_WIDTH 12
 #define BOARD_LENGHT 18
@@ -299,25 +300,14 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 	}
 }
 
-static void game_over(window_state_t* state, element_t* elem, int puntaje, highscore_t *highScore)
+static void game_over(window_state_t* state, element_t* elem, int puntaje, highscore_t* highScore)
 {
+	ALLEGRO_EVENT ev;
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 	al_flip_display();
-	
-	/*TEST++
-	if (is_highscore(puntaje, highScore) <= NUMBER_OF_PLAYERS)
-	{
-		set_highscore(highScore, puntaje, "MAT");
-	}
-	TEST--*/
-	
+
 	al_stop_samples();
 	al_play_sample(elem->effect_game_over, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-
-	char buffer[6];
-	_itoa_s(puntaje, buffer, 6, 10);
-	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 40, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
-	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 30, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
 
 	int times;
 	for (times = 0; times < 4; times++)
@@ -326,6 +316,7 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 		al_rest(0.300);
 		al_flip_display();
 	}
+
 	// al_play_sample(elem->effect_game_over, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 	al_play_sample(elem->sample_game_over, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
 
@@ -340,12 +331,106 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 
 	button_t* botones[] = { &play, &highscore, NULL };
 
-	draw_buttons(botones, al_color_name("white"));
+	char buffer[6];
+	_itoa_s(puntaje, buffer, 6, 10);
 
+	int position = is_highscore(puntaje, highScore);
+	char buffer2[4];
+	_itoa_s(position, buffer2, 4, 10);
+
+	if (position < NUMBER_OF_PLAYERS)
+	{
+		char name[4] = "   ";
+		int c = 0;
+		bool waiting = true;
+		while (waiting)
+		{
+			al_clear_to_color(al_map_rgb(20, 20, 20));
+
+			al_draw_text(elem->title, al_color_name("white"), SCREEN_W / 2, SCREEN_H / 6, 1, "GAME OVER");
+			draw_buttons(botones, al_color_name("white"));
+
+			al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 40, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
+			al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 30, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
+
+			al_draw_text(elem->highscore_news, al_color_name("yellow"), SCREEN_W / 2 - 10, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, "New #");
+			al_draw_text(elem->highscore_news, al_color_name("yellow"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, buffer2);
+
+			al_set_target_bitmap(elem->bitmap);
+
+			// Dibujar un rectángulo con transparencia
+			al_clear_to_color(al_map_rgba(66, 67, 62, 230));
+
+			al_set_target_backbuffer(elem->display);
+
+
+			// Dibujar el bitmap en el display
+			al_draw_bitmap(elem->bitmap, SCREEN_W / 4, SCREEN_H / 4, 0);
+			al_draw_rectangle(SCREEN_W / 4, SCREEN_H / 4, SCREEN_W / 4 + SCREEN_W / 2, SCREEN_H / 4 + SCREEN_H / 2, al_map_rgb(255, 255, 255), 4);
+			al_draw_text(elem->pause_menu, al_map_rgb(190, 171, 30), SCREEN_W / 2, SCREEN_H * 0.30, ALLEGRO_ALIGN_CENTRE, "HIGHSCORE");
+
+			al_draw_text(elem->buttons, al_map_rgb(190, 171, 30), SCREEN_W / 2, SCREEN_H * 0.30 + 70, ALLEGRO_ALIGN_CENTRE, "Escribe tu nombre: ");
+
+			al_get_next_event(elem->event_queue, &ev);
+
+			//analizamos si se cerró la ventana
+			if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+			{
+				waiting = false;
+				*state = CLOSE_DISPLAY;
+			}
+
+			if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+			{
+				char key = ev.keyboard.keycode;
+
+				if (c < CHARACTERS)
+				{
+					if (key >= ALLEGRO_KEY_A && key <= ALLEGRO_KEY_Z)
+					{
+						name[c++] = key - ALLEGRO_KEY_A + 'A';
+					}
+					else if (key >= ALLEGRO_KEY_0 && key <= ALLEGRO_KEY_9)
+					{
+						name[c++] = key - ALLEGRO_KEY_0 + '0';
+					}
+					else if (key == ALLEGRO_KEY_DELETE || key == ALLEGRO_KEY_BACKSPACE)
+					{
+						name[--c] = ' ';
+					}
+				}
+
+				else if (key == ALLEGRO_KEY_DELETE || key == ALLEGRO_KEY_BACKSPACE)
+				{
+					name[--c] = ' ';
+				}
+				else if (key == ALLEGRO_KEY_ENTER)
+				{
+					waiting = false;
+				}
+			}
+
+			al_draw_text(elem->buttons, al_map_rgb(190, 171, 30), SCREEN_W / 2, SCREEN_H * 0.30 + 170, ALLEGRO_ALIGN_CENTRE, name);
+
+			al_flip_display();
+		}
+
+		set_highscore(highScore, puntaje, name);
+	}
+
+	al_clear_to_color(al_map_rgb(20, 20, 20));
+	draw_buttons(botones, al_color_name("white"));
+	al_draw_text(elem->title, al_color_name("white"), SCREEN_W / 2, SCREEN_H / 6, 1, "GAME OVER");
+	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 40, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
+	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 30, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
+	if (position < NUMBER_OF_PLAYERS)
+	{
+		al_draw_text(elem->highscore_news, al_color_name("yellow"), SCREEN_W / 2 - 10, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, "New #");
+		al_draw_text(elem->highscore_news, al_color_name("yellow"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, buffer2);
+	}
 	al_flip_display();
 
 	//esperamos a alguna selección
-	ALLEGRO_EVENT ev;
 	bool waitingForUpdate = true;
 	bool draw = false;
 

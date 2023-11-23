@@ -32,6 +32,7 @@ typedef struct
     ALLEGRO_FONT *font_in_game;
     ALLEGRO_FONT *game_over;
     ALLEGRO_FONT *pause_menu;
+    ALLEGRO_FONT *highscore_news;
 
     ALLEGRO_SAMPLE *sample_menu;
     ALLEGRO_SAMPLE *sample_game;
