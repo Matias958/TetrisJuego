@@ -33,7 +33,7 @@ enum bordes { NADA_B = BORDE + 1, PIEZA_I_B, PIEZA_J_B, PIEZA_L_B, PIEZA_O_B, PI
 enum game_over_options { JUGAR, PUNTAJE };
 enum pause_options { RESUME, QUIT };
 
-static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[]);
+static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[]);
 static void init_board_colors(ALLEGRO_COLOR square_colors[]);
 static void init_board_border_colors(ALLEGRO_COLOR square_colors[]);
 static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[]);
@@ -49,7 +49,7 @@ static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playin
  *
  */
 
-static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[])
+static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[])
 {
 	int i;
 	int j;
@@ -63,6 +63,21 @@ static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squa
 			al_draw_filled_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, square_colors[board[i][j]]);
 
 			al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, square_border_colors[board[i][j]], 2);
+		}
+	}
+
+	//dibujamos la predicción de la caida de la pieza
+	for (i = 0; i < BOARD_LENGHT; i++)
+	{
+		for (j = 0; j < BOARD_WIDTH; j++)
+		{
+			float x1 = BOARD_START_X + j * SQUARE_SIZE;
+			float y1 = BOARD_START_Y + i * SQUARE_SIZE;
+
+			if (prediction_board[i][j] != NADA && prediction_board[i][j] != board[i][j])
+			{
+				al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, square_border_colors[prediction_board[i][j]], 3);
+			}
 		}
 	}
 
@@ -168,6 +183,7 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 
 	char matris[BOARD_LENGHT][BOARD_WIDTH];
 	char matris_auxiliar[BOARD_LENGHT][BOARD_WIDTH];
+	char matris_prediccion[BOARD_LENGHT][BOARD_WIDTH];
 
 	char filas_tetris[BOARD_LENGHT];
 
@@ -195,6 +211,7 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 
 	inicializarTiempo();
 	bloque_t pieza = Crear_Pieza();
+	bloque_t pieza_prediccion = pieza;
 
 	ALLEGRO_EVENT ev;
 	bool playing = true;
@@ -267,12 +284,23 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 				for (j = 0; j < BOARD_WIDTH; j++)
 				{
 					matris_auxiliar[i][j] = matris[i][j];
+					matris_prediccion[i][j] = matris[i][j];
 				}
 			}
 
+			//veamos donde caeria la pieza
+			pieza_prediccion = pieza;
+			bool flag_bajar = Bajar_Pieza(&pieza_prediccion, matris_prediccion);
+			while (flag_bajar)
+			{
+				flag_bajar = Bajar_Pieza(&pieza_prediccion, matris_prediccion);
+			}
+			Estacionar(&pieza_prediccion, matris_prediccion);
+
+
 			Estacionar(&pieza, matris_auxiliar); // estacionamos la pieza que se esta moviendo para visualizarla
 
-			draw_board(matris_auxiliar, square_colors, square_border_colors);
+			draw_board(matris_auxiliar, matris_prediccion, square_colors, square_border_colors);
 			puntaje += borrarFila(matris, filas_tetris, &tetris);
 
 			if (tetris)
@@ -338,8 +366,9 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 	char buffer2[4];
 	_itoa_s(position, buffer2, 4, 10);
 
-	if (position < NUMBER_OF_PLAYERS)
+	if (position <= NUMBER_OF_PLAYERS)
 	{
+		al_play_sample(elem->effect_highscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 		char name[4] = "   ";
 		int c = 0;
 		bool waiting = true;
@@ -369,7 +398,7 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 			al_draw_rectangle(SCREEN_W / 4, SCREEN_H / 4, SCREEN_W / 4 + SCREEN_W / 2, SCREEN_H / 4 + SCREEN_H / 2, al_map_rgb(255, 255, 255), 4);
 			al_draw_text(elem->pause_menu, al_map_rgb(190, 171, 30), SCREEN_W / 2, SCREEN_H * 0.30, ALLEGRO_ALIGN_CENTRE, "HIGHSCORE");
 
-			al_draw_text(elem->buttons, al_map_rgb(190, 171, 30), SCREEN_W / 2, SCREEN_H * 0.30 + 70, ALLEGRO_ALIGN_CENTRE, "Escribe tu nombre: ");
+			al_draw_text(elem->buttons, al_map_rgb(190, 171, 30), SCREEN_W / 2, SCREEN_H * 0.30 + 70, ALLEGRO_ALIGN_CENTRE, "Please enter your name: ");
 
 			al_get_next_event(elem->event_queue, &ev);
 
@@ -410,11 +439,12 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 				}
 			}
 
-			al_draw_text(elem->buttons, al_map_rgb(190, 171, 30), SCREEN_W / 2, SCREEN_H * 0.30 + 170, ALLEGRO_ALIGN_CENTRE, name);
+			al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H * 0.30 + 170, ALLEGRO_ALIGN_CENTRE, name);
 
 			al_flip_display();
 		}
 
+		al_play_sample(elem->effect_highscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 		set_highscore(highScore, puntaje, name);
 	}
 
@@ -423,7 +453,7 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 	al_draw_text(elem->title, al_color_name("white"), SCREEN_W / 2, SCREEN_H / 6, 1, "GAME OVER");
 	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 40, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
 	al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 30, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
-	if (position < NUMBER_OF_PLAYERS)
+	if (position <= NUMBER_OF_PLAYERS)
 	{
 		al_draw_text(elem->highscore_news, al_color_name("yellow"), SCREEN_W / 2 - 10, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, "New #");
 		al_draw_text(elem->highscore_news, al_color_name("yellow"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, buffer2);
@@ -433,8 +463,9 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 	//esperamos a alguna selección
 	bool waitingForUpdate = true;
 	bool draw = false;
+	int veces = 0;
 
-	while (waitingForUpdate)
+	while (waitingForUpdate && *state != CLOSE_DISPLAY)
 	{
 		al_get_next_event(elem->event_queue, &ev);//pedimos el evento que venga
 
@@ -502,8 +533,15 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 			{
 				*state = HIGHSCORE;
 				al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				al_rest(0.6);
 				waitingForUpdate = false;
 			}
+		}
+
+		if (++veces % 1000)
+		{
+			draw = true;
+			veces = 0;
 		}
 
 		//redibujamos si es necesario
@@ -549,6 +587,8 @@ static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playin
 
 	button_t* botones[] = { &resume, &quit, NULL };
 	al_flip_display();
+
+	int veces = 0;
 	while (waitingForUpdate)
 	{
 
@@ -629,6 +669,11 @@ static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playin
 
 		}
 
+		if (++veces % 1000)
+		{
+			draw = true;
+			veces = 0;
+		}
 
 		//redibujamos si es necesario
 		if (draw)

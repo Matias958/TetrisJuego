@@ -153,6 +153,15 @@ int inicializa_al(element_t* elem)
         printf("No se cargo el audio del juego!\n");
         return EXIT_FAILURE;
     }
+
+    
+    elem->sample_highscore = al_load_sample("audio/highscore.wav"); //cargamos el audio para el menu de highscore
+
+    if (!elem->sample_highscore)
+    {
+        printf("No se cargo el audio de highscore!\n");
+        return EXIT_FAILURE;
+    }
     
     
     elem->effect_tetris = al_load_sample("audio/tetris.wav"); //cargamos el audio para el efector de tetris
@@ -212,17 +221,24 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
-    elem->effect_game_over = al_load_sample("audio/me_game_gameover.wav"); //cargamos el audio para el effect pause
+    elem->effect_game_over = al_load_sample("audio/me_game_gameover.wav"); 
     if (!elem->effect_game_over)
     {
         printf("No se cargo el audio del efecto: game over\n");
         return EXIT_FAILURE;
     }
 
-    elem->sample_game_over = al_load_sample("audio/game_over.wav"); //cargamos el audio para el effect pause
+    elem->sample_game_over = al_load_sample("audio/game_over.wav"); 
     if (!elem->sample_game_over)
     {
         printf("No se cargo el audio del audio de menu de game over\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->effect_highscore = al_load_sample("audio/se_game_perfect.wav"); 
+    if (!elem->effect_highscore)
+    {
+        printf("No se cargo el audio del audio de la obtencion de un highscore\n");
         return EXIT_FAILURE;
     }
 

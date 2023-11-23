@@ -43,6 +43,7 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
     bool waitingForUpdate = true;
     bool draw = true;
     bool mouseClick = false;
+    int veces = 0;
 
     while (waitingForUpdate)
     {
@@ -127,6 +128,12 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
                 }
 
             }
+        }
+
+        if (++veces % 1000)
+        {
+            draw = true;
+            veces = 0;
         }
                 
         //redibujamos si es necesario

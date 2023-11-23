@@ -49,7 +49,8 @@ void p_menu(element_t * elem, window_state_t *state)
     ALLEGRO_EVENT ev;
     bool waitingForUpdate = true;
     bool draw = false;
-            
+    int veces = 0;
+       
     while(waitingForUpdate)
     {
         al_get_next_event(elem->event_queue, &ev);//pedimos el evento que venga
@@ -114,8 +115,15 @@ void p_menu(element_t * elem, window_state_t *state)
             {
                 *state = HIGHSCORE;
                 al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                al_rest(0.4);
                 waitingForUpdate = false;
             } 
+        }
+
+        if (++veces % 1000)
+        {
+            draw = true;
+            veces = 0;
         }
         
         //redibujamos si es necesario

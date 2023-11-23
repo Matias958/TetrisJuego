@@ -54,7 +54,7 @@ bool get_highscore(highscore_t* highscore)
 int is_highscore(int score, highscore_t *highscore)
 {
 	int i; 
-	for (i = 0; i < NUMBER_OF_PLAYERS && highscore->highscores[i] > score; i++);
+	for (i = 0; i <= NUMBER_OF_PLAYERS && highscore->highscores[i] >= score; i++);
 
 	return i + 1;
 }
@@ -63,8 +63,7 @@ bool set_highscore(highscore_t* highscore, int score, char name[CHARACTERS])
 {
 	//buscamos la posición que le corresponde
 	int pos;
-	for (pos = 0; highscore->highscores[pos] >= score; pos++);
-
+	for (pos = 0; highscore->highscores[pos] > score; pos++);
 
 	int tempHighScore = highscore->highscores[pos];
 	char tempHighScoreName[CHARACTERS];

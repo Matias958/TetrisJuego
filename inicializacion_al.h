@@ -36,7 +36,8 @@ typedef struct
 
     ALLEGRO_SAMPLE *sample_menu;
     ALLEGRO_SAMPLE *sample_game;
-    ALLEGRO_SAMPLE* sample_game_over;
+    ALLEGRO_SAMPLE *sample_game_over;
+    ALLEGRO_SAMPLE *sample_highscore;
 
     ALLEGRO_SAMPLE *effect_tetris;
     ALLEGRO_SAMPLE *effect_play;
@@ -47,6 +48,7 @@ typedef struct
     ALLEGRO_SAMPLE *effect_landing;
     ALLEGRO_SAMPLE *effect_pause;
     ALLEGRO_SAMPLE *effect_game_over;
+    ALLEGRO_SAMPLE *effect_highscore;
 }element_t;
 
 /************** PROTOTIPOS ***************/

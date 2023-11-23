@@ -1,16 +1,17 @@
 /*HEADERS*/
 
-/*ALLEGRO*/
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "inicializacion_al.h"
 #include "menu_al.h"
 #include "game_sel_al.h"
-
-/**/
-/*BIBLIOTECAS STANDARD*/
-#include <stdio.h>
-#include <stdlib.h>
+#include "highscore_al.h"
 #include "game_state_al.h"
 #include "highscore.h"
+
+
+
 
 int main(void)
 {
@@ -50,7 +51,8 @@ int main(void)
             play_game(&elem, game_mode, &estado, &highscore);
             break;
         case HIGHSCORE:
-            estado = CLOSE_DISPLAY;
+            p_highscore(&elem, &highscore, &estado);
+            break;
         }
     }
     return EXIT_SUCCESS;

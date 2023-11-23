@@ -156,7 +156,9 @@
     <Media Include="audio\se_game_landing.wav" />
     <Media Include="audio\se_game_move.wav" />
     <Media Include="audio\se_game_pause.wav" />
+    <Media Include="audio\se_game_perfect.wav" />
     <Media Include="audio\tetris.wav" />
+    <Media Include="audio\highscore.wav" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="fonts\AovelSansRounded-rdDL.ttf" />
@@ -172,6 +174,7 @@
     <ClCompile Include="game_al.c" />
     <ClCompile Include="game_sel_al.c" />
     <ClCompile Include="highscore.c" />
+    <ClCompile Include="highscore_al.c" />
     <ClCompile Include="inicializacion_al.c" />
     <ClCompile Include="juego.c" />
     <ClCompile Include="main.c" />
@@ -184,6 +187,7 @@
     <ClInclude Include="game_sel_al.h" />
     <ClInclude Include="game_state_al.h" />
     <ClInclude Include="highscore.h" />
+    <ClInclude Include="highscore_al.h" />
     <ClInclude Include="inicializacion_al.h" />
     <ClInclude Include="juego.h" />
     <ClInclude Include="menu_al.h" />

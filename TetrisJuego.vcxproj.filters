@@ -57,6 +57,9 @@
     <ClCompile Include="highscore.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="highscore_al.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="piezas.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="highscore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="highscore_al.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -128,6 +134,12 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="audio\tetris.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="audio\highscore.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="audio\se_game_perfect.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>
