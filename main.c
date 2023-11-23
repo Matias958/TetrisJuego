@@ -11,8 +11,6 @@
 #include "highscore.h"
 
 
-
-
 int main(void)
 {
     //ELEMENTOS DE ALLEGRO

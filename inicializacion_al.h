@@ -24,7 +24,9 @@ typedef struct
     ALLEGRO_DISPLAY *display;
     ALLEGRO_BITMAP* bitmap;
     ALLEGRO_EVENT_QUEUE *event_queue;
-    ALLEGRO_TIMER *timer;
+    ALLEGRO_TIMER *timer_on;
+    ALLEGRO_TIMER* timer_off;
+    
 
     ALLEGRO_FONT *title;
     ALLEGRO_FONT *buttons;

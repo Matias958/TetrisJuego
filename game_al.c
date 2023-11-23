@@ -184,6 +184,7 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 	char matris[BOARD_LENGHT][BOARD_WIDTH];
 	char matris_auxiliar[BOARD_LENGHT][BOARD_WIDTH];
 	char matris_prediccion[BOARD_LENGHT][BOARD_WIDTH];
+	char blinking_matrix[BOARD_LENGHT][BOARD_WIDTH];
 
 	char filas_tetris[BOARD_LENGHT];
 
@@ -194,10 +195,12 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 			if (i == 0 || i == 17 || j == 0 || j == 11)
 			{
 				matris[i][j] = BORDE;
+				blinking_matrix[i][j] = BORDE;
 			}
 			else
 			{
 				matris[i][j] = NADA;
+				blinking_matrix[i][j] = NADA;
 			}
 		}
 	}
@@ -214,56 +217,83 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 	bloque_t pieza_prediccion = pieza;
 
 	ALLEGRO_EVENT ev;
+	if (mode.blanking)
+	{
+		al_start_timer(elem->timer_on);
+	}
 	bool playing = true;
 	bool draw = true;
 	bool pause = false;
 	bool tetris = false;
-
-	button_t pause_botton = { "JUGAR", SCREEN_W / 2, SCREEN_H * 0.65, 130, 40, 20,
-							false, al_map_rgb(100, 110, 200), al_map_rgb(100, 0, 200),
-							elem->buttons };
+	bool off = false;
 
 	while (playing)
 	{
-		al_get_next_event(elem->event_queue, &ev); // pedimos el evento que venga
-
-		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+		if (al_get_next_event(elem->event_queue, &ev)) // pedimos el evento que venga
 		{
-			switch (ev.keyboard.keycode)
+
+			if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 			{
-			case GIRAR_AL:
-				playing = !jugarTetris('w', &pieza, matris, &puntaje);
-				al_play_sample(elem->effect_rotate, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-				break;
-			case BAJAR_AL:
-				playing = !jugarTetris('s', &pieza, matris, &puntaje);
-				al_play_sample(elem->effect_move, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-				break;
-			case DERECHA_AL:
-				playing = !jugarTetris('d', &pieza, matris, &puntaje);
-				al_play_sample(elem->effect_move, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-				break;
-			case IZQUIERDA_AL:
-				playing = !jugarTetris('a', &pieza, matris, &puntaje);
-				al_play_sample(elem->effect_move, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-				break;
-			case BAJAR_TODO:
-				playing = !jugarTetris(' ', &pieza, matris, &puntaje);
-				al_play_sample(elem->effect_landing, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-				break;
-			case PAUSE:
-				al_stop_sample(elem->effect_pause);
-				draw_pause_menu(state, elem, &playing);
-				al_clear_to_color(al_map_rgb(20, 20, 20));
-				al_flip_display();
-				break;
+				switch (ev.keyboard.keycode)
+				{
+				case GIRAR_AL:
+					playing = !jugarTetris('w', &pieza, matris, &puntaje, mode);
+					al_play_sample(elem->effect_rotate, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					break;
+				case BAJAR_AL:
+					playing = !jugarTetris('s', &pieza, matris, &puntaje, mode);
+					al_play_sample(elem->effect_move, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					break;
+				case DERECHA_AL:
+					playing = !jugarTetris('d', &pieza, matris, &puntaje, mode);
+					al_play_sample(elem->effect_move, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					break;
+				case IZQUIERDA_AL:
+					playing = !jugarTetris('a', &pieza, matris, &puntaje, mode);
+					al_play_sample(elem->effect_move, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					break;
+				case BAJAR_TODO:
+					playing = !jugarTetris(' ', &pieza, matris, &puntaje, mode);
+					al_play_sample(elem->effect_landing, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					break;
+				case PAUSE:
+					draw_pause_menu(state, elem, &playing);
+					al_clear_to_color(al_map_rgb(20, 20, 20));
+					al_flip_display();
+					break;
+				}
+
+				draw = true;
 			}
 
-			draw = true;
+			else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+			{
+				*state = CLOSE_DISPLAY;
+				playing = false;
+			}
+
+			if (mode.blanking && ev.type == ALLEGRO_EVENT_TIMER)
+			{
+				if (ev.timer.source == elem->timer_off)
+				{
+					off = false;
+					al_stop_timer(elem->timer_off);
+					al_start_timer(elem->timer_on);
+				}
+				else if (ev.timer.source == elem->timer_on)
+				{
+					off = true;
+					al_stop_timer(elem->timer_on);
+					al_start_timer(elem->timer_off);
+					draw_board(blinking_matrix, blinking_matrix, square_colors, square_border_colors);
+				}
+			}
 		}
-		if (playing)
+
+
+		if (playing && *state == GAME)
 		{
-			playing = !jugarTetris('\0', &pieza, matris, &puntaje); // actualizamos
+			playing = !jugarTetris('\0', &pieza, matris, &puntaje, mode); // actualizamos
 		}
 
 		veces++;
@@ -300,7 +330,11 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 
 			Estacionar(&pieza, matris_auxiliar); // estacionamos la pieza que se esta moviendo para visualizarla
 
-			draw_board(matris_auxiliar, matris_prediccion, square_colors, square_border_colors);
+			if (!off)
+			{
+				draw_board(matris_auxiliar, matris_prediccion, square_colors, square_border_colors);
+			}
+
 			puntaje += borrarFila(matris, filas_tetris, &tetris);
 
 			if (tetris)
@@ -315,11 +349,14 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 			draw = false;
 		}
 
-		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-		{
-			*state = CLOSE_DISPLAY;
-			playing = false;
-		}
+	}
+
+
+	if (mode.blanking)
+	{
+		al_stop_timer(elem->timer_on);
+		al_stop_timer(elem->timer_off);
+		draw_board(matris_auxiliar, matris_prediccion, square_colors, square_border_colors);
 	}
 
 	if (*state != CLOSE_DISPLAY)
@@ -423,7 +460,7 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 					{
 						name[c++] = key - ALLEGRO_KEY_0 + '0';
 					}
-					else if (key == ALLEGRO_KEY_DELETE || key == ALLEGRO_KEY_BACKSPACE)
+					else if (c > 0 && (key == ALLEGRO_KEY_DELETE || key == ALLEGRO_KEY_BACKSPACE))
 					{
 						name[--c] = ' ';
 					}

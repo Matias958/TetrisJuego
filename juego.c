@@ -1,3 +1,5 @@
+#include <stdbool.h>
+#include "juego.h"
 #include "reglas.h"
 
 /*JUGARTETRIS()
@@ -7,15 +9,15 @@
 * que se esta jugando; la matris de juego y un int con el puntaje actual.
 * Devuelve: Un bool indicando si pudo hacer el movimiento correctamente o no.
 */
-bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *puntaje)
+bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *puntaje, game_mode_t game_mode)
 {
     switch(movimiento)
     {
         case 'd':
-            Mover_Pieza ( pieza, DERECHA, matris);
+            Mover_Pieza ( pieza, game_mode.mirrored? IZQUIERDA : DERECHA, matris);
             break;
         case 'a':
-            Mover_Pieza ( pieza, IZQUIERDA, matris);
+            Mover_Pieza ( pieza, game_mode.mirrored ? DERECHA : IZQUIERDA, matris);
             break;
         case 's':
             bool flag_bajar = Bajar_Pieza(pieza, matris);

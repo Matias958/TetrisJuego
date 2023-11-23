@@ -1,10 +1,11 @@
 /*HEADERS*/
 #include <stdio.h>
 #include <stdlib.h>
-#include "inicializacion_al.h"
+#include "inicializacion_al.h"  
 
-/*TIEMPO DE PARPADEO*/
-#define FPS    5  
+
+#define FPS 10
+
 
 /*INICIALIZA_AL()
 * Función encargada de inicializar los elementos de allegro.
@@ -39,9 +40,17 @@ int inicializa_al(element_t* elem)
     
     
     /*INICIALIZACIÓN DE TIMER*/
-    elem->timer = al_create_timer(1.00/FPS);//crea el timer pero NO empieza a correr
+    elem->timer_on = al_create_timer(3.0);//crea el timer pero NO empieza a correr
     
-    if (!elem->timer) //verificamos que se haya creado el timer
+    if (!elem->timer_on) //verificamos que se haya creado el timer
+    {
+        fprintf(stderr, "Fallo al crear el timer!\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->timer_off = al_create_timer(1.0);//crea el timer pero NO empieza a correr
+
+    if (!elem->timer_off) //verificamos que se haya creado el timer
     {
         fprintf(stderr, "Fallo al crear el timer!\n");
         return EXIT_FAILURE;
@@ -258,17 +267,12 @@ int inicializa_al(element_t* elem)
     if (!elem->display)//si el display no se creo... 
     {
         fprintf(stderr, "Falla al crear el display!\n");
-        al_destroy_event_queue(elem->event_queue);
-        al_destroy_timer(elem->timer);
         return EXIT_FAILURE;
     }
 
     elem->bitmap = al_create_bitmap(SCREEN_W/2, SCREEN_H/2);
     if (!elem->bitmap) {
         fprintf(stderr, "Falla al crear el bitmap.\n");
-        al_destroy_event_queue(elem->event_queue);
-        al_destroy_timer(elem->timer);
-        al_destroy_display(elem->display);
         return EXIT_FAILURE;
     }
     
@@ -280,16 +284,14 @@ int inicializa_al(element_t* elem)
     if (!elem->event_queue) //si la cola de eventos no se creo... 
     {
         fprintf(stderr, "Falla al crear la cola de eventos!\n");
-        al_destroy_timer(elem->timer);
         return EXIT_FAILURE;
     }
     
     al_register_event_source(elem->event_queue, al_get_keyboard_event_source());
     al_register_event_source(elem->event_queue, al_get_display_event_source(elem->display));
-    al_register_event_source(elem->event_queue, al_get_timer_event_source(elem->timer));
+    al_register_event_source(elem->event_queue, al_get_timer_event_source(elem->timer_on));
+    al_register_event_source(elem->event_queue, al_get_timer_event_source(elem->timer_off));
     al_register_event_source(elem->event_queue, al_get_mouse_event_source());    
-
-    al_start_timer(elem->timer); //comienza el timer
 
     return EXIT_SUCCESS;
 }

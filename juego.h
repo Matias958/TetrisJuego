@@ -4,6 +4,7 @@
 /************** HEADERS ***************/
 
 #include "reglas.h"
+#include "game_state_al.h"
 
 /************** PROTOTIPOS ***************/
 
@@ -14,7 +15,7 @@
 * que se esta jugando; la matris de juego y un int con el puntaje actual.
 * Devuelve: Un bool indicando si pudo hacer el movimiento correctamente o no.
 */
-bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *puntaje);
+bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *puntaje, game_mode_t game_mode);
 
 
 void crearTablero (char matris[][12]);
