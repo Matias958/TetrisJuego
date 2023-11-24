@@ -169,8 +169,7 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 	al_stop_samples();
 	al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-	al_play_sample(elem->sample_game, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
-
+	al_play_sample_instance(elem->sample_game_reg);
 
 	// creamos e inicializamos un arreglo con los colores de las distintas piezas
 	ALLEGRO_COLOR square_colors[9];
@@ -229,6 +228,11 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 
 	while (playing)
 	{
+		if (!al_get_sample_instance_playing(elem->sample_game_reg))
+		{
+			al_play_sample_instance(elem->sample_game_reg);
+		}
+
 		if (al_get_next_event(elem->event_queue, &ev)) // pedimos el evento que venga
 		{
 
@@ -350,6 +354,8 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 		}
 
 	}
+
+	al_stop_sample_instance(elem->sample_game_reg);
 
 
 	if (mode.blanking)
@@ -595,6 +601,7 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playing)
 {
 	al_play_sample(elem->effect_pause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	al_set_sample_instance_gain(elem->sample_game_reg, 0.2);
 
 	ALLEGRO_EVENT ev;
 	bool waitingForUpdate = true;
@@ -628,6 +635,11 @@ static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playin
 	int veces = 0;
 	while (waitingForUpdate)
 	{
+		if (!al_get_sample_instance_playing(elem->sample_game_reg))
+		{
+			al_play_sample_instance(elem->sample_game_reg);
+			al_set_sample_instance_gain(elem->sample_game_reg, 0.2);
+		}
 
 		al_get_next_event(elem->event_queue, &ev);//pedimos el evento que venga
 
@@ -683,6 +695,7 @@ static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playin
 			{
 				al_play_sample(elem->effect_pause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 				al_rest(0.4);
+				al_set_sample_instance_gain(elem->sample_game_reg, 1.0);
 				waitingForUpdate = false;
 			}
 
@@ -702,6 +715,7 @@ static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playin
 		{
 			al_play_sample(elem->effect_pause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 			al_rest(0.4);
+			al_set_sample_instance_gain(elem->sample_game_reg, 1.0);
 			waitingForUpdate = false;
 
 		}

@@ -10,22 +10,22 @@ void p_highscore(element_t* elem, highscore_t* highscore, window_state_t *state)
 
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 
-	al_draw_filled_rectangle(SCREEN_W / 5, SCREEN_H / 7, 4 * SCREEN_W / 5, 5 * SCREEN_H / 7, al_map_rgb(124, 109, 20));
+	al_draw_filled_rectangle(SCREEN_W / 5, SCREEN_H / 7, 4 * SCREEN_W / 5, 5 * SCREEN_H / 7, al_map_rgb(120, 110, 40));
 	al_draw_rectangle(SCREEN_W / 5 + 10, SCREEN_H / 7 + 10, 4 * SCREEN_W / 5 - 10, 5 * SCREEN_H / 7 - 10, al_map_rgb(255, 255, 255), 5);
 
 
 	al_draw_text(elem->title, al_map_rgb(255, 255, 255), SCREEN_W / 2, 13, ALLEGRO_ALIGN_CENTRE, "HALL OF FAME");
 
-	al_draw_text(elem->highscore_news, al_map_rgb(190, 171, 30), SCREEN_W / 4 + 15, SCREEN_H / 3 - 50, ALLEGRO_ALIGN_CENTER, "POSITION");
-	al_draw_text(elem->highscore_news, al_map_rgb(190, 171, 30), SCREEN_W / 2, SCREEN_H / 3 - 50, ALLEGRO_ALIGN_CENTER, "NAME");
-	al_draw_text(elem->highscore_news, al_map_rgb(190, 171, 30), 3 * SCREEN_W / 4, SCREEN_H / 3 - 50, 2, "SCORE");
+	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), SCREEN_W / 4 + 20, SCREEN_H / 3 - 40, ALLEGRO_ALIGN_CENTER, "POSITION");
+	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), SCREEN_W / 2, SCREEN_H / 3 - 40, ALLEGRO_ALIGN_CENTER, "NAME");
+	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), 3 * SCREEN_W / 4, SCREEN_H / 3 - 40, 2, "SCORE");
 
 
 	int i;
 	for (i = 0; i < NUMBER_OF_PLAYERS; i++)
 	{
 		char position[3] = {'#', i + 1 + '0', '\0'};
-		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), SCREEN_W / 4 + 15, SCREEN_H / 3 + 50 * i, 1, position);
+		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), SCREEN_W / 4, SCREEN_H / 3 + 50 * i, 0, position);
 
 		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 3 + 50 * i, ALLEGRO_ALIGN_CENTER, highscore->nameOfHighscores[i]);
 

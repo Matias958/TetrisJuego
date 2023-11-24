@@ -197,6 +197,14 @@
   <ItemGroup>
     <Text Include="highscore.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="pictures\blinking.bmp" />
+    <Image Include="pictures\blinking_prs.bmp" />
+    <Image Include="pictures\mirrored.bmp" />
+    <Image Include="pictures\mirrored_prs.bmp" />
+    <Image Include="pictures\no_empty.bmp" />
+    <Image Include="pictures\no_empty_prs.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\AllegroDeps.1.13.0\build\native\AllegroDeps.targets" Condition="Exists('packages\AllegroDeps.1.13.0\build\native\AllegroDeps.targets')" />

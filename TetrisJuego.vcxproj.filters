@@ -146,4 +146,24 @@
   <ItemGroup>
     <Text Include="highscore.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="pictures\mirrored.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\no_empty.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\blinking.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\blinking_prs.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\mirrored_prs.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\no_empty_prs.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

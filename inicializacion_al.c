@@ -6,7 +6,6 @@
 
 #define FPS 10
 
-
 /*INICIALIZA_AL()
 * Función encargada de inicializar los elementos de allegro.
 * Recibe: Una estructura element_t con los elementos a inicializar.
@@ -40,7 +39,7 @@ int inicializa_al(element_t* elem)
     
     
     /*INICIALIZACIÓN DE TIMER*/
-    elem->timer_on = al_create_timer(3.0);//crea el timer pero NO empieza a correr
+    elem->timer_on = al_create_timer(2.0);//crea el timer pero NO empieza a correr
     
     if (!elem->timer_on) //verificamos que se haya creado el timer
     {
@@ -163,6 +162,13 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
+    elem->sample_game_reg = al_create_sample_instance(elem->sample_game);
+
+    if (!elem->sample_game_reg) {
+        fprintf(stderr, "Error al crear la instancia de sample regulable del juego.\n");
+        return EXIT_FAILURE;
+    }
+    al_attach_sample_instance_to_mixer(elem->sample_game_reg, al_get_default_mixer());
     
     elem->sample_highscore = al_load_sample("audio/highscore.wav"); //cargamos el audio para el menu de highscore
 
@@ -271,12 +277,61 @@ int inicializa_al(element_t* elem)
     }
 
     elem->bitmap = al_create_bitmap(SCREEN_W/2, SCREEN_H/2);
-    if (!elem->bitmap) {
+    if (!elem->bitmap) 
+    {
         fprintf(stderr, "Falla al crear el bitmap.\n");
         return EXIT_FAILURE;
     }
+
+    if (!al_init_image_addon()) 
+    {
+        fprintf(stderr, "Error al inicializar el sistema de imagenes de allegro.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->mirrored = al_load_bitmap("pictures/mirrored.bmp");
+    if (!elem->mirrored) 
+    {
+        fprintf(stderr, "Falla al crear el bitmap de mirrored.\n");
+        return EXIT_FAILURE;
+    }    
     
-    
+    elem->blinking = al_load_bitmap("pictures/blinking.bmp");
+    if (!elem->blinking)
+    {
+        fprintf(stderr, "Falla al crear el bitmap de blinking.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->no_empty = al_load_bitmap("pictures/no_empty.bmp");
+    if (!elem-> no_empty)
+    {
+        fprintf(stderr, "Falla al crear el bitmap de no_empty.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->mirrored_prs = al_load_bitmap("pictures/mirrored_prs.bmp");
+    if (!elem->mirrored)
+    {
+        fprintf(stderr, "Falla al crear el bitmap de mirrored.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->blinking_prs = al_load_bitmap("pictures/blinking_prs.bmp");
+    if (!elem->blinking)
+    {
+        fprintf(stderr, "Falla al crear el bitmap de blinking.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->no_empty_prs = al_load_bitmap("pictures/no_empty_prs.bmp");
+    if (!elem->no_empty)
+    {
+        fprintf(stderr, "Falla al crear el bitmap de no_empty.\n");
+        return EXIT_FAILURE;
+    }
+
+
     
     /*INICIALIZACION DE EVENTOS*/
     elem->event_queue = al_create_event_queue(); //creamos la cola de eventos
@@ -295,3 +350,4 @@ int inicializa_al(element_t* elem)
 
     return EXIT_SUCCESS;
 }
+
