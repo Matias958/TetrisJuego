@@ -3,35 +3,36 @@
 #include "botones.h"
 
 
-void p_highscore(element_t* elem, highscore_t* highscore, window_state_t *state) 
+void p_highscore(element_t* elem, highscore_t* highscore, window_state_t* state)
 {
-	al_stop_samples();
-	al_play_sample(elem->sample_highscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+    al_stop_samples();
+    al_play_sample(elem->sample_highscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
 
-	al_clear_to_color(al_map_rgb(20, 20, 20));
+    al_clear_to_color(al_map_rgb(20, 20, 20));
+    al_draw_bitmap(elem->highscore_backround, 0, 0, 0);
 
-	al_draw_filled_rectangle(SCREEN_W / 5, SCREEN_H / 7, 4 * SCREEN_W / 5, 5 * SCREEN_H / 7, al_map_rgb(120, 110, 40));
-	al_draw_rectangle(SCREEN_W / 5 + 10, SCREEN_H / 7 + 10, 4 * SCREEN_W / 5 - 10, 5 * SCREEN_H / 7 - 10, al_map_rgb(255, 255, 255), 5);
+    al_draw_filled_rectangle(SCREEN_W / 5, SCREEN_H / 3, 4 * SCREEN_W / 5, 11 * SCREEN_H / 14, al_map_rgb(120, 110, 40));
+    al_draw_rectangle(SCREEN_W / 5 + 10, SCREEN_H / 3 + 10, 4 * SCREEN_W / 5 - 10, 11 * SCREEN_H / 14 - 10, al_map_rgb(255, 255, 255), 5);
 
 
-	al_draw_text(elem->title, al_map_rgb(255, 255, 255), SCREEN_W / 2, 13, ALLEGRO_ALIGN_CENTRE, "HALL OF FAME");
+    al_draw_text(elem->title, al_map_rgb(255, 255, 255), SCREEN_W / 2, 0, ALLEGRO_ALIGN_CENTRE, "HALL OF FAME");
 
-	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), SCREEN_W / 4 + 20, SCREEN_H / 3 - 40, ALLEGRO_ALIGN_CENTER, "POSITION");
-	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), SCREEN_W / 2, SCREEN_H / 3 - 40, ALLEGRO_ALIGN_CENTER, "NAME");
-	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), 3 * SCREEN_W / 4, SCREEN_H / 3 - 40, 2, "SCORE");
+	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), SCREEN_W / 4 + 20, 5 * SCREEN_H / 12 - 40, ALLEGRO_ALIGN_CENTER, "POSITION");
+	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), SCREEN_W / 2, 5 * SCREEN_H / 12 - 40, ALLEGRO_ALIGN_CENTER, "NAME");
+	al_draw_text(elem->highscore_news, al_map_rgb(60, 50, 5), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 - 40, 2, "SCORE");
 
 
 	int i;
 	for (i = 0; i < NUMBER_OF_PLAYERS; i++)
 	{
 		char position[3] = {'#', i + 1 + '0', '\0'};
-		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), SCREEN_W / 4, SCREEN_H / 3 + 50 * i, 0, position);
+		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i, 0, position);
 
-		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 3 + 50 * i, ALLEGRO_ALIGN_CENTER, highscore->nameOfHighscores[i]);
+		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), SCREEN_W / 2,5 *  SCREEN_H / 12 + 50 * i, ALLEGRO_ALIGN_CENTER, highscore->nameOfHighscores[i]);
 
 		char score[10];
 		_itoa_s(highscore->highscores[i], score, 10, 10);
-		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), 3 * SCREEN_W / 4, SCREEN_H / 3 + 50 * i, 2, score);
+		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i, 2, score);
 	}
 
 	button_t play = { "PLAY",SCREEN_W / 2, SCREEN_H * 0.9, 100, 40, 20,

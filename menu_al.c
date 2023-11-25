@@ -18,16 +18,25 @@ void p_menu(element_t * elem, window_state_t *state)
     
     //brillo de fondo
     al_clear_to_color(al_map_rgb(20, 20, 20));
+    al_draw_bitmap(elem->menu_backround, 0, 0, 0);
     
     //título 
     char *title[] = {"T", "E", "T", "R", "I", "S"};
-    char *colors[] = {"red", "green", "orange", "violet", "blue", "yellow"};
+    ALLEGRO_COLOR colors[] = {al_map_rgb(250, 50, 50),
+                              al_map_rgb(0, 255, 127),
+                              al_map_rgb(250, 150, 50),
+                              al_map_rgb(255, 255, 0),
+                              al_map_rgb(0, 200, 245),
+                              al_map_rgb(200, 30, 200)
+                              };
+    //ALLEGRO_COLOR *colors[] = {"red", "green", "orange", "violet", "blue", "yellow"};
     int step[]={180, 290, 400, 520, 640, 700};
           
     int i;
     for(i=0; i<6;i++)
     {
-        al_draw_text(elem->title,al_color_name(colors[i]), CENTER_X+ step[i], CENTER_Y, 0, title[i]);
+        al_draw_text(elem->title_border, al_color_name("black"), CENTER_X + step[i], CENTER_Y, 0, title[i]);
+        al_draw_text(elem->title, colors[i], CENTER_X+ step[i], CENTER_Y, 0, title[i]);
     }
     
     //botones 

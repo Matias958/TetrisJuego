@@ -165,5 +165,14 @@
     <Image Include="pictures\no_empty_prs.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="pictures\menu.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\highscore.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\game.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

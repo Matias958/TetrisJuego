@@ -200,6 +200,9 @@
   <ItemGroup>
     <Image Include="pictures\blinking.bmp" />
     <Image Include="pictures\blinking_prs.bmp" />
+    <Image Include="pictures\game.bmp" />
+    <Image Include="pictures\highscore.bmp" />
+    <Image Include="pictures\menu.bmp" />
     <Image Include="pictures\mirrored.bmp" />
     <Image Include="pictures\mirrored_prs.bmp" />
     <Image Include="pictures\no_empty.bmp" />

@@ -16,6 +16,7 @@ enum game_modes {MIRRORED, BLANKING, NO_EMPTY, START};
 void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
 {
     al_clear_to_color(al_map_rgb(20, 20, 20));
+    al_draw_bitmap(elem->menu_backround, 0, 0, 0);
     
     //botones 
     button_t  mirrored = { "MIRRORED",SCREEN_W / 4, SCREEN_H * 0.4, 100, 200, 30,
@@ -155,7 +156,6 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
         //redibujamos si es necesario
         if(draw)
         {
-            al_clear_to_color(al_map_rgb(20, 20, 20));
             botones[BLANKING]->color_uprs = game_mode->blanking ? al_map_rgb(120, 0, 60) : al_map_rgb(150, 0, 190);
             botones[MIRRORED]->color_uprs = game_mode->mirrored ? al_map_rgb(120, 0, 60) : al_map_rgb(150, 0, 190);
             botones[NO_EMPTY]->color_uprs = game_mode->no_empty ? al_map_rgb(120, 0, 60) : al_map_rgb(150, 0, 190);

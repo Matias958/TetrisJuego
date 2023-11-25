@@ -72,6 +72,15 @@ int inicializa_al(element_t* elem)
         al_destroy_font(elem->title);
         return EXIT_FAILURE; 
     }
+
+    elem->title_border = al_load_ttf_font("fonts/Retronoid.ttf", 184, 0);
+
+    if (!elem->title_border)
+    {
+        fprintf(stderr, "Falla al crear la fuente del borde del título");
+        al_destroy_font(elem->title_border);
+        return EXIT_FAILURE;
+    }
     
     elem->buttons = al_load_ttf_font("fonts/game_over.ttf", 100,0);
     
@@ -81,6 +90,16 @@ int inicializa_al(element_t* elem)
         al_destroy_font(elem->buttons);
         return EXIT_FAILURE; 
     }
+
+    elem->buttons_border = al_load_ttf_font("fonts/game_over.ttf", 106, 0);
+
+    if (!elem->buttons_border)
+    {
+        fprintf(stderr, "Falla al crear la fuente de los botones");
+        al_destroy_font(elem->buttons_border);
+        return EXIT_FAILURE;
+    }
+
     
     elem->game_modes = al_load_ttf_font("fonts/Ice Mirror in Winter Kei.ttf", 20,0);
 
@@ -98,6 +117,15 @@ int inicializa_al(element_t* elem)
         fprintf(stderr, "Falla al crear la fuente de puntaje en juego");
         al_destroy_font(elem->font_in_game);
         return EXIT_FAILURE; 
+    }
+
+    elem->font_in_game_border = al_load_ttf_font("fonts/AovelSansRounded-rdDL.ttf", 24, 0);
+
+    if (!elem->font_in_game_border)
+    {
+        fprintf(stderr, "Falla al crear la fuente del borde del puntaje en juego");
+        al_destroy_font(elem->font_in_game_border);
+        return EXIT_FAILURE;
     }
 
     elem->game_over = al_load_ttf_font("fonts/game_over.ttf", 180, 0);
@@ -286,6 +314,27 @@ int inicializa_al(element_t* elem)
     if (!al_init_image_addon()) 
     {
         fprintf(stderr, "Error al inicializar el sistema de imagenes de allegro.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->menu_backround = al_load_bitmap("pictures/menu.bmp");
+    if (!elem->menu_backround)
+    {
+        fprintf(stderr, "Falla al crear el bitmap del fondo del menu.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->highscore_backround = al_load_bitmap("pictures/highscore.bmp");
+    if (!elem->highscore_backround)
+    {
+        fprintf(stderr, "Falla al crear el bitmap del fondo de highscore.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->game_backround = al_load_bitmap("pictures/game.bmp");
+    if (!elem->game_backround)
+    {
+        fprintf(stderr, "Falla al crear el bitmap del fondo del juego.\n");
         return EXIT_FAILURE;
     }
 
