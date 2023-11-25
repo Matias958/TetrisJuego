@@ -210,6 +210,7 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 	int veces = 0;
 
 	inicializarTiempo();
+	inicializarPieza();
 	bloque_t pieza = Crear_Pieza();
 	bloque_t pieza_prediccion = pieza;
 

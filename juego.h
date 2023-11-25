@@ -20,4 +20,8 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
 
 void crearTablero (char matris[][12]);
 
+void inicializarPieza(void);
+
+int getSigPieza(void);
+
 #endif // JUEGO_H

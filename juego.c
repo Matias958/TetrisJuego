@@ -2,6 +2,8 @@
 #include "juego.h"
 #include "reglas.h"
 
+bloque_t sig_pieza;
+
 /*JUGARTETRIS()
 * Función encargada de ir moviendo las piezas en base a los comandos enviados y llamar a las
 * funciones necesarias para que se ejecute correctamente el juego.
@@ -27,7 +29,8 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
                 char flag_estacionar = Estacionar (pieza, matris);
                 if (flag_estacionar == BIEN)
                 {
-                    *pieza = Crear_Pieza();
+                    *pieza = sig_pieza;
+                    sig_pieza = Crear_Pieza();
                 }
                 else
                 {
@@ -49,7 +52,8 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
             char flag_estacionar = Estacionar (pieza, matris);
             if (flag_estacionar == BIEN)
             {
-                *pieza = Crear_Pieza();
+                *pieza = sig_pieza;
+                sig_pieza = Crear_Pieza();
             }
             else
             {
@@ -69,7 +73,8 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
                 char flag_estacionar = Estacionar (pieza, matris);     //temporal en realidad habria que darle un tiempo
                 if (flag_estacionar == BIEN)
                 {
-                    *pieza = Crear_Pieza();
+                    *pieza = sig_pieza;
+                    sig_pieza = Crear_Pieza();
                 }
                 else 
                 {
@@ -125,4 +130,14 @@ void crearTablero (char matris[][12])
         Estacionar (&pieza, matris);
     }
 
+}
+
+void inicializarPieza(void)
+{
+    sig_pieza = Crear_Pieza();
+}
+
+int getSigPieza(void)
+{
+    return sig_pieza.tipo;
 }
