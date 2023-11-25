@@ -20,6 +20,12 @@
 #define PUNTAJE_VENTANA_X (BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE + 20)
 #define PUNTAJE_VENTANA_Y BOARD_START_Y
 
+
+#define SIZE_OF_GAME_MODE_WINDOW_X 100
+#define WINDOW_POS_MODE_X (BOARD_START_X - SIZE_OF_GAME_MODE_WINDOW_X)
+#define WINDOW_POS_MODE_Y BOARD_START_Y
+
+
 #define GIRAR_AL ALLEGRO_KEY_W
 #define DERECHA_AL ALLEGRO_KEY_D
 #define IZQUIERDA_AL ALLEGRO_KEY_A
@@ -36,7 +42,7 @@ enum pause_options { RESUME, QUIT };
 static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[]);
 static void init_board_colors(ALLEGRO_COLOR square_colors[]);
 static void init_board_border_colors(ALLEGRO_COLOR square_colors[]);
-static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[]);
+static void draw_active_modes(element_t *elem);
 static void mostrar_puntaje(element_t* elem, int puntaje);
 static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem);
 static void game_over(window_state_t* state, element_t* elem, int puntaje, highscore_t *highscore);
@@ -121,19 +127,11 @@ static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR 
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 }
 
-static void draw_next_piece(char piece, ALLEGRO_COLOR square_colors[]) // falta terminar
+static void draw_active_modes(element_t *elem) // falta terminar
 {
-	// int i;
-	// int j;
-
-	// for (i = 0; i < NEXT_PIECE_LENGHT; i++)
-	// {
-	//     for (j = 0; j < NEXT_PIECE_WIDTH; j++)
-	//     {
-	//         float x1 = NEXT_PIECE_POS_X + j * SQUARE_SIZE_WINDOWS;
-	//         float y1 = NEXT_PIECE_POS_Y + i * SQUARE_SIZE_WINDOWS;
-	//     }
-	// }
+	//al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), WINDOW_POS_MODE_X,  - 3 * TAMANO_DE_VENTANA_PUNTAJE_Y / 5, 1, "SCORE");
+	al_draw_filled_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(66, 67, 62));
+	al_draw_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(124, 121, 108), 6);
 }
 
 static void init_board_colors(ALLEGRO_COLOR square_colors[])
@@ -302,7 +300,7 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 
 		veces++;
 
-		if (veces % 1000 || tetris)
+		if (veces % 10000 || tetris)
 		{
 			veces = 0;
 			draw = true;

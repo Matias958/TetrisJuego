@@ -1,7 +1,11 @@
 
+#include <time.h>
+#include <stdio.h>
+#include <math.h>
 #include "reglas.h"
 
-static time_t tiempo_ini; // timer
+static long int numberOfCloksPrev;
+
 
 const char arreglo_piezas_0[7][4][4] = { // forma de las piezas
 	{{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
@@ -23,6 +27,7 @@ const int wall_kick_matrix_i[4][4][2] = { // saltos preestablecidos par solucion
 	{{-1, 0}, {2, 0}, {-1, 2}, {2, -1}},
 	{{2, 0}, {-1, 0}, {2, 1}, {-1, -2}},
 	{{1, 0}, {-2, 0}, {1, -2}, {-2, 1}}};
+
 
 /*BLOQUE_T()
  * Funcion encargada de crear y devolver la estructura de una pieza
@@ -291,7 +296,7 @@ int borrarFila(char tablero[18][12], char filas_tetris[18], bool *tetris)
  */
 void inicializarTiempo(void)
 {
-	tiempo_ini = time(NULL);
+	numberOfCloksPrev = clock();
 }
 
 /* TIEMPO_TRANSCURRIDO()
@@ -302,9 +307,11 @@ void inicializarTiempo(void)
 
 bool tiempo_transcurrido(double timestep)
 {
-	time_t tiempo_actual = time(NULL);
+	long int diffOfClocks = clock() - numberOfCloksPrev;
 
-	if (difftime(tiempo_actual, tiempo_ini) >= timestep)
+	float elapsedTime = ((float)diffOfClocks) / CLOCKS_PER_SEC;
+
+	if(elapsedTime >= timestep)
 	{
 		inicializarTiempo();
 		return true;

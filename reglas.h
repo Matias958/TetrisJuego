@@ -3,11 +3,9 @@
 
 /************** HEADERS ***************/
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "piezas.h"
-#include <time.h>
 
 /************** MACROS ***************/
 

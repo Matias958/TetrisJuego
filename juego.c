@@ -61,7 +61,7 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
             break;
     }
     
-    if(tiempo_transcurrido( 1.0 /(1.0 + *puntaje / 50)))
+    if(tiempo_transcurrido( 1.0 /(1.0 + (*puntaje / 500) ) ))
     {
         bool flag = Bajar_Pieza(pieza, matris);
         if (flag == false)
