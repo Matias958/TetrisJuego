@@ -13,7 +13,7 @@
 #define SQUARE_SIZE 35
 #define SQUARE_SIG_SIZE 35
 
-#define TAMANO_DE_VENTANA_PUNTAJE_X  6 * SQUARE_SIG_SIZE
+#define TAMANO_DE_VENTANA_PUNTAJE_X  (6 * SQUARE_SIG_SIZE)
 #define TAMANO_DE_VENTANA_PUNTAJE_Y 100
 #define PUNTAJE_VENTANA_X (BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE + 50)
 #define PUNTAJE_VENTANA_Y BOARD_START_Y
@@ -21,7 +21,10 @@
 #define SIZE_OF_NEXT_PIECE_WINDOW_X (TAMANO_DE_VENTANA_PUNTAJE_X)
 #define SIZE_OF_NEXT_PIECE_WINDOW_Y 200
 #define NEXT_PIECE_WINDOW_POS_X PUNTAJE_VENTANA_X
-#define NEXT_PIECE_WINDOW_POS_Y (PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y + 100) 
+#define NEXT_PIECE_WINDOW_POS_Y (PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y + 100)  
+
+#define ACTIVE_GAME_MODES_POS_X (BOARD_START_X - 150)
+#define ACTIVE_GAME_MODES_POS_Y (BOARD_START_Y + 2 * SQUARE_SIZE)
 
 #define SIZE_OF_GAME_MODE_WINDOW_X 100
 #define WINDOW_POS_MODE_X (BOARD_START_X - SIZE_OF_GAME_MODE_WINDOW_X)
@@ -58,9 +61,9 @@ static const int posPieza[7][4][2] = { { { SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.
 static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[]);
 static void init_board_colors(ALLEGRO_COLOR square_colors[]);
 static void init_board_border_colors(ALLEGRO_COLOR square_colors[]);
-static void draw_active_modes(element_t *elem);
+static void draw_active_modes(element_t *elem, game_mode_t game_modes);
 static void show_next_piece(ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[], element_t* elem);
-static void mostrar_puntaje(element_t* elem, int puntaje);
+static void mostrar_puntaje(element_t* elem, int puntaje, highscore_t *highscore);
 static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem);
 static void game_over(window_state_t* state, element_t* elem, int puntaje, highscore_t *highscore);
 static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playing);
@@ -106,17 +109,36 @@ static void draw_board(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_bo
 
 	al_flip_display();
 }
-static void mostrar_puntaje(element_t* elem, int puntaje)
+static void mostrar_puntaje(element_t* elem, int puntaje, highscore_t *highscore)
 {
 
-	al_draw_text(elem->buttons_border, al_map_rgb(66, 67, 62), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y - 3 * TAMANO_DE_VENTANA_PUNTAJE_Y / 5, ALLEGRO_ALIGN_CENTER, "SCORE");
-	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y - 3 * TAMANO_DE_VENTANA_PUNTAJE_Y / 5, ALLEGRO_ALIGN_CENTER, "SCORE");
+	al_draw_text(elem->buttons_border, al_map_rgb(66, 67, 62), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y - 3 * TAMANO_DE_VENTANA_PUNTAJE_Y / 5 - 10, ALLEGRO_ALIGN_CENTER, "SCORE");
+	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y - 3 * TAMANO_DE_VENTANA_PUNTAJE_Y / 5 - 10, ALLEGRO_ALIGN_CENTER, "SCORE");
 	al_draw_filled_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(66, 67, 62));
 	al_draw_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(124, 121, 108), 6);
 	char buffer[6];
 	_itoa_s(puntaje, buffer, 6, 10);
 	al_draw_text(elem->buttons_border, al_map_rgb(0, 0, 0), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y / 5, 1, buffer);
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y / 5, 1, buffer);
+	
+	static bool highscoreShowed = false;
+
+	int position = is_highscore(puntaje, highscore);
+	if (position <= NUMBER_OF_PLAYERS)
+	{
+		_itoa_s(position, buffer, 6, 10);
+		al_draw_text(elem->highscore_news, al_color_name("yellow"), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y, ALLEGRO_ALIGN_CENTER, "HIGH SCORE");
+		al_draw_text(elem->highscore_news, al_color_name("yellow"), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2 - 15, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y - 35, 0, "#");
+		al_draw_text(elem->highscore_news, al_color_name("yellow"), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2 + 7, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y - 35, 0, buffer);
+
+		if (!highscoreShowed)
+		{
+			al_stop_sample(elem->effect_tetris);
+			al_play_sample(elem->effect_highscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			highscoreShowed = true;
+		}
+	}
+
 	al_flip_display();
 }
 
@@ -169,11 +191,51 @@ static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR 
 	al_draw_bitmap(elem->game_backround, 0, 0, 0);
 }
 
-static void draw_active_modes(element_t *elem) // falta terminar
+static void draw_active_modes(element_t* elem, game_mode_t game_mode) // falta terminar
 {
-	//al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), WINDOW_POS_MODE_X,  - 3 * TAMANO_DE_VENTANA_PUNTAJE_Y / 5, 1, "SCORE");
-	al_draw_filled_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(66, 67, 62));
-	al_draw_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(124, 121, 108), 6);
+	bool game_modes_active[] = { game_mode.mirrored, game_mode.blanking, game_mode.no_empty };
+	ALLEGRO_BITMAP* pictures_logo[] = { elem->mirrored_logo, elem->blinking_logo, elem->no_empty_logo };
+
+	al_draw_rectangle(ACTIVE_GAME_MODES_POS_X - 75, ACTIVE_GAME_MODES_POS_Y - 70, ACTIVE_GAME_MODES_POS_X + 75, ACTIVE_GAME_MODES_POS_Y + 3 * 120, al_map_rgb(124, 121, 108), 6);
+
+	al_draw_text(elem->buttons_border, al_map_rgb(66, 67, 62), ACTIVE_GAME_MODES_POS_X, ACTIVE_GAME_MODES_POS_Y - 4 * SQUARE_SIZE, ALLEGRO_ALIGN_CENTER, "GAME MODE");
+	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), ACTIVE_GAME_MODES_POS_X, ACTIVE_GAME_MODES_POS_Y - 4 * SQUARE_SIZE, ALLEGRO_ALIGN_CENTER, "GAME MODE");
+
+	int i;
+	for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+	{
+		al_set_target_bitmap(elem->border_logo);
+
+		al_clear_to_color(game_modes_active[i] ? al_map_rgba(200, 0, 60, 200) : al_map_rgba(66, 67, 62, 200));
+
+		al_draw_rectangle(0, 0, 75, 75, game_modes_active[i] ? al_map_rgb(255, 255, 255) : al_map_rgb(124, 121, 108), game_modes_active[i] ? 5 : 4);
+
+		al_set_target_backbuffer(elem->display);
+
+		al_draw_rotated_bitmap(elem->border_logo, al_get_bitmap_width(elem->border_logo) / 2.0, al_get_bitmap_height(elem->border_logo) / 2.0,
+							   ACTIVE_GAME_MODES_POS_X, ACTIVE_GAME_MODES_POS_Y + i * 120, ALLEGRO_PI / 4, 0);
+
+
+		al_draw_bitmap(pictures_logo[i], ACTIVE_GAME_MODES_POS_X - 50, ACTIVE_GAME_MODES_POS_Y - (i == 2 ? 50 : 42) + i * 120, 0);
+	}
+
+	int numberOfStars = game_mode.difficulty;
+	for (i = 0; i < 3; i++)
+	{
+		if (i < numberOfStars)
+		{
+			al_draw_text(elem->difficulty_border, al_map_rgb(0, 0, 0), ACTIVE_GAME_MODES_POS_X - 40 + i * 40, ACTIVE_GAME_MODES_POS_Y + 2 * 120 + 60, ALLEGRO_ALIGN_CENTER, "a");
+			al_draw_text(elem->difficulty, al_map_rgb(200, 175, 0), ACTIVE_GAME_MODES_POS_X - 40 + i * 40, ACTIVE_GAME_MODES_POS_Y + 2 * 120 + 60, ALLEGRO_ALIGN_CENTER, "a");
+		}
+		else
+		{
+			al_draw_text(elem->difficulty_border, al_map_rgb(0, 0, 0), ACTIVE_GAME_MODES_POS_X - 40 + i * 40, ACTIVE_GAME_MODES_POS_Y + 2 * 120 + 60, ALLEGRO_ALIGN_CENTER, "a");
+			al_draw_text(elem->difficulty, al_map_rgb(100, 100, 100), ACTIVE_GAME_MODES_POS_X - 40 + i * 40, ACTIVE_GAME_MODES_POS_Y + 2 * 120 + 60, ALLEGRO_ALIGN_CENTER, "a");
+		}
+	}
+
+
+	al_flip_display();
 }
 
 static void init_board_colors(ALLEGRO_COLOR square_colors[])
@@ -398,8 +460,9 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 				tetris = false;
 			}
 
-			mostrar_puntaje(elem, puntaje);
+			mostrar_puntaje(elem, puntaje, highscore);
 			show_next_piece(square_colors, square_border_colors, elem);
+			draw_active_modes(elem, mode);
 
 			draw = false;
 		}

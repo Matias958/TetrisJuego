@@ -2,7 +2,6 @@
 #include "botones.h"
 
 #define LINES 4
-#define NUMBER_OF_GAME_MODES 3
 
 /*MODOS DE JUEGO A SELECCIONAR*/
 enum game_modes {MIRRORED, BLANKING, NO_EMPTY, START, DIFFICULTY};

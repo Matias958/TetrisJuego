@@ -2,6 +2,7 @@
 #define GAME_STATE_AL_H
 
 /*ESTADO DEL DISPLAY*/
+#define NUMBER_OF_GAME_MODES 3
 
 enum game_state {CLOSE_DISPLAY, MENU, GAME_SEL, HIGHSCORE, GAME};
 enum difficulty {EASY  = 1, MEDIUM, HARD};
