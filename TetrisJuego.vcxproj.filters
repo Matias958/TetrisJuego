@@ -28,6 +28,7 @@
     <Font Include="fonts\ShortBaby-Mg2w.ttf" />
     <Font Include="fonts\THE-GLITCH.ttf" />
     <Font Include="fonts\budmo jiggler.otf" />
+    <Font Include="fonts\whitrabt.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">

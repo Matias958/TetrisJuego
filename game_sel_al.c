@@ -1,11 +1,14 @@
 #include "game_sel_al.h"
 #include "botones.h"
 
-#define FRAMES 32
-#define FPS 60
+#define LINES 4
 
 /*MODOS DE JUEGO A SELECCIONAR*/
 enum game_modes {MIRRORED, BLANKING, NO_EMPTY, START};
+
+static const char* descriptions[][LINES] = { {"Swaps left and right", "buttons",""},
+                                       {"The pieces on the", "game disapear" , "momentainusly from" , "the board"},
+                                       {"The board is not", "empty at the", "beginning of the", "game"}};
 
 /*P_GAME_MODE()
 * Función encargada de crear y seleccionar el modo de juego elegido.
@@ -19,15 +22,15 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
     al_draw_bitmap(elem->menu_backround, 0, 0, 0);
     
     //botones 
-    button_t  mirrored = { "MIRRORED",SCREEN_W / 4, SCREEN_H * 0.4, 100, 200, 30,
+    button_t  mirrored = { "MIRRORED",SCREEN_W / 5, SCREEN_H * 0.4, 150, 200, 0,
                     false, al_map_rgb(192,0,100), al_map_rgb(150,0,80),
                     elem->game_modes };
 
-    button_t blanking = { "BLANKING" ,2 * SCREEN_W / 4, SCREEN_H * 0.4, 100, 200, 30,
+    button_t blanking = { "BLINKING" ,SCREEN_W / 2, SCREEN_H * 0.4, 150, 200, 0,
                     false,al_map_rgb(192,0,100), al_map_rgb(150,0,80),
                     elem->game_modes };
 
-    button_t no_empty = { "NO EMPTY" ,3 * SCREEN_W / 4, SCREEN_H * 0.4, 100, 200, 30,
+    button_t no_empty = { "NOT EMPTY" ,4 * SCREEN_W / 5, SCREEN_H * 0.4, 150, 200, 0,
                     false,al_map_rgb(192,0,100), al_map_rgb(150,0,80),
                     elem->game_modes };
 
@@ -124,12 +127,6 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
                         al_play_sample(elem->effect_cursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     }
                     botones[i]->press = true;// actualizamos el estado del botón
-
-                    if (i == MIRRORED || i == BLANKING || i == NO_EMPTY)
-                    {
-                        botones[i]->color_prs = states[i] ? al_map_rgb(192, 0, 100) : al_map_rgb(200, 10, 240);
-                    }
-
                 }
 
                 else if (botones[i]->press && (ev.mouse.x > botones[i]->x_center + botones[i]->width 
@@ -156,18 +153,36 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
         //redibujamos si es necesario
         if(draw)
         {
-            botones[BLANKING]->color_uprs = game_mode->blanking ? al_map_rgb(120, 0, 60) : al_map_rgb(150, 0, 190);
-            botones[MIRRORED]->color_uprs = game_mode->mirrored ? al_map_rgb(120, 0, 60) : al_map_rgb(150, 0, 190);
-            botones[NO_EMPTY]->color_uprs = game_mode->no_empty ? al_map_rgb(120, 0, 60) : al_map_rgb(150, 0, 190);
-
             draw_buttons(botones, al_color_name("white"));
 
             int i;
             for (i = 0; i < 3; i++)
             {
-                al_draw_bitmap(botones[i]->press? pictures_prs[i] : pictures[i], botones[i]->x_center - 46 , botones[i]->y_center - 60, ALLEGRO_ALIGN_CENTER);
-            }
+                al_draw_bitmap(states[i]? pictures_prs[i] : pictures[i], botones[i]->x_center - botones[i]->width + 2, botones[i]->y_center - 98, ALLEGRO_ALIGN_CENTER);
+                al_draw_rectangle(botones[i]->x_center - botones[i]->width, botones[i]->y_center + botones[i]->height,
+                    botones[i]->x_center + botones[i]->width, botones[i]->y_center - botones[i]->height,
+                    al_map_rgb(255, 255, 255), states[i] ? 6 : 4);
 
+                if (botones[i]->press)
+                {
+                    al_set_target_bitmap(elem->modes_desc);
+
+                    // Dibujar un rectángulo con transparencia
+                    al_clear_to_color(al_map_rgba(10, 10, 10, 70));
+
+                    al_set_target_backbuffer(elem->display);
+
+                    al_draw_bitmap(elem->modes_desc, botones[i]->x_center - botones[i]->width + 2, botones[i]->y_center - 98, 0);
+                    
+                    int j;
+                    for (j = 0; j < LINES; j++)
+                    {
+                        al_draw_text(elem->game_modes_description_border, al_map_rgb(10, 10, 10), botones[i]->x_center, botones[i]->y_center + j * 30, ALLEGRO_ALIGN_CENTER, descriptions[i][j]);
+                        al_draw_text(elem->game_modes_description, al_map_rgb(255, 255, 255), botones[i]->x_center, botones[i]->y_center + j * 30, ALLEGRO_ALIGN_CENTER, descriptions[i][j]);
+                    }
+
+                }
+            }
 
             al_flip_display(); //cargamos el buffer en el display
             draw = false; 

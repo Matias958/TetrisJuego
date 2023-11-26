@@ -101,13 +101,31 @@ int inicializa_al(element_t* elem)
     }
 
     
-    elem->game_modes = al_load_ttf_font("fonts/Ice Mirror in Winter Kei.ttf", 20,0);
+    elem->game_modes_description = al_load_ttf_font("fonts/whitrabt.ttf", 25,0);
 
-    if(!elem->title)
+    if(!elem->game_modes_description)
+    {
+        fprintf(stderr, "Falla al crear la fuente de la descripción de modo de juego");
+        al_destroy_font(elem->game_modes_description);
+        return EXIT_FAILURE; 
+    }
+
+    elem->game_modes_description_border = al_load_ttf_font("fonts/whitrabt.ttf", 25.75, 0);
+
+    if (!elem->game_modes_description_border)
+    {
+        fprintf(stderr, "Falla al crear la fuente del borde de la descripción de modo de juego");
+        al_destroy_font(elem->game_modes_description_border);
+        return EXIT_FAILURE;
+    }
+
+    elem->game_modes = al_load_ttf_font("fonts/Ice Mirror in Winter Kei.ttf", 30, 0);
+
+    if (!elem->game_modes)
     {
         fprintf(stderr, "Falla al crear la fuente de la selección de modo de juego");
-        al_destroy_font(elem->title);
-        return EXIT_FAILURE; 
+        al_destroy_font(elem->game_modes);
+        return EXIT_FAILURE;
     }
 
     elem->font_in_game = al_load_ttf_font("fonts/AovelSansRounded-rdDL.ttf", 22,0);
@@ -310,6 +328,14 @@ int inicializa_al(element_t* elem)
         fprintf(stderr, "Falla al crear el bitmap.\n");
         return EXIT_FAILURE;
     }
+
+    elem->modes_desc = al_create_bitmap(300, 300);
+    if (!elem->modes_desc)
+    {
+        fprintf(stderr, "Falla al crear el bitmap de descripción de modo de juego.\n");
+        return EXIT_FAILURE;
+    }
+
 
     if (!al_init_image_addon()) 
     {

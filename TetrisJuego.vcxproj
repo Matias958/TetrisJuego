@@ -168,6 +168,7 @@
     <Font Include="fonts\Retronoid.ttf" />
     <Font Include="fonts\ShortBaby-Mg2w.ttf" />
     <Font Include="fonts\THE-GLITCH.ttf" />
+    <Font Include="fonts\whitrabt.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="botones.c" />

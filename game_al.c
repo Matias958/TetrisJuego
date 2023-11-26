@@ -134,7 +134,7 @@ static void show_next_piece(ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_
 	{
 		al_draw_filled_rectangle(posPieza[sig_pieza-1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[sig_pieza - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y, posPieza[sig_pieza - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE , posPieza[sig_pieza - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, square_colors[sig_pieza]);
 
-		al_draw_rectangle(posPieza[sig_pieza - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[sig_pieza - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y, posPieza[sig_pieza - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[sig_pieza - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, square_colors[sig_pieza], 2);
+		al_draw_rectangle(posPieza[sig_pieza - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[sig_pieza - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y, posPieza[sig_pieza - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[sig_pieza - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, square_border_colors[sig_pieza], 2);
 	}
 	
 	al_flip_display();
@@ -164,7 +164,7 @@ static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR 
 				BOARD_START_Y + filas_tetris[i] * SQUARE_SIZE - SQUARE_SIZE + SQUARE_SIZE / 4, 0, "+100");
 		}
 		al_flip_display();
-		al_rest(0.200);
+		al_rest(0.100);
 	}
 	al_draw_bitmap(elem->game_backround, 0, 0, 0);
 }
@@ -388,6 +388,10 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 			{
 				al_play_sample(elem->effect_tetris, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 				es_tetris_animación(filas_tetris, square_colors, elem);
+				if (!off)
+				{
+					draw_board(matris_auxiliar, matris_prediccion, square_colors, square_border_colors);
+				}
 				tetris = false;
 			}
 

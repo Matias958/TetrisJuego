@@ -25,6 +25,7 @@ typedef struct
     ALLEGRO_DISPLAY* display;
 
     ALLEGRO_BITMAP *bitmap;
+    ALLEGRO_BITMAP *modes_desc;
     ALLEGRO_BITMAP *menu_backround;
     ALLEGRO_BITMAP *highscore_backround;
     ALLEGRO_BITMAP *game_backround;
@@ -48,6 +49,8 @@ typedef struct
     ALLEGRO_FONT *buttons;
     ALLEGRO_FONT *buttons_border;
     ALLEGRO_FONT *game_modes;
+    ALLEGRO_FONT *game_modes_description;
+    ALLEGRO_FONT *game_modes_description_border;
     ALLEGRO_FONT *font_in_game;
     ALLEGRO_FONT *font_in_game_border;
     ALLEGRO_FONT *game_over;
