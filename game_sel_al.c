@@ -2,9 +2,10 @@
 #include "botones.h"
 
 #define LINES 4
+#define NUMBER_OF_GAME_MODES 3
 
 /*MODOS DE JUEGO A SELECCIONAR*/
-enum game_modes {MIRRORED, BLANKING, NO_EMPTY, START};
+enum game_modes {MIRRORED, BLANKING, NO_EMPTY, START, DIFFICULTY};
 
 static const char* descriptions[][LINES] = { {"Swaps left and right", "buttons",""},
                                        {"The pieces on the", "game disapear" , "momentainusly from" , "the board"},
@@ -23,26 +24,31 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
     
     //botones 
     button_t  mirrored = { "MIRRORED",SCREEN_W / 5, SCREEN_H * 0.4, 150, 200, 0,
-                    false, al_map_rgb(192,0,100), al_map_rgb(150,0,80),
+                    false, al_map_rgb(20, 20, 20), al_map_rgb(0, 0, 0),
                     elem->game_modes };
 
     button_t blanking = { "BLINKING" ,SCREEN_W / 2, SCREEN_H * 0.4, 150, 200, 0,
-                    false,al_map_rgb(192,0,100), al_map_rgb(150,0,80),
+                    false,al_map_rgb(20, 20, 20), al_map_rgb(0,0,0),
                     elem->game_modes };
 
     button_t no_empty = { "NOT EMPTY" ,4 * SCREEN_W / 5, SCREEN_H * 0.4, 150, 200, 0,
-                    false,al_map_rgb(192,0,100), al_map_rgb(150,0,80),
+                    false,al_map_rgb(20, 20, 20), al_map_rgb(0,0,0),
                     elem->game_modes };
 
     button_t start = { "START",SCREEN_W / 2, SCREEN_H * 0.8, 100, 40, 20,
                     false, al_map_rgb(100,110,200), al_map_rgb(100,0,200),
                     elem->buttons };
 
+    button_t difficulty = { "",SCREEN_W / 2, SCREEN_H * 0.925, 75, 30, 30,
+                    false, al_map_rgb(0, 115, 190), al_map_rgb(0, 75, 205),
+                    elem->buttons };
 
-    button_t* botones[] = { &mirrored, &blanking, &no_empty,&start,NULL };
+
+    button_t* botones[] = { &mirrored, &blanking, &no_empty, &start, &difficulty, NULL };
 
     ALLEGRO_BITMAP* pictures[] = { elem->mirrored, elem->blinking, elem->no_empty};
     ALLEGRO_BITMAP* pictures_prs[] = { elem->mirrored_prs, elem->blinking_prs, elem->no_empty_prs };
+    ALLEGRO_BITMAP* pictures_logo[] = { elem->mirrored_logo, elem->blinking_logo, elem->no_empty_logo};
 
     bool states[] = { game_mode->mirrored, game_mode->blanking, game_mode->no_empty};
 
@@ -103,6 +109,20 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
                 *state = GAME;
                 waitingForUpdate = false;
             }
+            else if (botones[DIFFICULTY]->press && !mouseClick)
+            {
+                if (game_mode->difficulty < HARD)
+                {
+                    game_mode->difficulty++;
+                }
+                else
+                {
+                    game_mode->difficulty = EASY;
+                }
+                al_stop_sample(elem->effect_select);
+                al_play_sample(elem->effect_select, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                draw = true;
+            }
             mouseClick = true;
 
         }
@@ -153,10 +173,16 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
         //redibujamos si es necesario
         if(draw)
         {
+            int i;
+            for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+            {
+                botones[i]->color_uprs = states[i] ? al_map_rgb(215, 25, 70) : al_map_rgb(0, 0, 0);
+                botones[i]->color_prs = states[i]? al_map_rgb(195, 45, 75) : al_map_rgb(20, 20, 20);
+            }
+
             draw_buttons(botones, al_color_name("white"));
 
-            int i;
-            for (i = 0; i < 3; i++)
+            for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
             {
                 al_draw_bitmap(states[i]? pictures_prs[i] : pictures[i], botones[i]->x_center - botones[i]->width + 2, botones[i]->y_center - 98, ALLEGRO_ALIGN_CENTER);
                 al_draw_rectangle(botones[i]->x_center - botones[i]->width, botones[i]->y_center + botones[i]->height,
@@ -181,6 +207,44 @@ void p_game_mode(element_t* elem, window_state_t* state, game_mode_t* game_mode)
                         al_draw_text(elem->game_modes_description, al_map_rgb(255, 255, 255), botones[i]->x_center, botones[i]->y_center + j * 30, ALLEGRO_ALIGN_CENTER, descriptions[i][j]);
                     }
 
+                }
+            }
+
+            for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+            {
+                al_set_target_bitmap(elem->border_logo);
+                
+                if (botones[i]->press)
+                {
+                    al_clear_to_color(states[i] ? al_map_rgb(210, 70, 100) : al_map_rgb(66, 67, 62));
+                }
+                else
+                {
+                    al_clear_to_color(states[i] ? al_map_rgb(210, 70, 100) : al_map_rgb(66, 67, 62));
+                }
+                al_draw_rectangle(0, 0, 75, 75, al_map_rgb(255, 255, 255), states[i]? 5 : 4);
+
+                al_set_target_backbuffer(elem->display);
+
+                al_draw_rotated_bitmap(elem->border_logo, al_get_bitmap_width(elem->border_logo) / 2.0, al_get_bitmap_height(elem->border_logo) / 2.0,
+                                    botones[i]->x_center, botones[i]->y_center - botones[i]->height, ALLEGRO_PI / 4, 0);
+
+
+                al_draw_bitmap(pictures_logo[i], botones[i]->x_center - 50, botones[i]->y_center - botones[i]->height - ((i == NO_EMPTY)? 50 : 42) , 0);
+            }
+
+            int numberOfStars = game_mode->difficulty;
+            for (i = 0; i < 3; i++)
+            {
+                if (i < numberOfStars)
+                {
+                    al_draw_text(elem->difficulty_border, al_map_rgb(0, 0, 0), botones[DIFFICULTY]->x_center - 40 + i * 40, botones[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                    al_draw_text(elem->difficulty, al_map_rgb(200, 175, 0), botones[DIFFICULTY]->x_center - 40 + i * 40, botones[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                }
+                else
+                {
+                    al_draw_text(elem->difficulty_border, al_map_rgb(0, 0, 0), botones[DIFFICULTY]->x_center - 40 + i * 40, botones[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                    al_draw_text(elem->difficulty, al_map_rgb(100, 100, 100), botones[DIFFICULTY]->x_center - 40 + i * 40, botones[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
                 }
             }
 

@@ -29,6 +29,7 @@
     <Font Include="fonts\THE-GLITCH.ttf" />
     <Font Include="fonts\budmo jiggler.otf" />
     <Font Include="fonts\whitrabt.ttf" />
+    <Font Include="fonts\Starborn.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -173,6 +174,15 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="pictures\game.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\mirrored_logo.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\blinking_logo.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pictures\not_empty_logo.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

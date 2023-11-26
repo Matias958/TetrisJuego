@@ -206,8 +206,11 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 {
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 	al_draw_bitmap(elem->game_backround, 0, 0, 0);
+
 	al_stop_samples();
+
 	al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	al_set_sample_instance_gain(elem->sample_game_reg, 1);
 	al_play_sample_instance(elem->sample_game_reg);
 
 	// creamos e inicializamos un arreglo con los colores de las distintas piezas

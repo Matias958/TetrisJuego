@@ -4,7 +4,7 @@
 /*ESTADO DEL DISPLAY*/
 
 enum game_state {CLOSE_DISPLAY, MENU, GAME_SEL, HIGHSCORE, GAME};
-enum difficulty {EASY, MEDIUM, HARD};
+enum difficulty {EASY  = 1, MEDIUM, HARD};
 
 /************** ESTRUCTURAS ***************/
 

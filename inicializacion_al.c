@@ -128,6 +128,23 @@ int inicializa_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
+    elem->difficulty = al_load_ttf_font("fonts/Starborn.ttf", 30, 0);
+
+    if (!elem->difficulty)
+    {
+        fprintf(stderr, "Falla al crear la fuente de la dificultad");
+        al_destroy_font(elem->difficulty);
+        return EXIT_FAILURE;
+    }
+    elem->difficulty_border = al_load_ttf_font("fonts/Starborn.ttf", 35, 0);
+
+    if (!elem->difficulty_border)
+    {
+        fprintf(stderr, "Falla al crear la fuente del borde de la dificultad");
+        al_destroy_font(elem->difficulty_border);
+        return EXIT_FAILURE;
+    }
+
     elem->font_in_game = al_load_ttf_font("fonts/AovelSansRounded-rdDL.ttf", 22,0);
 
     if(!elem->font_in_game)
@@ -403,6 +420,34 @@ int inicializa_al(element_t* elem)
     if (!elem->no_empty)
     {
         fprintf(stderr, "Falla al crear el bitmap de no_empty.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->no_empty_logo = al_load_bitmap("pictures/not_empty_logo.bmp");
+    if (!elem->no_empty_logo)
+    {
+        fprintf(stderr, "Falla al crear el bitmap del logo de no_empty.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->blinking_logo = al_load_bitmap("pictures/blinking_logo.bmp");
+    if (!elem->blinking_logo)
+    {
+        fprintf(stderr, "Falla al crear el bitmap del logo de blinking.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->mirrored_logo = al_load_bitmap("pictures/mirrored_logo.bmp");
+    if (!elem->mirrored_logo)
+    {
+        fprintf(stderr, "Falla al crear el bitmap del logo de mirrored.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->border_logo = al_create_bitmap(75, 75);
+    if (!elem->border_logo)
+    {
+        fprintf(stderr, "Falla al crear el bitmap del borde de los logos.\n");
         return EXIT_FAILURE;
     }
 

@@ -167,6 +167,7 @@
     <Font Include="fonts\Ice Mirror in Winter Kei.ttf" />
     <Font Include="fonts\Retronoid.ttf" />
     <Font Include="fonts\ShortBaby-Mg2w.ttf" />
+    <Font Include="fonts\Starborn.ttf" />
     <Font Include="fonts\THE-GLITCH.ttf" />
     <Font Include="fonts\whitrabt.ttf" />
   </ItemGroup>
@@ -200,12 +201,15 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="pictures\blinking.bmp" />
+    <Image Include="pictures\blinking_logo.bmp" />
     <Image Include="pictures\blinking_prs.bmp" />
     <Image Include="pictures\game.bmp" />
     <Image Include="pictures\highscore.bmp" />
     <Image Include="pictures\menu.bmp" />
     <Image Include="pictures\mirrored.bmp" />
+    <Image Include="pictures\mirrored_logo.bmp" />
     <Image Include="pictures\mirrored_prs.bmp" />
+    <Image Include="pictures\not_empty_logo.bmp" />
     <Image Include="pictures\no_empty.bmp" />
     <Image Include="pictures\no_empty_prs.bmp" />
   </ItemGroup>
