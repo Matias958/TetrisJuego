@@ -19,6 +19,7 @@
     <None Include="README.md">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="fonts\AovelSansRounded-rdDL.ttf" />
@@ -35,10 +36,10 @@
     <ClCompile Include="main.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="reglas.c">
+    <ClCompile Include="rules.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="botones.c">
+    <ClCompile Include="buttons_al.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="game_al.c">
@@ -47,13 +48,13 @@
     <ClCompile Include="game_sel_al.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="inicializacion_al.c">
+    <ClCompile Include="element_al.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="menu_al.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="juego.c">
+    <ClCompile Include="game.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="highscore.c">
@@ -64,13 +65,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="piezas.h">
+    <ClInclude Include="pieces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="reglas.h">
+    <ClInclude Include="rules.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="botones.h">
+    <ClInclude Include="buttons_al.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game_al.h">
@@ -79,16 +80,16 @@
     <ClInclude Include="game_sel_al.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inicializacion_al.h">
+    <ClInclude Include="element_al.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="menu_al.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="juego.h">
+    <ClInclude Include="game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game_state_al.h">
+    <ClInclude Include="game_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="highscore.h">

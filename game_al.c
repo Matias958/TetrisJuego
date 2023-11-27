@@ -1,7 +1,8 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "game_al.h"
-#include "botones.h"
-#include "juego.h"
+#include "buttons_al.h"
+#include "game.h"
 
 
 #define BOARD_WIDTH 12
@@ -64,7 +65,7 @@ static void init_board_border_colors(ALLEGRO_COLOR square_colors[]);
 static void draw_active_modes(element_t *elem, game_mode_t game_modes);
 static void show_next_piece(ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_border_colors[], element_t* elem);
 static void mostrar_puntaje(element_t* elem, int puntaje, highscore_t *highscore);
-static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem);
+static void es_tetris_animacion(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem);
 static void game_over(window_state_t* state, element_t* elem, int puntaje, highscore_t *highscore);
 static void draw_pause_menu(window_state_t* state, element_t* elem, bool* playing);
 
@@ -117,7 +118,7 @@ static void mostrar_puntaje(element_t* elem, int puntaje, highscore_t *highscore
 	al_draw_filled_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(66, 67, 62));
 	al_draw_rectangle(PUNTAJE_VENTANA_X, PUNTAJE_VENTANA_Y, PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y, al_map_rgb(124, 121, 108), 6);
 	char buffer[6];
-	_itoa_s(puntaje, buffer, 6, 10);
+	snprintf(buffer, sizeof(buffer), "%d", puntaje);
 	al_draw_text(elem->buttons_border, al_map_rgb(0, 0, 0), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y / 5, 1, buffer);
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y / 5, 1, buffer);
 	
@@ -126,7 +127,7 @@ static void mostrar_puntaje(element_t* elem, int puntaje, highscore_t *highscore
 	int position = is_highscore(puntaje, highscore);
 	if (position <= NUMBER_OF_PLAYERS)
 	{
-		_itoa_s(position, buffer, 6, 10);
+		snprintf(buffer, sizeof(buffer), "%d", position);
 		al_draw_text(elem->highscore_news, al_color_name("yellow"), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2, PUNTAJE_VENTANA_Y, ALLEGRO_ALIGN_CENTER, "HIGH SCORE");
 		al_draw_text(elem->highscore_news, al_color_name("yellow"), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2 - 15, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y - 35, 0, "#");
 		al_draw_text(elem->highscore_news, al_color_name("yellow"), PUNTAJE_VENTANA_X + TAMANO_DE_VENTANA_PUNTAJE_X / 2 + 7, PUNTAJE_VENTANA_Y + TAMANO_DE_VENTANA_PUNTAJE_Y - 35, 0, buffer);
@@ -162,7 +163,7 @@ static void show_next_piece(ALLEGRO_COLOR square_colors[], ALLEGRO_COLOR square_
 	al_flip_display();
 }
 
-static void es_tetris_animación(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem)
+static void es_tetris_animacion(char filas_tetris[BOARD_LENGHT], ALLEGRO_COLOR square_colors[], element_t* elem)
 {
 	int i;
 	int times;
@@ -452,7 +453,7 @@ void play_game(element_t* elem, game_mode_t mode, window_state_t* state, highsco
 			if (tetris)
 			{
 				al_play_sample(elem->effect_tetris, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-				es_tetris_animación(filas_tetris, square_colors, elem);
+				es_tetris_animacion(filas_tetris, square_colors, elem);
 				if (!off)
 				{
 					draw_board(matris_auxiliar, matris_prediccion, square_colors, square_border_colors);
@@ -518,12 +519,12 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 
 	button_t* botones[] = { &play, &highscore, NULL };
 
-	char buffer[6];
-	_itoa_s(puntaje, buffer, 6, 10);
+	char buffer[15];
+	snprintf(buffer, sizeof(buffer), "%s%d", "SCORE: ", puntaje);
 
 	int position = is_highscore(puntaje, highScore);
 	char buffer2[4];
-	_itoa_s(position, buffer2, 4, 10);
+	snprintf(buffer2, sizeof(buffer2), "%d", position);
 
 	if (position <= NUMBER_OF_PLAYERS)
 	{
@@ -540,8 +541,8 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 			al_draw_text(elem->title, al_color_name("white"), SCREEN_W / 2, SCREEN_H / 6, 1, "GAME OVER");
 			draw_buttons(botones, al_color_name("white"));
 
-			al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 - 40, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
-			al_draw_text(elem->buttons, al_color_name("red"), SCREEN_W / 2 + 30, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
+			al_draw_text(elem->buttons_border, al_color_name("black"), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTER, buffer);
+			al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTER, buffer);
 
 			al_draw_text(elem->highscore_news, al_color_name("yellow"), SCREEN_W / 2 - 10, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, "New #");
 			al_draw_text(elem->highscore_news, al_color_name("yellow"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, buffer2);
@@ -618,11 +619,8 @@ static void game_over(window_state_t* state, element_t* elem, int puntaje, highs
 	al_draw_text(elem->title_border, al_color_name("black"), SCREEN_W / 2, SCREEN_H / 6, 1, "GAME OVER");
 	al_draw_text(elem->title, al_color_name("white"), SCREEN_W / 2, SCREEN_H / 6, 1, "GAME OVER");
 
-	al_draw_text(elem->buttons_border, al_color_name("black"), SCREEN_W / 2 - 40, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
-	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCREEN_W / 2 - 40, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTRE, "SCORE: ");
-
-	al_draw_text(elem->buttons_border, al_color_name("black"), SCREEN_W / 2 + 30, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
-	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCREEN_W / 2 + 30, SCREEN_H / 6 + SIZE_OF_TITLE, 0, buffer);
+	al_draw_text(elem->buttons_border, al_color_name("black"), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTER, buffer);
+	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTER, buffer);
 
 	if (position <= NUMBER_OF_PLAYERS)
 	{

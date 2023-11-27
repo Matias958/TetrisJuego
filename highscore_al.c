@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "highscore_al.h"
-#include "botones.h"
+#include "buttons_al.h"
 
 
 void p_highscore(element_t* elem, highscore_t* highscore, window_state_t* state)
@@ -31,7 +31,7 @@ void p_highscore(element_t* elem, highscore_t* highscore, window_state_t* state)
 		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), SCREEN_W / 2,5 *  SCREEN_H / 12 + 50 * i, ALLEGRO_ALIGN_CENTER, highscore->nameOfHighscores[i]);
 
 		char score[10];
-		_itoa_s(highscore->highscores[i], score, 10, 10);
+		snprintf(score, sizeof(score), "% d", highscore->highscores[i]);
 		al_draw_text(elem->highscore_news, al_map_rgb(255, 255, 255), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i, 2, score);
 	}
 

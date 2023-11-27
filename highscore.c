@@ -124,7 +124,7 @@ bool set_highscore(highscore_t* highscore, int score, char name[CHARACTERS])
 		}
 
 		char number[20];
-		_itoa(highscore->highscores[i], number, 10);
+		snprintf(number, sizeof(number), "%d",highscore->highscores[i]);
 
 		for (j = 0; number[j] != '\0'; j++)
 		{

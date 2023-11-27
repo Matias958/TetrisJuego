@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "inicializacion_al.h"
+#include "element_al.h"
 #include "menu_al.h"
 #include "game_sel_al.h"
 #include "highscore_al.h"
-#include "game_state_al.h"
+#include "game_state.h"
 #include "highscore.h"
 
 

@@ -1,6 +1,6 @@
 /*HEADERS*/
 #include "menu_al.h"
-#include "botones.h"
+#include "buttons_al.h"
 
 /*POSICÓN DEL TÍTULO EN LA PANTALLA*/
 #define CENTER_X (SCREEN_W * 0.10)

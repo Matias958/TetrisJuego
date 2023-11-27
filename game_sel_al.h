@@ -3,8 +3,8 @@
 #define GAME_SEL_AL_H
 
 /************** HEADERS ***************/
-#include "inicializacion_al.h"
-#include "game_state_al.h"
+#include "element_al.h"
+#include "game_state.h"
 
 /************** PROTOTIPOS ***************/
 

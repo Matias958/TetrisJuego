@@ -1,12 +1,12 @@
 #include "game_sel_al.h"
-#include "botones.h"
+#include "buttons_al.h"
 
 #define LINES 4
 
 /*MODOS DE JUEGO A SELECCIONAR*/
 enum game_modes {MIRRORED, BLANKING, NO_EMPTY, START, DIFFICULTY};
 
-static const char* descriptions[][LINES] = { {"Swaps left and right", "buttons",""},
+static const char* descriptions[][LINES] = { {"Swaps left and right", "buttons", "", ""},
                                        {"The pieces on the", "game disapear" , "momentainusly from" , "the board"},
                                        {"The board is not", "empty at the", "beginning of the", "game"}};
 
