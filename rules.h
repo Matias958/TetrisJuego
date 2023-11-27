@@ -63,7 +63,7 @@ bool Bajar_Pieza(bloque_t* pieza, char matris[][12]);
 
 /* ESTACIONAR()
  * Función encargada de guardar una pieza en su posición final
- * Recibe: bloque_t * con lapieza a "estacionar", char matris [][12]
+ * Recibe: bloque_t * con la pieza a "estacionar", char matris [][12]
  * tablero del juego actual
  * Devuelve: char que indica si se estaciono la pieza por fuera de la 
  * matris del juego
