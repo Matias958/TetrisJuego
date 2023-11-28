@@ -13,8 +13,8 @@ typedef struct
 
 }highscore_t;
 
-bool get_highscore(highscore_t *highscore);
-int is_highscore(int score, highscore_t *highscore);
-bool set_highscore(highscore_t* highscore, int score, char name[CHARACTERS]);
+bool getHighscore(highscore_t *highscore);
+int checkIfHighscore(int score, highscore_t *highscore);
+bool setHighscore(highscore_t* highscore, int score, char name[CHARACTERS]);
 
 #endif

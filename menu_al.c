@@ -14,11 +14,11 @@ enum menu_options {JUGAR, PUNTAJE}; //menu
 void p_menu(element_t * elem, window_state_t *state)
 {
     //música
-    al_play_sample(elem->sample_menu, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+    al_play_sample(elem->sampleMenu, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
     
     //brillo de fondo
     al_clear_to_color(al_map_rgb(20, 20, 20));
-    al_draw_bitmap(elem->menu_backround, 0, 0, 0);
+    al_draw_bitmap(elem->menuBackround, 0, 0, 0);
     
     //título 
     char *title[] = {"T", "E", "T", "R", "I", "S"};
@@ -35,7 +35,7 @@ void p_menu(element_t * elem, window_state_t *state)
     int i;
     for(i=0; i<6;i++)
     {
-        al_draw_text(elem->title_border, al_color_name("black"), CENTER_X + step[i], CENTER_Y, 0, title[i]);
+        al_draw_text(elem->titleBorder, al_color_name("black"), CENTER_X + step[i], CENTER_Y, 0, title[i]);
         al_draw_text(elem->title, colors[i], CENTER_X+ step[i], CENTER_Y, 0, title[i]);
     }
     
@@ -62,7 +62,7 @@ void p_menu(element_t * elem, window_state_t *state)
        
     while(waitingForUpdate)
     {
-        al_get_next_event(elem->event_queue, &ev);//pedimos el evento que venga
+        al_get_next_event(elem->eventQueue, &ev);//pedimos el evento que venga
         
         //analizamos si se cerró la ventana
         if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -86,7 +86,7 @@ void p_menu(element_t * elem, window_state_t *state)
                         draw = true;
                     }
                     botones[i]->press = true;// actualizamos el estado del botón
-                    al_play_sample(elem->effect_cursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                    al_play_sample(elem->effectCursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 }
 
                 else if (botones[i]->press && (ev.mouse.x > botones[i]->x_center + botones[i]->width 
@@ -113,7 +113,7 @@ void p_menu(element_t * elem, window_state_t *state)
                 && ev.mouse.y >= botones[JUGAR]->y_center - botones[JUGAR]->height)
             {
                 *state = GAME_SEL;
-                al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 waitingForUpdate = false;
             }
             
@@ -123,7 +123,7 @@ void p_menu(element_t * elem, window_state_t *state)
                 && ev.mouse.y >= botones[PUNTAJE]->y_center - botones[PUNTAJE]->height)
             {
                 *state = HIGHSCORE;
-                al_play_sample(elem->effect_play, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 al_rest(0.4);
                 waitingForUpdate = false;
             } 

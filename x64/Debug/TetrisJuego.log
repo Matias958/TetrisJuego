@@ -1,6 +1,2 @@
-﻿  game.c
-  game_al.c
-C:\Users\herra\OneDrive\Documentos\GitHub\TetrisJuego\game_al.c(137,23): warning C4133: 'función': tipos incompatibles, de 'ALLEGRO_SAMPLE *' a 'ALLEGRO_SAMPLE_ID *'
-  rules.c
-  Generando código...
+﻿  element_al.c
   TetrisJuego.vcxproj -> C:\Users\herra\OneDrive\Documentos\GitHub\TetrisJuego\x64\Debug\TetrisJuego.exe

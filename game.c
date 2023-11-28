@@ -2,7 +2,7 @@
 #include "game.h"
 #include "rules.h"
 
-bloque_t sig_pieza;
+piece_t nextPiece;
 
 /*JUGARTETRIS()
 * Función encargada de ir moviendo las piezas en base a los comandos enviados y llamar a las
@@ -11,27 +11,27 @@ bloque_t sig_pieza;
 * que se esta jugando; la matris de juego y un int con el puntaje actual.
 * Devuelve: Un bool indicando si pudo hacer el movimiento correctamente o no.
 */
-bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *puntaje, game_mode_t game_mode)
+bool playTetris (char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD], int *score, game_mode_t gameMode)
 {
-    bool flag_bajar = false;
-    switch(movimiento)
+    bool flagGoDown = false;
+    switch(movement)
     {
         case 'd':
-            Mover_Pieza ( pieza, game_mode.mirrored? IZQUIERDA : DERECHA, matris);
+            movePiece ( piece, gameMode.mirrored? LEFT : RIGHT, matrix);
             break;
         case 'a':
-            Mover_Pieza ( pieza, game_mode.mirrored ? DERECHA : IZQUIERDA, matris);
+            movePiece ( piece, gameMode.mirrored ? RIGHT : LEFT, matrix);
             break;
         case 's':
-            flag_bajar = Bajar_Pieza(pieza, matris);
+            flagGoDown = movePieceDown(piece, matrix);
             //inicializarTiempo();
-            if (flag_bajar == false)
+            if (flagGoDown == false)
             {
-                char flag_estacionar = Estacionar (pieza, matris);
-                if (flag_estacionar == BIEN)
+                char flag_estacionar = parkPiece (piece, matrix);
+                if (flag_estacionar == SUCCESS)
                 {
-                    *pieza = sig_pieza;
-                    sig_pieza = Crear_Pieza();
+                    *piece = nextPiece;
+                    nextPiece = createPiece();
                 }
                 else
                 {
@@ -41,20 +41,20 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
             break;
 
         case 'w': 
-            Girar_Pieza(pieza, matris);
+            turnPiece(piece, matrix);
             break;
 
         case ' ': //baja hasta chocar
-            flag_bajar = Bajar_Pieza(pieza, matris);
-            while(flag_bajar)
+            flagGoDown = movePieceDown(piece, matrix);
+            while(flagGoDown)
             {
-                flag_bajar = Bajar_Pieza(pieza, matris);
+                flagGoDown = movePieceDown(piece, matrix);
             }
-            char flag_estacionar = Estacionar (pieza, matris);
-            if (flag_estacionar == BIEN)
+            char flag_estacionar = parkPiece (piece, matrix);
+            if (flag_estacionar == SUCCESS)
             {
-                *pieza = sig_pieza;
-                sig_pieza = Crear_Pieza();
+                *piece = nextPiece;
+                nextPiece = createPiece();
             }
             else
             {
@@ -66,16 +66,16 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
             break;
     }
     
-    if(tiempo_transcurrido( 1.0 /(1.0 + game_mode.difficulty / 2.0 + (*puntaje / 500.0) ) ))
+    if(checkElapsedTime( 1.0 /(1.0 + gameMode.difficulty / 2.0 + (*score / 500.0) ) ))
     {
-        flag_bajar = Bajar_Pieza(pieza, matris);
-        if (flag_bajar == false)
+        flagGoDown = movePieceDown(piece, matrix);
+        if (flagGoDown == false)
         {
-                char flag_estacionar = Estacionar (pieza, matris);     //temporal en realidad habria que darle un tiempo
-                if (flag_estacionar == BIEN)
+                char flag_estacionar = parkPiece (piece, matrix);     //temporal en realidad habria que darle un tiempo
+                if (flag_estacionar == SUCCESS)
                 {
-                    *pieza = sig_pieza;
-                    sig_pieza = Crear_Pieza();
+                    *piece = nextPiece;
+                    nextPiece = createPiece();
                 }
                 else 
                 {
@@ -84,7 +84,7 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
         }
     }
     
-    if (choque(matris, pieza) == MAL)
+    if (collision(matrix, piece) == FAIL)
     {
         return true;
     }
@@ -93,52 +93,52 @@ bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *punt
 }
 
 
-void crearTablero (char matris[][12])
+void createBoardforNotEmpty (char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
 {
-    int i, cantidad = 5 + rand() % 4;
-    for(i = 0; i < cantidad; i++)
+    int i, numberOfPieces = 5 + rand() % 4;
+    for(i = 0; i < numberOfPieces; i++)
     {
-        bloque_t pieza = Crear_Pieza();
-        pieza.fila = LARGO_TABLERO-6;
+        piece_t piece = createPiece();
+        piece.line = HEIGHT_OF_BOARD - 6;
         while ( rand() % 7)
         {
-            int movimiento = rand() % 100;
+            int movement = rand() % 100;
 
-            if(!(movimiento % 7))
+            if(!(movement % 7))
             {
-                bool flag_bajar = Bajar_Pieza(&pieza, matris);
+                bool flag_bajar = movePieceDown(&piece, matrix);
                 if (flag_bajar == false)
                 {
                     break;
                 }
             }
 
-            if(!(movimiento % 5))
+            if(!(movement % 5))
             {
-                Girar_Pieza(&pieza, matris);
+                turnPiece(&piece, matrix);
             }
 
-            if(!(movimiento % 3))
+            if(!(movement % 3))
             {
-                Mover_Pieza ( &pieza, DERECHA, matris);
+                movePiece ( &piece, RIGHT, matrix);
             }
 
-            if(!(movimiento % 2))
+            if(!(movement % 2))
             {
-                Mover_Pieza ( &pieza, IZQUIERDA, matris);
+                movePiece ( &piece, LEFT, matrix);
             }
         }
-        Estacionar (&pieza, matris);
+        parkPiece (&piece, matrix);
     }
 
 }
 
-void inicializarPieza(void)
+void initPiece(void)
 {
-    sig_pieza = Crear_Pieza();
+    nextPiece = createPiece();
 }
 
-int getSigPieza(void)
+int getNextPiece(void)
 {
-    return sig_pieza.tipo;
+    return nextPiece.type;
 }

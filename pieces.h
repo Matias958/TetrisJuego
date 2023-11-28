@@ -3,18 +3,18 @@
 
 
 //Definición de las piezas y posibles valores del tablero
-enum piezas {NADA, PIEZA_I, PIEZA_J, PIEZA_L, PIEZA_O, PIEZA_S, PIEZA_T, PIEZA_Z, BORDE};
+enum piezas {EMPTY, PIECE_I, PIECE_J, PIECE_L, PIECE_O, PIECE_S, PIECE_T, PIECE_Z, BORDER};
 
-extern const char arreglo_piezas_0 [7][4][4];
+extern const char positionOfGeneration [7][4][4];
 
 // Estructura que define y edita la pieza movil                             
 typedef struct                  
 {
-    int tipo;
-    char matrix_pieza [4][4];
-    int columna;
-    int fila;
-    int rotacion;
-} bloque_t;
+    int type;
+    char matrixOfPiece [4][4];
+    int column;
+    int line;
+    int rotation;
+} piece_t;
 
 #endif 

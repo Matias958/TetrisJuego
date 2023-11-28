@@ -180,7 +180,7 @@
     <ClCompile Include="highscore_al.c" />
     <ClCompile Include="element_al.c" />
     <ClCompile Include="game.c" />
-    <ClCompile Include="main.c" />
+    <ClCompile Include="main_al.c" />
     <ClCompile Include="menu_al.c" />
     <ClCompile Include="rules.c" />
   </ItemGroup>

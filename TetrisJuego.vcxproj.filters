@@ -33,9 +33,6 @@
     <Font Include="fonts\Starborn.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="rules.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
@@ -61,6 +58,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="highscore_al.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main_al.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

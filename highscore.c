@@ -1,14 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 
 #include "highscore.h"
 
-#define _CRT_SECURE_NO_WARNINGS
-
-
-
-bool get_highscore(highscore_t* highscore)
+bool getHighscore(highscore_t* highscore)
 {
 
 	FILE* highscoreFile;
@@ -51,7 +46,7 @@ bool get_highscore(highscore_t* highscore)
 }
 
 
-int is_highscore(int score, highscore_t *highscore)
+int checkIfHighscore(int score, highscore_t *highscore)
 {
 	int i; 
 	for (i = 0; i <= NUMBER_OF_PLAYERS && highscore->highscores[i] >= score; i++);
@@ -59,9 +54,9 @@ int is_highscore(int score, highscore_t *highscore)
 	return i + 1;
 }
 
-bool set_highscore(highscore_t* highscore, int score, char name[CHARACTERS])
+bool setHighscore(highscore_t* highscore, int score, char name[CHARACTERS])
 {
-	//buscamos la posición que le corresponde
+	//buscamos la posiciï¿½n que le corresponde
 	int pos;
 	for (pos = 0; highscore->highscores[pos] > score; pos++);
 
@@ -75,7 +70,7 @@ bool set_highscore(highscore_t* highscore, int score, char name[CHARACTERS])
 		tempHighScoreName[i] = highscore->nameOfHighscores[pos][i];
 	}
 
-	//guardamos el nuevo highscore en su posición
+	//guardamos el nuevo highscore en su posiciï¿½n
 	highscore->highscores[pos] = score;
 	for (i = 0; i < CHARACTERS; i++)
 	{

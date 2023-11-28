@@ -7,7 +7,7 @@
 static long int numberOfCloksPrev;
 
 
-const char arreglo_piezas_0[7][4][4] = { // forma de las piezas
+const char positionOfGeneration[7][4][4] = { // forma de las piezas
 	{{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
 	{{0, 0, 0, 0}, {2, 2, 2, 0}, {0, 0, 2, 0}, {0, 0, 0, 0}},
 	{{0, 0, 0, 0}, {0, 3, 3, 3}, {0, 3, 0, 0}, {0, 0, 0, 0}},
@@ -16,13 +16,13 @@ const char arreglo_piezas_0[7][4][4] = { // forma de las piezas
 	{{0, 0, 0, 0}, {6, 6, 6, 0}, {0, 6, 0, 0}, {0, 0, 0, 0}},
 	{{0, 0, 0, 0}, {7, 7, 0, 0}, {0, 7, 7, 0}, {0, 0, 0, 0}}};
 
-const int wall_kick_matrix[4][4][2] = { // saltos preestablecidos para solucionar un choque
+const int wallKickMatrix[4][4][2] = { // saltos preestablecidos para solucionar un choque
 	{{-1, 0}, {-1, 1}, {0, -2}, {-1, -2}},
 	{{1, 0}, {1, -1}, {0, 2}, {1, 2}},
 	{{1, 0}, {1, 1}, {0, -2}, {1, -2}},
 	{{-1, 0}, {-1, -1}, {0, 2}, {-1, 2}}};
 
-const int wall_kick_matrix_i[4][4][2] = { // saltos preestablecidos par solucionar choque de la I
+const int wallKickMatrixToPieceI[4][4][2] = { // saltos preestablecidos par solucionar choque de la I
 	{{-2, 0}, {1, 0}, {-2, -1}, {1, 2}},
 	{{-1, 0}, {2, 0}, {-1, 2}, {2, -1}},
 	{{2, 0}, {-1, 0}, {2, 1}, {-1, -2}},
@@ -34,25 +34,25 @@ const int wall_kick_matrix_i[4][4][2] = { // saltos preestablecidos par solucion
  * Recibe: -
  * Devuelve: estructura bloque_t con la pieza creada
  */
-bloque_t Crear_Pieza(void)
+piece_t createPiece(void)
 {
-	int n_pieza = (rand() % 7) + 1; // escoge al azar que figura sera
-	bloque_t pieza;					// la crea
+	int numberOfPiece = (rand() % 7) + 1; // escoge al azar que figura sera
+	piece_t piece;					// la crea
 
-	pieza.tipo = n_pieza;		// le da su forma
+	piece.type = numberOfPiece;		// le da su forma
 	for (int i = 0; i < 4; i++) // copiamos la forma de la pieza que corresponda a la matris de la estructura
 	{
 		for (int j = 0; j < 4; j++)
 		{
 
-			pieza.matrix_pieza[i][j] = arreglo_piezas_0[n_pieza - 1][i][j];
+			piece.matrixOfPiece[i][j] = positionOfGeneration[numberOfPiece - 1][i][j];
 		}
 	}
 
-	pieza.rotacion = 0; // le decimos en que rotacion esta
-	pieza.columna = 4;	// la ubicamos en el espacio de la matris del juego
-	pieza.fila = 1;
-	return pieza;
+	piece.rotation = 0; // le decimos en que rotacion esta
+	piece.column = 4;	// la ubicamos en el espacio de la matris del juego
+	piece.line = 1;
+	return piece;
 }
 
 /*GIRAR_PIEZA()
@@ -61,33 +61,32 @@ bloque_t Crear_Pieza(void)
  * con tablero del juego.
  * Devuelve: -
  */
-void Girar_Pieza(bloque_t *pieza, char matris[][12]) // funcion para rotar una pieza
+void turnPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]) // funcion para rotar una pieza
 {
-	if (pieza->tipo == PIEZA_O) // caso especial del bloque
+	if (piece->type == PIECE_O) // caso especial del bloque
 	{
 		return;
 	}
 
-	bloque_t pieza_temp = *pieza; // creamos una estructura pieza temporal con la que trabajar
-	pieza_temp.rotacion++;		  // aumentamos en uno la rotacion
-	pieza_temp.rotacion %= 4;	  // si llega a 4 vuelve a 0
+	piece_t piece_temp = *piece; // creamos una estructura pieza temporal con la que trabajar
+	piece_temp.rotation++;		  // aumentamos en uno la rotacion
+	piece_temp.rotation %= 4;	  // si llega a 4 vuelve a 0
 
 	for (int i = 0; i < 4; i++) // rotamos la pieza temporal
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			pieza_temp.matrix_pieza[j][3 - i] = pieza->matrix_pieza[i][j]; // regla de rotacion
+			piece_temp.matrixOfPiece[j][3 - i] = piece->matrixOfPiece[i][j]; // regla de rotacion
 		}
 	}
-	printf("gira \n");						 // nos fijamos si existe algun conflicto tras la rotacion
-	if (choque(matris, &pieza_temp) == BIEN) // si no lo hay
+				 // nos fijamos si existe algun conflicto tras la rotacion
+	if (collision(matrix, &piece_temp) == SUCCESS) // si no lo hay
 	{
-		*pieza = pieza_temp; // copia la pieza temporal a la pieza del juego
+		*piece = piece_temp; // copia la pieza temporal a la pieza del juego
 	}
-	else if (wall_kick(&pieza_temp, matris) == BIEN) // si hay un error salta al wallkick
+	else if (wallKick(&piece_temp, matrix) == SUCCESS) // si hay un error salta al wallkick
 	{
-		printf("gira wall kick \n");
-		*pieza = pieza_temp; // si se soluciona copia la pieza temporal con el desplazamiento
+		*piece = piece_temp; // si se soluciona copia la pieza temporal con el desplazamiento
 	}						 // sino soluciona el wallkick la pieza no permite rotarla
 }
 
@@ -96,22 +95,21 @@ void Girar_Pieza(bloque_t *pieza, char matris[][12]) // funcion para rotar una p
  * Recibe: char matris[][12] con tablero del juego y bloque_t con la pieza
  * Devuelve: int que indica si hubo o no un choque
  */
-int choque(char matris[][12], bloque_t *pieza)
+int collision(char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD], piece_t *piece)
 {
-	int conflicto = BIEN;
+	int conflict = SUCCESS;
 	for (int i = 0; i < 4; i++) // recorre la matris de la pieza
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			if ((matris[pieza->fila + i][pieza->columna + j] != 0) && (pieza->matrix_pieza[i][j] > NADA)) // compara la matris del juego con la del la pieza
+			if ((matrix[piece->line + i][piece->column + j] != 0) && (piece->matrixOfPiece[i][j] > EMPTY)) // compara la matris del juego con la del la pieza
 			{
-				conflicto = MAL; // si existe una superposicion es un choque
-				printf("choca\n");
-				return conflicto;
+				conflict = FAIL; // si existe una superposicion es un choque
+				return conflict;
 			}
 		}
 	}
-	return conflicto;
+	return conflict;
 }
 
 /*MOVER_PIEZA()
@@ -120,15 +118,15 @@ int choque(char matris[][12], bloque_t *pieza)
  * char matris[][12] con el tablero de juego
  * Devuelve: -
  */
-void Mover_Pieza(bloque_t *pieza, int direccion, char matris[][12])
+void movePiece(piece_t *piece, int direction, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
 {
 
-	bloque_t pieza_temp = *pieza;						 // creamos una estructura pieza temporal con la que trabajar
-	pieza_temp.columna = pieza_temp.columna + direccion; // suma a la columna la direccion
+	piece_t piece_temp = *piece;						 // creamos una estructura pieza temporal con la que trabajar
+	piece_temp.column = piece_temp.column + direction; // suma a la column la direccion
 
-	if (choque(matris, &pieza_temp) == BIEN) // se fija si no hay un choque
+	if (collision(matrix, &piece_temp) == SUCCESS) // se fija si no hay un choque
 	{
-		*pieza = pieza_temp; // si se soluciona copia la pieza temporal con la direccion
+		*piece = piece_temp; // si se soluciona copia la pieza temporal con la direccion
 	}
 }
 
@@ -138,14 +136,14 @@ void Mover_Pieza(bloque_t *pieza, int direccion, char matris[][12])
  * tablero del juego
  * Devuelve: un flag en caso de no poder bajar, false es que no pudo realizar el movimiento
  */
-bool Bajar_Pieza(bloque_t *pieza, char matris[][12]) // REVISAR SI NO CONVIENE QUE AVISE EN EL CASO DE QUE NO PUEDA BAJAR MAS PARA INICIAR EL TIMER ANTES DE ESTACIONARLA <3 FACU
+bool movePieceDown(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]) // REVISAR SI NO CONVIENE QUE AVISE EN EL CASO DE QUE NO PUEDA BAJAR MAS PARA INICIAR EL TIMER ANTES DE ESTACIONARLA <3 FACU
 {
-	bloque_t pieza_temp = *pieza;		   // creamos una estructura pieza temporal con la que trabajar
-	pieza_temp.fila = pieza_temp.fila + 1; // suma a la fila la direccion
+	piece_t auxiliarPiece = *piece;		   // creamos una estructura pieza temporal con la que trabajar
+	auxiliarPiece.line = auxiliarPiece.line + 1; // suma a la line la direccion
 
-	if (choque(matris, &pieza_temp) == BIEN) // se fija si no hay un choque
+	if (collision(matrix, &auxiliarPiece) == SUCCESS) // se fija si no hay un choque
 	{
-		*pieza = pieza_temp; // si se soluciona copia la pieza temporal con la direccion
+		*piece = auxiliarPiece; // si se soluciona copia la pieza temporal con la direccion
 		return true;
 	}
 	return false;
@@ -157,25 +155,25 @@ bool Bajar_Pieza(bloque_t *pieza, char matris[][12]) // REVISAR SI NO CONVIENE Q
  * tablero del juego actual
  * Devuelve: si se estaciono la pieza por fuera de la matris del juego
  */
-char Estacionar(bloque_t *pieza, char matris[][12])
+char parkPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
 {
-	int conflicto = BIEN;
+	int conflict = SUCCESS;
 	for (int i = 0; i < 4; i++) // recorre la matris de la pieza
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			if (matris[pieza->fila + i][pieza->columna + j] == NADA) // se fija que no haya nada en el espacio en el que se estaciona
+			if (matrix[piece->line + i][piece->column + j] == EMPTY) // se fija que no haya EMPTY en el espacio en el que se estaciona
 			{
-				matris[pieza->fila + i][pieza->columna + j] = (pieza->matrix_pieza[i][j]); // pega la pieza en la matris del juego
+				matrix[piece->line + i][piece->column + j] = (piece->matrixOfPiece[i][j]); // pega la pieza en la matris del juego
 			}
-			else if (pieza->matrix_pieza[i][j] != NADA) // detecta cuando la pieza este superpuesta con un borde
+			else if (piece->matrixOfPiece[i][j] != EMPTY) // detecta cuando la pieza este superpuesta con un borde
 			{
-				conflicto = MAL; // termina el juego
-				return conflicto;
+				conflict = SUCCESS; // termina el juego
+				return conflict;
 			}
 		}
 	}
-	return conflicto;
+	return conflict;
 }
 
 /* WALL_KICK()
@@ -185,46 +183,45 @@ char Estacionar(bloque_t *pieza, char matris[][12])
  * tablero del juego actual
  * Devuelve: si logro solucionar el choque
  */
-int wall_kick(bloque_t *pieza, char matris[][12])
+int wallKick(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
 {
-	int conflicto = MAL; // inicializo variables
-	int rotacion = pieza->rotacion;
-	int prueba = 0;
+	int conflict = SUCCESS; // inicializo variables
+	int rotation = piece->rotation;
+	int test = 0;
 
-	if (pieza->tipo == PIEZA_I) // separo el caso especial de la pieza I
+	if (piece->type == PIECE_I) // separo el caso especial de la pieza I
 	{
-		while (prueba < 4) // corre hasta que se agoten las pruebas o el conflicto de BIEN
+		while (test < 4) // corre hasta que se agoten las pruebas o el conflicto de BIEN
 		{
-			pieza->fila += wall_kick_matrix_i[rotacion][prueba][0];	   // desplazamiento en x
-			pieza->columna += wall_kick_matrix_i[rotacion][prueba][1]; // desplazamiento en y
-			conflicto = choque(matris, pieza);						   // chequeo si se resolvio el choque
-			if (conflicto == BIEN)									   // si el choque ya se resolvio nos devuelve el desplazamiento y nos avisa
+			piece->line += wallKickMatrixToPieceI[rotation][test][0];	   // desplazamiento en x
+			piece->column += wallKickMatrixToPieceI[rotation][test][1]; // desplazamiento en y
+			conflict = collision(matrix, piece);						   // chequeo si se resolvio el choque
+			if (conflict == SUCCESS)									   // si el choque ya se resolvio nos devuelve el desplazamiento y nos avisa
 			{
-				return conflicto;
+				return conflict;
 			}
-			pieza->fila -= wall_kick_matrix_i[rotacion][prueba][0]; // quito desplazamientos
-			pieza->columna -= wall_kick_matrix_i[rotacion][prueba][1];
-			prueba++;
+			piece->line -= wallKickMatrixToPieceI[rotation][test][0]; // quito desplazamientos
+			piece->column -= wallKickMatrixToPieceI[rotation][test][1];
+			test++;
 		}
 	}
 	else
 	{
-		while (prueba < 4) // mismo que con el caso especial salvo el cambio de matris
+		while (test < 4) // mismo que con el caso especial salvo el cambio de matris
 		{
-			printf("entra al wall kick \n");
-			pieza->fila += wall_kick_matrix[rotacion][prueba][0];
-			pieza->columna += wall_kick_matrix[rotacion][prueba][1];
-			conflicto = choque(matris, pieza);
-			if (conflicto == BIEN)
+			piece->line += wallKickMatrix[rotation][test][0];
+			piece->column += wallKickMatrix[rotation][test][1];
+			conflict = collision(matrix, piece);
+			if (conflict == SUCCESS)
 			{
-				return conflicto;
+				return conflict;
 			}
-			pieza->fila -= wall_kick_matrix[rotacion][prueba][0];
-			pieza->columna -= wall_kick_matrix[rotacion][prueba][1];
-			prueba++;
+			piece->line -= wallKickMatrix[rotation][test][0];
+			piece->column -= wallKickMatrix[rotation][test][1];
+			test++;
 		}
 	}
-	return conflicto;
+	return conflict;
 }
 
 /* BORRARFILA()
@@ -233,37 +230,37 @@ int wall_kick(bloque_t *pieza, char matris[][12])
  * Devuelve: Puntaje que suma, dependiendo de la cantidad de filas
  * que se borraron (considerando el caso de "hacer TETRIS", eliminar 4 filas de un movimiento
  */
-int borrarFila(char tablero[18][12], char filas_tetris[18], bool *tetris)
+int deleteLine(char board[HEIGHT_OF_BOARD][WIDE_OF_BOARD], char ArrayOfLinesWithTetris[HEIGHT_OF_BOARD], bool *isTetris)
 {
-	int puntaje = 0;
-	int i, contador, filas_con_tetris;
+	int score = 0;
+	int i, counter, linesWithTetris;
 	int corrector = 0;
 
-	for (i = LARGO_TABLERO - 2, filas_con_tetris = 0; i >= 1; i--)
+	for (i = HEIGHT_OF_BOARD - 2, linesWithTetris = 0; i >= 1; i--)
 	{
-		contador = 0;
+		counter = 0;
 		int j;
 
-		for (j = 1; j < ANCHO_TABLERO - 1; j++)
+		for (j = 1; j < WIDE_OF_BOARD - 1; j++)
 		{
-			if (tablero[i][j] > 0)
+			if (board[i][j] > 0)
 			{
-				contador++;
+				counter++;
 			}
 		}
 
-		if (contador == 10)
+		if (counter == 10)
 		{
-			filas_tetris[filas_con_tetris++] = i - corrector++;
-			*tetris = true;
+			ArrayOfLinesWithTetris[linesWithTetris++] = i - corrector++;
+			*isTetris = true;
 
-			//borramos la fila completada
-			for (int m = 1; m < ANCHO_TABLERO - 1; m++)
+			//borramos la line completada
+			for (int m = 1; m < WIDE_OF_BOARD - 1; m++)
 			{
-				tablero[i][m] = NADA; 
+				board[i][m] = EMPTY; 
 			}
 
-			puntaje += 100;
+			score += 100;
 
 			//baja las filas superiores a la borrada
 			int k, g;
@@ -271,9 +268,9 @@ int borrarFila(char tablero[18][12], char filas_tetris[18], bool *tetris)
 			{
 				for ( g = 1; g < 11; g++)
 				{
-					if (tablero[k - 1][g] != BORDE)
+					if (board[k - 1][g] != BORDER)
 					{
-						tablero[k][g] = tablero[k - 1][g];
+						board[k][g] = board[k - 1][g];
 					}
 				}
 			}
@@ -283,8 +280,8 @@ int borrarFila(char tablero[18][12], char filas_tetris[18], bool *tetris)
 		}
 	}
 
-	filas_tetris[filas_con_tetris] = FINAL_DEL_ARREGLO;
-	return puntaje >= 400 ? puntaje * 2 : puntaje;
+	ArrayOfLinesWithTetris[linesWithTetris] = END_OF_ARRAY;
+	return score >= 400 ? score * 2 : score;
 }
 
 
@@ -294,7 +291,7 @@ int borrarFila(char tablero[18][12], char filas_tetris[18], bool *tetris)
  * Recibe: -
  * Devuelve: -
  */
-void inicializarTiempo(void)
+void initTime(void)
 {
 	numberOfCloksPrev = clock();
 }
@@ -305,7 +302,7 @@ void inicializarTiempo(void)
  * Devuelve: booleano que indica si pudo obtener el tiempo transcurrido
  */
 
-bool tiempo_transcurrido(double timestep)
+bool checkElapsedTime(double timestep)
 {
 	long int diffOfClocks = clock() - numberOfCloksPrev;
 
@@ -313,7 +310,7 @@ bool tiempo_transcurrido(double timestep)
 
 	if(elapsedTime >= timestep)
 	{
-		inicializarTiempo();
+		initTime();
 		return true;
 	}
 	else

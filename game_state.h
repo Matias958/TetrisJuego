@@ -14,7 +14,7 @@ typedef struct
     unsigned int difficulty;
     bool mirrored;
     bool blanking;
-    bool no_empty;
+    bool notEmpty;
 }game_mode_t;
 
 typedef char window_state_t;

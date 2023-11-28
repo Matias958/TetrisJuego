@@ -15,13 +15,13 @@
 * que se esta jugando; la matris de juego y un int con el puntaje actual.
 * Devuelve: Un bool indicando si pudo hacer el movimiento correctamente o no.
 */
-bool jugarTetris (char movimiento, bloque_t *pieza, char matris[][12], int *puntaje, game_mode_t game_mode);
+bool playTetris (char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD], int *score, game_mode_t gameMode);
 
 
-void crearTablero (char matris[][12]);
+void createBoardforNotEmpty (char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]);
 
-void inicializarPieza(void);
+void initPiece(void);
 
-int getSigPieza(void);
+int getNextPiece(void);
 
 #endif 
