@@ -3,10 +3,10 @@
 
 #include "highscore.h"
 
-bool getHighscore(highscore_t* highscore)
+bool getHighscore(highscore_t *highscore)
 {
 
-	FILE* highscoreFile;
+	FILE *highscoreFile;
 	highscoreFile = fopen("highscore.txt", "r");
 
 	if (highscoreFile == NULL)
@@ -22,7 +22,7 @@ bool getHighscore(highscore_t* highscore)
 	int i;
 	for (i = 0; i < NUMBER_OF_PLAYERS; i++, c++)
 	{
-		//NOMBRE DEL JUGADOR
+		// NOMBRE DEL JUGADOR
 		int j = 0;
 		for (j = 0; j < CHARACTERS; j++)
 		{
@@ -30,7 +30,7 @@ bool getHighscore(highscore_t* highscore)
 		}
 		highscore->nameOfHighscores[i][3] = '\0';
 
-		//PUNTAJE DEL JUGADOR
+		// PUNTAJE DEL JUGADOR
 		char number[20];
 		for (j = 0; buffer[c] != ','; j++)
 		{
@@ -45,39 +45,40 @@ bool getHighscore(highscore_t* highscore)
 	return true;
 }
 
-
 int checkIfHighscore(int score, highscore_t *highscore)
 {
-	int i; 
-	for (i = 0; i <= NUMBER_OF_PLAYERS && highscore->highscores[i] >= score; i++);
+	int i;
+	for (i = 0; i <= NUMBER_OF_PLAYERS && highscore->highscores[i] >= score; i++)
+		;
 
 	return i + 1;
 }
 
-bool setHighscore(highscore_t* highscore, int score, char name[CHARACTERS])
+bool setHighscore(highscore_t *highscore, int score, char name[CHARACTERS])
 {
-	//buscamos la posici�n que le corresponde
+	// buscamos la posici�n que le corresponde
 	int pos;
-	for (pos = 0; highscore->highscores[pos] > score; pos++);
+	for (pos = 0; highscore->highscores[pos] > score; pos++)
+		;
 
 	int tempHighScore = highscore->highscores[pos];
 	char tempHighScoreName[CHARACTERS];
 
-	//guardamos los datos de la que se encontraba alli
+	// guardamos los datos de la que se encontraba alli
 	int i;
 	for (i = 0; i < CHARACTERS; i++)
 	{
 		tempHighScoreName[i] = highscore->nameOfHighscores[pos][i];
 	}
 
-	//guardamos el nuevo highscore en su posici�n
+	// guardamos el nuevo highscore en su posici�n
 	highscore->highscores[pos] = score;
 	for (i = 0; i < CHARACTERS; i++)
 	{
 		highscore->nameOfHighscores[pos][i] = name[i];
 	}
-	
-	//movemos el resto
+
+	// movemos el resto
 	for (i = pos + 1; i < NUMBER_OF_PLAYERS; i++)
 	{
 		int j;
@@ -87,10 +88,10 @@ bool setHighscore(highscore_t* highscore, int score, char name[CHARACTERS])
 			highscore->nameOfHighscores[i][j] = tempHighScoreName[j];
 		}
 
-		//si quedan elementos por mover, guardamos el siguiente
+		// si quedan elementos por mover, guardamos el siguiente
 		if ((i + 1) < NUMBER_OF_PLAYERS)
 		{
-			
+
 			for (j = 0; j < CHARACTERS; j++)
 			{
 				tempHighScore = highscore->highscores[i + 1];
@@ -99,7 +100,7 @@ bool setHighscore(highscore_t* highscore, int score, char name[CHARACTERS])
 		}
 	}
 
-	FILE* highscoreFile;
+	FILE *highscoreFile;
 	highscoreFile = fopen("highscore.txt", "w");
 
 	if (highscoreFile == NULL)
@@ -119,22 +120,20 @@ bool setHighscore(highscore_t* highscore, int score, char name[CHARACTERS])
 		}
 
 		char number[20];
-		snprintf(number, sizeof(number), "%d",highscore->highscores[i]);
+		snprintf(number, sizeof(number), "%d", highscore->highscores[i]);
 
 		for (j = 0; number[j] != '\0'; j++)
 		{
 			buffer[c++] = number[j];
 		}
-		
-		buffer[c++] = ',';
 
+		buffer[c++] = ',';
 	}
 
 	buffer[c] = '\0';
-	
+
 	fprintf(highscoreFile, "%s", buffer);
 
 	fclose(highscoreFile);
 	return true;
-
 }

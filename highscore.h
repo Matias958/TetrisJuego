@@ -11,10 +11,10 @@ typedef struct
 	int highscores[NUMBER_OF_PLAYERS];
 	char nameOfHighscores[NUMBER_OF_PLAYERS][CHARACTERS + 1];
 
-}highscore_t;
+} highscore_t;
 
 bool getHighscore(highscore_t *highscore);
 int checkIfHighscore(int score, highscore_t *highscore);
-bool setHighscore(highscore_t* highscore, int score, char name[CHARACTERS]);
+bool setHighscore(highscore_t *highscore, int score, char name[CHARACTERS]);
 
 #endif

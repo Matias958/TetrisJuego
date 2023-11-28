@@ -10,44 +10,43 @@
 #include "game_state.h"
 #include "highscore.h"
 
-
 int main(void)
 {
-    //ELEMENTOS DE ALLEGRO
+    // ELEMENTOS DE ALLEGRO
     element_t elem;
 
-    //ESTADO DEL DISPLAY
+    // ESTADO DEL DISPLAY
     window_state_t estado = MENU;
 
-    //MODOS DE JUEGO Y DIFICULTAD
+    // MODOS DE JUEGO Y DIFICULTAD
     game_mode_t game_mode = {EASY, false, false, false};
 
-    //HIGHSCORE
+    // HIGHSCORE
     highscore_t highscore;
     if (!getHighscore(&highscore))
     {
         return EXIT_FAILURE;
     }
-    
-    if(initialize_al(&elem) == EXIT_FAILURE)
+
+    if (initialize_al(&elem) == EXIT_FAILURE)
     {
         printf("ERROR: no se pudieron inicializar los elementos de Allegro\n");
         destructorOfElements(&elem);
-        return EXIT_FAILURE; //si no pudo inicilizar correctamente, 
+        return EXIT_FAILURE; // si no pudo inicilizar correctamente,
     }
 
-    while(estado != CLOSE_DISPLAY)
+    while (estado != CLOSE_DISPLAY)
     {
         switch (estado)
         {
         case MENU:
-            p_menu(&elem, &estado);
+            showMenu(&elem, &estado);
             break;
         case GAME_SEL:
-            p_game_mode(&elem, &estado, &game_mode);
+            showGameModeSel(&elem, &estado, &game_mode);
             break;
         case GAME:
-            play_game(&elem, game_mode, &estado, &highscore);
+            playGame(&elem, game_mode, &estado, &highscore);
             break;
         case HIGHSCORE:
             p_highscore(&elem, &highscore, &estado);

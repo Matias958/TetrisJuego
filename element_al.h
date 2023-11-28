@@ -7,22 +7,21 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 #include "allegro5/allegro_ttf.h"
-#include <allegro5/allegro_audio.h> 
+#include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h> //Extensiones con acodec .wav, .flac, .ogg, .it, .mod, .s3m, .xm.
 #include <allegro5/allegro_image.h>
 
 /************** MACROS ***************/
 
 /*TAMAÑO DE LA PANTALLA*/
-#define SCREEN_W  1260
-#define SCREEN_H  720
-
+#define SCREEN_W 1260
+#define SCREEN_H 720
 
 /************** ESTRUCTURAS ***************/
 
 typedef struct
 {
-    ALLEGRO_DISPLAY* display;
+    ALLEGRO_DISPLAY *display;
 
     ALLEGRO_BITMAP *bitmap;
     ALLEGRO_BITMAP *modesDescription;
@@ -42,7 +41,6 @@ typedef struct
     ALLEGRO_BITMAP *blinkingLogo;
     ALLEGRO_BITMAP *notEmptyLogo;
     ALLEGRO_BITMAP *borderLogo;
-
 
     ALLEGRO_EVENT_QUEUE *eventQueue;
 
@@ -81,16 +79,16 @@ typedef struct
     ALLEGRO_SAMPLE *effectPause;
     ALLEGRO_SAMPLE *effectGameOver;
     ALLEGRO_SAMPLE *effectHighscore;
-}element_t;
+} element_t;
 
 /************** PROTOTIPOS ***************/
 
 /*INICIALIZA_AL()
-* Función encargada de inicializar los elementos de allegro.
-* Recibe: Una estructura element_t con los elementos a inicializar.
-* Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
-*/
+ * Función encargada de inicializar los elementos de allegro.
+ * Recibe: Una estructura element_t con los elementos a inicializar.
+ * Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
+ */
 int initialize_al(element_t *elem);
-int destructorOfElements(element_t *elem) ;
+int destructorOfElements(element_t *elem);
 
 #endif // INICIALIZACION_AL_H

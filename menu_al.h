@@ -9,6 +9,6 @@
 
 /************** PROTOTIPOS ***************/
 
-void p_menu(element_t *elem, window_state_t *state);
+void showMenu(element_t *elem, window_state_t *state);
 
-#endif //TETRIS_P1_INTERFAZ_AL_H
+#endif // TETRIS_P1_INTERFAZ_AL_H

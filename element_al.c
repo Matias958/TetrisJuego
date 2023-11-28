@@ -1,17 +1,16 @@
 /*HEADERS*/
 #include <stdio.h>
 #include <stdlib.h>
-#include "element_al.h"  
-
+#include "element_al.h"
 
 #define FPS 10
 
 /*INICIALIZA_AL()
-* Función encargada de inicializar los elementos de allegro.
-* Recibe: Una estructura element_t con los elementos a inicializar.
-* Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
-*/
-int initialize_al(element_t* elem) 
+ * Función encargada de inicializar los elementos de allegro.
+ * Recibe: Una estructura element_t con los elementos a inicializar.
+ * Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
+ */
+int initialize_al(element_t *elem)
 {
     elem->bitmap = NULL;
     elem->blinking = NULL;
@@ -60,10 +59,10 @@ int initialize_al(element_t* elem)
     elem->timerOn = NULL;
     elem->title = NULL;
     elem->titleBorder = NULL;
-    
+
     /*NOMBRE DE LA VENTANA*/
     al_set_new_window_title("TETRIS");
-    
+
     /*INICIALIZACIÓN DEL SISTEMA*/
     if (!al_init())
     {
@@ -76,47 +75,43 @@ int initialize_al(element_t* elem)
         fprintf(stderr, "Error al inicializar el teclado!\n");
         return EXIT_FAILURE;
     }
-    
+
     if (!al_install_mouse())
     {
         fprintf(stderr, "Falla al inicializar el mouse!\n");
         return EXIT_FAILURE;
     }
 
-    
-    
     /*INICIALIZACIÓN DE TIMER*/
-    elem->timerOn = al_create_timer(2.0);//crea el timer pero NO empieza a correr
-    
-    if (!elem->timerOn) //verificamos que se haya creado el timer
+    elem->timerOn = al_create_timer(2.0); // crea el timer pero NO empieza a correr
+
+    if (!elem->timerOn) // verificamos que se haya creado el timer
     {
         fprintf(stderr, "Fallo al crear el timer!\n");
         return EXIT_FAILURE;
     }
 
-    elem->timerOff = al_create_timer(1.0);//crea el timer pero NO empieza a correr
+    elem->timerOff = al_create_timer(1.0); // crea el timer pero NO empieza a correr
 
-    if (!elem->timerOff) //verificamos que se haya creado el timer
+    if (!elem->timerOff) // verificamos que se haya creado el timer
     {
         fprintf(stderr, "Fallo al crear el timer!\n");
         return EXIT_FAILURE;
     }
-   
-    
-    
+
     /*INICIALIZACIÓN DE FUENTES*/
-    if(!al_init_font_addon() || !al_init_ttf_addon())//inicializamos la fuente
+    if (!al_init_font_addon() || !al_init_ttf_addon()) // inicializamos la fuente
     {
         fprintf(stderr, "Falla al inicializar fuente\n");
         return EXIT_FAILURE;
     }
-    
-    elem->title = al_load_ttf_font("fonts/Retronoid.ttf", 180,0);
 
-    if(!elem->title)
+    elem->title = al_load_ttf_font("fonts/Retronoid.ttf", 180, 0);
+
+    if (!elem->title)
     {
         fprintf(stderr, "Falla al crear la fuente del título\n");
-        return EXIT_FAILURE; 
+        return EXIT_FAILURE;
     }
 
     elem->titleBorder = al_load_ttf_font("fonts/Retronoid.ttf", 184, 0);
@@ -126,13 +121,13 @@ int initialize_al(element_t* elem)
         fprintf(stderr, "Falla al crear la fuente del borde del título");
         return EXIT_FAILURE;
     }
-    
-    elem->buttons = al_load_ttf_font("fonts/game_over.ttf", 100,0);
-    
-    if(!elem->buttons)
+
+    elem->buttons = al_load_ttf_font("fonts/game_over.ttf", 100, 0);
+
+    if (!elem->buttons)
     {
         fprintf(stderr, "Falla al crear la fuente de los botones\n");
-        return EXIT_FAILURE; 
+        return EXIT_FAILURE;
     }
 
     elem->buttonsBorder = al_load_ttf_font("fonts/game_over.ttf", 106, 0);
@@ -143,13 +138,12 @@ int initialize_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
-    
-    elem->gameModesDescription = al_load_ttf_font("fonts/whitrabt.ttf", 25,0);
+    elem->gameModesDescription = al_load_ttf_font("fonts/whitrabt.ttf", 25, 0);
 
-    if(!elem->gameModesDescription)
+    if (!elem->gameModesDescription)
     {
         fprintf(stderr, "Falla al crear la fuente de la descripción de modo de juego");
-        return EXIT_FAILURE; 
+        return EXIT_FAILURE;
     }
 
     elem->gameModesDescriptionBorder = al_load_ttf_font("fonts/whitrabt.ttf", 25.75, 0);
@@ -183,12 +177,12 @@ int initialize_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
-    elem->fontInGame = al_load_ttf_font("fonts/AovelSansRounded-rdDL.ttf", 22,0);
+    elem->fontInGame = al_load_ttf_font("fonts/AovelSansRounded-rdDL.ttf", 22, 0);
 
-    if(!elem->fontInGame)
+    if (!elem->fontInGame)
     {
         fprintf(stderr, "Falla al crear la fuente de puntaje en juego");
-        return EXIT_FAILURE; 
+        return EXIT_FAILURE;
     }
 
     elem->fontInGameBorder = al_load_ttf_font("fonts/AovelSansRounded-rdDL.ttf", 24, 0);
@@ -222,37 +216,37 @@ int initialize_al(element_t* elem)
         fprintf(stderr, "Falla al crear la fuente de la noticia de highscore");
         return EXIT_FAILURE;
     }
-    
+
     /*INICIAIZACIÓN DE AUDIO*/
-    if (!al_install_audio())//inicializamos el audio
+    if (!al_install_audio()) // inicializamos el audio
     {
         fprintf(stderr, "Falla al inicializar audio!\n");
         return EXIT_FAILURE;
     }
-  
-    if(!al_init_acodec_addon()) 
+
+    if (!al_init_acodec_addon())
     {
         fprintf(stderr, "Falla al inicializar audio codecs!\n");
         return EXIT_FAILURE;
     }
 
-    if(!al_reserve_samples(3)) //reservamos 3 muestras
+    if (!al_reserve_samples(3)) // reservamos 3 muestras
     {
         fprintf(stderr, "Falla al reservar muestras!\n");
         return EXIT_FAILURE;
     }
 
-    elem->sampleMenu = al_load_sample("audio/menu.wav"); //cargamos el audio para el menu
+    elem->sampleMenu = al_load_sample("audio/menu.wav"); // cargamos el audio para el menu
 
-    if(!elem->sampleMenu) 
+    if (!elem->sampleMenu)
     {
         printf("No se cargo el audio del menu!\n");
         return EXIT_FAILURE;
     }
-    
-    elem->sampleGame = al_load_sample("audio/game.wav"); //cargamos el audio para el juego
 
-    if(!elem->sampleGame) 
+    elem->sampleGame = al_load_sample("audio/game.wav"); // cargamos el audio para el juego
+
+    if (!elem->sampleGame)
     {
         printf("No se cargo el audio del juego!\n");
         return EXIT_FAILURE;
@@ -260,120 +254,116 @@ int initialize_al(element_t* elem)
 
     elem->sampleGameReg = al_create_sample_instance(elem->sampleGame);
 
-    if (!elem->sampleGameReg) {
+    if (!elem->sampleGameReg)
+    {
         fprintf(stderr, "Error al crear la instancia de sample regulable del juego.\n");
         return EXIT_FAILURE;
     }
     al_attach_sample_instance_to_mixer(elem->sampleGameReg, al_get_default_mixer());
-    
-    elem->sampleHighscore = al_load_sample("audio/highscore.wav"); //cargamos el audio para el menu de highscore
+
+    elem->sampleHighscore = al_load_sample("audio/highscore.wav"); // cargamos el audio para el menu de highscore
 
     if (!elem->sampleHighscore)
     {
         printf("No se cargo el audio de highscore!\n");
         return EXIT_FAILURE;
     }
-    
-    
-    elem->effectTetris = al_load_sample("audio/tetris.wav"); //cargamos el audio para el efector de tetris
-    if(!elem->effectTetris) 
+
+    elem->effectTetris = al_load_sample("audio/tetris.wav"); // cargamos el audio para el efector de tetris
+    if (!elem->effectTetris)
     {
         printf("No se cargo el audio del efecto: tetris\n");
         return EXIT_FAILURE;
     }
-    
-    elem->effectPlay = al_load_sample("audio/play.wav"); //cargamos el audio para el efecto de play
+
+    elem->effectPlay = al_load_sample("audio/play.wav"); // cargamos el audio para el efecto de play
     if (!elem->effectPlay)
     {
         printf("No se cargo el audio del efecto: play\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectCursor = al_load_sample("audio/cursor.wav"); //cargamos el audio para el cursor
+    elem->effectCursor = al_load_sample("audio/cursor.wav"); // cargamos el audio para el cursor
     if (!elem->effectCursor)
     {
         printf("No se cargo el audio del efecto: cursor\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectSelect = al_load_sample("audio/select.wav"); //cargamos el audio para el effect select
+    elem->effectSelect = al_load_sample("audio/select.wav"); // cargamos el audio para el effect select
     if (!elem->effectCursor)
     {
         printf("No se cargo el audio del efecto: select\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectRotate = al_load_sample("audio/rotate.wav"); //cargamos el audio para el effect rotate
+    elem->effectRotate = al_load_sample("audio/rotate.wav"); // cargamos el audio para el effect rotate
     if (!elem->effectRotate)
     {
         printf("No se cargo el audio del efecto: rotacion\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectMove = al_load_sample("audio/se_game_move.wav"); //cargamos el audio para el effect move
+    elem->effectMove = al_load_sample("audio/se_game_move.wav"); // cargamos el audio para el effect move
     if (!elem->effectMove)
     {
         printf("No se cargo el audio del efecto: movimiento\n");
         return EXIT_FAILURE;
     }
 
-
-    elem->effectLanding = al_load_sample("audio/se_game_landing.wav"); //cargamos el audio para el effect landing
+    elem->effectLanding = al_load_sample("audio/se_game_landing.wav"); // cargamos el audio para el effect landing
     if (!elem->effectLanding)
     {
         printf("No se cargo el audio del efecto: caida\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectPause = al_load_sample("audio/se_game_pause.wav"); //cargamos el audio para el effect pause
+    elem->effectPause = al_load_sample("audio/se_game_pause.wav"); // cargamos el audio para el effect pause
     if (!elem->effectLanding)
     {
         printf("No se cargo el audio del efecto: pausa\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectGameOver = al_load_sample("audio/me_game_gameover.wav"); 
+    elem->effectGameOver = al_load_sample("audio/me_game_gameover.wav");
     if (!elem->effectGameOver)
     {
         printf("No se cargo el audio del efecto: game over\n");
         return EXIT_FAILURE;
     }
 
-    elem->sampleGameOver = al_load_sample("audio/game_over.wav"); 
+    elem->sampleGameOver = al_load_sample("audio/game_over.wav");
     if (!elem->sampleGameOver)
     {
         printf("No se cargo el audio del audio de menu de game over\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectHighscore = al_load_sample("audio/se_game_perfect.wav"); 
+    elem->effectHighscore = al_load_sample("audio/se_game_perfect.wav");
     if (!elem->effectHighscore)
     {
         printf("No se cargo el audio del audio de la obtencion de un highscore\n");
         return EXIT_FAILURE;
     }
 
-
     /*PRIMITIVAS*/
-    if(!al_init_primitives_addon())
+    if (!al_init_primitives_addon())
     {
         fprintf(stderr, "Falla al inicializar primitivas!\n");
         return EXIT_FAILURE;
     }
-    
-     
-    
+
     /*INICIALIZACIÓN DEL DISPLAY*/
-    elem->display = al_create_display(SCREEN_W, SCREEN_H);//creamos un display de 1000 x 700
-    
-    if (!elem->display)//si el display no se creo... 
+    elem->display = al_create_display(SCREEN_W, SCREEN_H); // creamos un display de 1000 x 700
+
+    if (!elem->display) // si el display no se creo...
     {
         fprintf(stderr, "Falla al crear el display!\n");
         return EXIT_FAILURE;
     }
 
-    elem->bitmap = al_create_bitmap(SCREEN_W/2, SCREEN_H/2);
-    if (!elem->bitmap) 
+    elem->bitmap = al_create_bitmap(SCREEN_W / 2, SCREEN_H / 2);
+    if (!elem->bitmap)
     {
         fprintf(stderr, "Falla al crear el bitmap.\n");
         return EXIT_FAILURE;
@@ -386,8 +376,7 @@ int initialize_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
-
-    if (!al_init_image_addon()) 
+    if (!al_init_image_addon())
     {
         fprintf(stderr, "Error al inicializar el sistema de imagenes de allegro.\n");
         return EXIT_FAILURE;
@@ -415,12 +404,12 @@ int initialize_al(element_t* elem)
     }
 
     elem->mirrored = al_load_bitmap("pictures/mirrored.bmp");
-    if (!elem->mirrored) 
+    if (!elem->mirrored)
     {
         fprintf(stderr, "Falla al crear el bitmap de mirrored.\n");
         return EXIT_FAILURE;
-    }    
-    
+    }
+
     elem->blinking = al_load_bitmap("pictures/blinking.bmp");
     if (!elem->blinking)
     {
@@ -429,7 +418,7 @@ int initialize_al(element_t* elem)
     }
 
     elem->notEmpty = al_load_bitmap("pictures/no_empty.bmp");
-    if (!elem-> notEmpty)
+    if (!elem->notEmpty)
     {
         fprintf(stderr, "Falla al crear el bitmap de no_empty.\n");
         return EXIT_FAILURE;
@@ -484,75 +473,81 @@ int initialize_al(element_t* elem)
         return EXIT_FAILURE;
     }
 
-
-    
     /*INICIALIZACION DE EVENTOS*/
-    elem->eventQueue = al_create_event_queue(); //creamos la cola de eventos
-    
-    if (!elem->eventQueue) //si la cola de eventos no se creo... 
+    elem->eventQueue = al_create_event_queue(); // creamos la cola de eventos
+
+    if (!elem->eventQueue) // si la cola de eventos no se creo...
     {
         fprintf(stderr, "Falla al crear la cola de eventos!\n");
         return EXIT_FAILURE;
     }
-    
+
     al_register_event_source(elem->eventQueue, al_get_keyboard_event_source());
     al_register_event_source(elem->eventQueue, al_get_display_event_source(elem->display));
     al_register_event_source(elem->eventQueue, al_get_timer_event_source(elem->timerOn));
     al_register_event_source(elem->eventQueue, al_get_timer_event_source(elem->timerOff));
-    al_register_event_source(elem->eventQueue, al_get_mouse_event_source());    
+    al_register_event_source(elem->eventQueue, al_get_mouse_event_source());
 
     return EXIT_SUCCESS;
 }
 
-void destroyDisplay(ALLEGRO_DISPLAY *display) {
-    if (display) {
+void destroyDisplay(ALLEGRO_DISPLAY *display)
+{
+    if (display)
+    {
         al_destroy_display(display);
     }
 }
 
 // Función para destruir un bitmap
-void destroyBitmap(ALLEGRO_BITMAP *bitmap) {
-    if (bitmap) 
+void destroyBitmap(ALLEGRO_BITMAP *bitmap)
+{
+    if (bitmap)
     {
         al_destroy_bitmap(bitmap);
     }
 }
 
 // Función para destruir un eventQueue
-void destroyEventQueue(ALLEGRO_EVENT_QUEUE *eventQueue) {
-    if (eventQueue) 
+void destroyEventQueue(ALLEGRO_EVENT_QUEUE *eventQueue)
+{
+    if (eventQueue)
     {
         al_destroy_event_queue(eventQueue);
     }
 }
 
 // Función para destruir un timer
-void destroyTimer(ALLEGRO_TIMER *timer) {
-    if (timer) 
+void destroyTimer(ALLEGRO_TIMER *timer)
+{
+    if (timer)
     {
         al_destroy_timer(timer);
     }
 }
 
 // Función para destruir una fuente
-void destroyFont(ALLEGRO_FONT *font) {
-    if (font) 
+void destroyFont(ALLEGRO_FONT *font)
+{
+    if (font)
     {
         al_destroy_font(font);
     }
 }
 
 // Función para destruir un sample
-void destroySample(ALLEGRO_SAMPLE *sample) {
-    if (sample) 
+void destroySample(ALLEGRO_SAMPLE *sample)
+{
+    if (sample)
     {
         al_destroy_sample(sample);
     }
 }
 
 // Función para destruir una sample instance
-void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance) {
-    if (sample_instance) 
+void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance)
+{
+    if (sample_instance)
     {
         al_destroy_sample_instance(sample_instance);
     }
@@ -560,7 +555,7 @@ void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance) {
 
 // Función para destruir cada elemento
 int destructorOfElements(element_t *elem)
- {
+{
     destroyDisplay(elem->display);
 
     destroyBitmap(elem->bitmap);
@@ -620,5 +615,3 @@ int destructorOfElements(element_t *elem)
     al_uninstall_system();
     return EXIT_SUCCESS;
 }
-
-

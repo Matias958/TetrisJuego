@@ -6,7 +6,6 @@
 
 static long int numberOfCloksPrev;
 
-
 const char positionOfGeneration[7][4][4] = { // forma de las piezas
 	{{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
 	{{0, 0, 0, 0}, {2, 2, 2, 0}, {0, 0, 2, 0}, {0, 0, 0, 0}},
@@ -28,7 +27,6 @@ const int wallKickMatrixToPieceI[4][4][2] = { // saltos preestablecidos par solu
 	{{2, 0}, {-1, 0}, {2, 1}, {-1, -2}},
 	{{1, 0}, {-2, 0}, {1, -2}, {-2, 1}}};
 
-
 /*BLOQUE_T()
  * Funcion encargada de crear y devolver la estructura de una pieza
  * Recibe: -
@@ -37,9 +35,9 @@ const int wallKickMatrixToPieceI[4][4][2] = { // saltos preestablecidos par solu
 piece_t createPiece(void)
 {
 	int numberOfPiece = (rand() % 7) + 1; // escoge al azar que figura sera
-	piece_t piece;					// la crea
+	piece_t piece;						  // la crea
 
-	piece.type = numberOfPiece;		// le da su forma
+	piece.type = numberOfPiece; // le da su forma
 	for (int i = 0; i < 4; i++) // copiamos la forma de la pieza que corresponda a la matris de la estructura
 	{
 		for (int j = 0; j < 4; j++)
@@ -61,7 +59,7 @@ piece_t createPiece(void)
  * con tablero del juego.
  * Devuelve: -
  */
-void turnPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]) // funcion para rotar una pieza
+void turnPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD]) // funcion para rotar una pieza
 {
 	if (piece->type == PIECE_O) // caso especial del bloque
 	{
@@ -69,8 +67,8 @@ void turnPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]) // f
 	}
 
 	piece_t piece_temp = *piece; // creamos una estructura pieza temporal con la que trabajar
-	piece_temp.rotation++;		  // aumentamos en uno la rotacion
-	piece_temp.rotation %= 4;	  // si llega a 4 vuelve a 0
+	piece_temp.rotation++;		 // aumentamos en uno la rotacion
+	piece_temp.rotation %= 4;	 // si llega a 4 vuelve a 0
 
 	for (int i = 0; i < 4; i++) // rotamos la pieza temporal
 	{
@@ -79,7 +77,7 @@ void turnPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]) // f
 			piece_temp.matrixOfPiece[j][3 - i] = piece->matrixOfPiece[i][j]; // regla de rotacion
 		}
 	}
-				 // nos fijamos si existe algun conflicto tras la rotacion
+	// nos fijamos si existe algun conflicto tras la rotacion
 	if (collision(matrix, &piece_temp) == SUCCESS) // si no lo hay
 	{
 		*piece = piece_temp; // copia la pieza temporal a la pieza del juego
@@ -95,7 +93,7 @@ void turnPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]) // f
  * Recibe: char matris[][12] con tablero del juego y bloque_t con la pieza
  * Devuelve: int que indica si hubo o no un choque
  */
-int collision(char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD], piece_t *piece)
+int collision(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], piece_t *piece)
 {
 	int conflict = SUCCESS;
 	for (int i = 0; i < 4; i++) // recorre la matris de la pieza
@@ -118,10 +116,10 @@ int collision(char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD], piece_t *piece)
  * char matris[][12] con el tablero de juego
  * Devuelve: -
  */
-void movePiece(piece_t *piece, int direction, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
+void movePiece(piece_t *piece, int direction, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD])
 {
 
-	piece_t piece_temp = *piece;						 // creamos una estructura pieza temporal con la que trabajar
+	piece_t piece_temp = *piece;					   // creamos una estructura pieza temporal con la que trabajar
 	piece_temp.column = piece_temp.column + direction; // suma a la column la direccion
 
 	if (collision(matrix, &piece_temp) == SUCCESS) // se fija si no hay un choque
@@ -136,9 +134,9 @@ void movePiece(piece_t *piece, int direction, char matrix[HEIGHT_OF_BOARD][WIDE_
  * tablero del juego
  * Devuelve: un flag en caso de no poder bajar, false es que no pudo realizar el movimiento
  */
-bool movePieceDown(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]) // REVISAR SI NO CONVIENE QUE AVISE EN EL CASO DE QUE NO PUEDA BAJAR MAS PARA INICIAR EL TIMER ANTES DE ESTACIONARLA <3 FACU
+bool movePieceDown(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD]) // REVISAR SI NO CONVIENE QUE AVISE EN EL CASO DE QUE NO PUEDA BAJAR MAS PARA INICIAR EL TIMER ANTES DE ESTACIONARLA <3 FACU
 {
-	piece_t auxiliarPiece = *piece;		   // creamos una estructura pieza temporal con la que trabajar
+	piece_t auxiliarPiece = *piece;				 // creamos una estructura pieza temporal con la que trabajar
 	auxiliarPiece.line = auxiliarPiece.line + 1; // suma a la line la direccion
 
 	if (collision(matrix, &auxiliarPiece) == SUCCESS) // se fija si no hay un choque
@@ -155,7 +153,7 @@ bool movePieceDown(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD]) 
  * tablero del juego actual
  * Devuelve: si se estaciono la pieza por fuera de la matris del juego
  */
-char parkPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
+char parkPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD])
 {
 	int conflict = SUCCESS;
 	for (int i = 0; i < 4; i++) // recorre la matris de la pieza
@@ -183,7 +181,7 @@ char parkPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
  * tablero del juego actual
  * Devuelve: si logro solucionar el choque
  */
-int wallKick(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
+int wallKick(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD])
 {
 	int conflict = SUCCESS; // inicializo variables
 	int rotation = piece->rotation;
@@ -193,10 +191,10 @@ int wallKick(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
 	{
 		while (test < 4) // corre hasta que se agoten las pruebas o el conflicto de BIEN
 		{
-			piece->line += wallKickMatrixToPieceI[rotation][test][0];	   // desplazamiento en x
+			piece->line += wallKickMatrixToPieceI[rotation][test][0];	// desplazamiento en x
 			piece->column += wallKickMatrixToPieceI[rotation][test][1]; // desplazamiento en y
-			conflict = collision(matrix, piece);						   // chequeo si se resolvio el choque
-			if (conflict == SUCCESS)									   // si el choque ya se resolvio nos devuelve el desplazamiento y nos avisa
+			conflict = collision(matrix, piece);						// chequeo si se resolvio el choque
+			if (conflict == SUCCESS)									// si el choque ya se resolvio nos devuelve el desplazamiento y nos avisa
 			{
 				return conflict;
 			}
@@ -230,7 +228,7 @@ int wallKick(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDE_OF_BOARD])
  * Devuelve: Puntaje que suma, dependiendo de la cantidad de filas
  * que se borraron (considerando el caso de "hacer TETRIS", eliminar 4 filas de un movimiento
  */
-int deleteLine(char board[HEIGHT_OF_BOARD][WIDE_OF_BOARD], char ArrayOfLinesWithTetris[HEIGHT_OF_BOARD], bool *isTetris)
+int deleteLine(char board[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], bool *isTetris)
 {
 	int score = 0;
 	int i, counter, linesWithTetris;
@@ -241,7 +239,7 @@ int deleteLine(char board[HEIGHT_OF_BOARD][WIDE_OF_BOARD], char ArrayOfLinesWith
 		counter = 0;
 		int j;
 
-		for (j = 1; j < WIDE_OF_BOARD - 1; j++)
+		for (j = 1; j < WIDTH_OF_BOARD - 1; j++)
 		{
 			if (board[i][j] > 0)
 			{
@@ -251,22 +249,22 @@ int deleteLine(char board[HEIGHT_OF_BOARD][WIDE_OF_BOARD], char ArrayOfLinesWith
 
 		if (counter == 10)
 		{
-			ArrayOfLinesWithTetris[linesWithTetris++] = i - corrector++;
+			arrayOfLinesWithTetris[linesWithTetris++] = i - corrector++;
 			*isTetris = true;
 
-			//borramos la line completada
-			for (int m = 1; m < WIDE_OF_BOARD - 1; m++)
+			// borramos la line completada
+			for (int m = 1; m < WIDTH_OF_BOARD - 1; m++)
 			{
-				board[i][m] = EMPTY; 
+				board[i][m] = EMPTY;
 			}
 
 			score += 100;
 
-			//baja las filas superiores a la borrada
+			// baja las filas superiores a la borrada
 			int k, g;
 			for (k = i; k >= 1; k--)
 			{
-				for ( g = 1; g < 11; g++)
+				for (g = 1; g < 11; g++)
 				{
 					if (board[k - 1][g] != BORDER)
 					{
@@ -276,15 +274,12 @@ int deleteLine(char board[HEIGHT_OF_BOARD][WIDE_OF_BOARD], char ArrayOfLinesWith
 			}
 
 			i++;
-
 		}
 	}
 
-	ArrayOfLinesWithTetris[linesWithTetris] = END_OF_ARRAY;
+	arrayOfLinesWithTetris[linesWithTetris] = END_OF_ARRAY;
 	return score >= 400 ? score * 2 : score;
 }
-
-
 
 /* INICIALIZARTIEMPO()
  * Función encargada de inicializar el timer
@@ -308,7 +303,7 @@ bool checkElapsedTime(double timestep)
 
 	float elapsedTime = ((float)diffOfClocks) / CLOCKS_PER_SEC;
 
-	if(elapsedTime >= timestep)
+	if (elapsedTime >= timestep)
 	{
 		initTime();
 		return true;

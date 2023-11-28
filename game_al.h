@@ -9,7 +9,6 @@
 
 /************** PROTOTIPOS ***************/
 
-void play_game(element_t* elem, game_mode_t mode, window_state_t *state, highscore_t *highscore);
+void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscore_t *highscore);
 
-#endif // GAME_AL_H 
-
+#endif // GAME_AL_H
