@@ -8,6 +8,7 @@ void p_highscore(element_t *elem, highscore_t *highscore, window_state_t *state)
     al_stop_samples();
     al_play_sample(elem->sampleHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
 
+    //dibujo el menu
     al_clear_to_color(al_map_rgb(20, 20, 20));
     al_draw_bitmap(elem->highscoreBackround, 0, 0, 0);
 
@@ -20,6 +21,7 @@ void p_highscore(element_t *elem, highscore_t *highscore, window_state_t *state)
     al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), SCREEN_W / 2, 5 * SCREEN_H / 12 - 40, ALLEGRO_ALIGN_CENTER, "NAME");
     al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 - 40, 2, "SCORE");
 
+    //muestro nombres
     int i;
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
@@ -32,6 +34,8 @@ void p_highscore(element_t *elem, highscore_t *highscore, window_state_t *state)
         snprintf(score, sizeof(score), "% d", highscore->highscores[i]);
         al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i, 2, score);
     }
+
+    //dibujo los botones
 
     button_t play = {"PLAY", SCREEN_W / 2, SCREEN_H * 0.9, 100, 40, 20,
                      false, al_map_rgb(190, 171, 30), al_map_rgb(124, 109, 20),

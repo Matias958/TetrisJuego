@@ -7,7 +7,7 @@ bool getHighscore(highscore_t *highscore)
 {
 
 	FILE *highscoreFile;
-	highscoreFile = fopen("highscore.txt", "r");
+	highscoreFile = fopen("highscore.txt", "r"); //abro un puntero al archivo
 
 	if (highscoreFile == NULL)
 	{
@@ -16,7 +16,7 @@ bool getHighscore(highscore_t *highscore)
 	}
 
 	char buffer[100];
-	fgets(buffer, 100, highscoreFile);
+	fgets(buffer, 100, highscoreFile); // guardo el archivo en un buffer
 
 	int c = 0;
 	int i;
@@ -26,7 +26,7 @@ bool getHighscore(highscore_t *highscore)
 		int j = 0;
 		for (j = 0; j < CHARACTERS; j++)
 		{
-			highscore->nameOfHighscores[i][j] = buffer[c++];
+			highscore->nameOfHighscores[i][j] = buffer[c++]; //guardo el nombre en la estructura 
 		}
 		highscore->nameOfHighscores[i][3] = '\0';
 
@@ -34,22 +34,21 @@ bool getHighscore(highscore_t *highscore)
 		char number[20];
 		for (j = 0; buffer[c] != ','; j++)
 		{
-			number[j] = buffer[c++];
+			number[j] = buffer[c++];   
 		}
 		number[j] = '\0';
 
-		highscore->highscores[i] = atoi(number);
+		highscore->highscores[i] = atoi(number); //guardo el puntaje como int en la estructura
 	}
 
-	fclose(highscoreFile);
+	fclose(highscoreFile); //cierro el archivo
 	return true;
 }
 
 int checkIfHighscore(int score, highscore_t *highscore)
 {
 	int i;
-	for (i = 0; i <= NUMBER_OF_PLAYERS && highscore->highscores[i] >= score; i++)
-		;
+	for (i = 0; i <= NUMBER_OF_PLAYERS && highscore->highscores[i] >= score; i++);
 
 	return i + 1;
 }
@@ -101,7 +100,7 @@ bool setHighscore(highscore_t *highscore, int score, char name[CHARACTERS])
 	}
 
 	FILE *highscoreFile;
-	highscoreFile = fopen("highscore.txt", "w");
+	highscoreFile = fopen("highscore.txt", "w"); //abro el archivo como escritura
 
 	if (highscoreFile == NULL)
 	{
@@ -116,11 +115,11 @@ bool setHighscore(highscore_t *highscore, int score, char name[CHARACTERS])
 		int j;
 		for (j = 0; j < CHARACTERS; j++)
 		{
-			buffer[c++] = highscore->nameOfHighscores[i][j];
+			buffer[c++] = highscore->nameOfHighscores[i][j]; //cargo los nombres en un buffer
 		}
 
 		char number[20];
-		snprintf(number, sizeof(number), "%d", highscore->highscores[i]);
+		snprintf(number, sizeof(number), "%d", highscore->highscores[i]); //comvierto el puntaje en string
 
 		for (j = 0; number[j] != '\0'; j++)
 		{
@@ -132,7 +131,7 @@ bool setHighscore(highscore_t *highscore, int score, char name[CHARACTERS])
 
 	buffer[c] = '\0';
 
-	fprintf(highscoreFile, "%s", buffer);
+	fprintf(highscoreFile, "%s", buffer); //guardo los nombres y puntaje en el archivo
 
 	fclose(highscoreFile);
 	return true;

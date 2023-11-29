@@ -14,7 +14,7 @@ piece_t nextPiece;
 bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int *score, game_mode_t gameMode)
 {
     bool flagGoDown = false;
-    switch (movement)
+    switch (movement)  //juego segun que movimiento se hizo 
     {
     case 'd':
         movePiece(piece, gameMode.mirrored ? LEFT : RIGHT, matrix);
@@ -25,15 +25,15 @@ bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDT
     case 's':
         flagGoDown = movePieceDown(piece, matrix);
         // inicializarTiempo();
-        if (flagGoDown == false)
+        if (flagGoDown == false) //si choco estaciona la pieza
         {
             char flag_estacionar = parkPiece(piece, matrix);
-            if (flag_estacionar == SUCCESS)
+            if (flag_estacionar == SUCCESS)  //si se puede seguir jugando crea otra pieza y sigue jugando
             {
                 *piece = nextPiece;
                 nextPiece = createPiece();
             }
-            else
+            else  //si no se puede seguir jugando devuelve true
             {
                 return true;
             }
@@ -66,12 +66,12 @@ bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDT
         break;
     }
 
-    if (checkElapsedTime(1.0 / (1.0 + gameMode.difficulty / 2.0 + (*score / 500.0))))
+    if (checkElapsedTime(1.0 / (1.0 + gameMode.difficulty / 2.0 + (*score / 500.0)))) //si no se hizo una accion compruebo si tengo que bajar por tiempo
     {
-        flagGoDown = movePieceDown(piece, matrix);
+        flagGoDown = movePieceDown(piece, matrix); //en caso que ya paso el tiempo baja la pieza
         if (flagGoDown == false)
         {
-            char flag_estacionar = parkPiece(piece, matrix); // temporal en realidad habria que darle un tiempo
+            char flag_estacionar = parkPiece(piece, matrix); //verifico otra ves que pueda seguir jugando
             if (flag_estacionar == SUCCESS)
             {
                 *piece = nextPiece;
@@ -94,12 +94,12 @@ bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDT
 
 void createBoardforNotEmpty(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD])
 {
-    int i, numberOfPieces = 5 + rand() % 4;
+    int i, numberOfPieces = 5 + rand() % 4; //creo una cantidad de 5 a 8 piezas
     for (i = 0; i < numberOfPieces; i++)
     {
         piece_t piece = createPiece();
-        piece.line = HEIGHT_OF_BOARD - 6;
-        while (rand() % 7)
+        piece.line = HEIGHT_OF_BOARD - 6; //las crea solo en la parte baja del tablero
+        while (rand() % 7) //las muevo de forma random 
         {
             int movement = rand() % 100;
 

@@ -491,6 +491,8 @@ int initialize_al(element_t *elem)
     return EXIT_SUCCESS;
 }
 
+
+// Función para destruir un display
 void destroyDisplay(ALLEGRO_DISPLAY *display)
 {
     if (display)

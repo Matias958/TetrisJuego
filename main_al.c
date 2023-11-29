@@ -24,7 +24,7 @@ int main(void)
 
     // HIGHSCORE
     highscore_t highscore;
-    if (!getHighscore(&highscore))
+    if (!getHighscore(&highscore)) //cargo el highscore a la memoria
     {
         return EXIT_FAILURE;
     }
@@ -36,7 +36,7 @@ int main(void)
         return EXIT_FAILURE; // si no pudo inicilizar correctamente,
     }
 
-    while (estado != CLOSE_DISPLAY)
+    while (estado != CLOSE_DISPLAY) //segun que boton se presiona, entra a un modo
     {
         switch (estado)
         {
