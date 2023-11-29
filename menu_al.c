@@ -13,6 +13,11 @@ enum menuOptions
     SCORE
 }; // menu
 
+/* SHOW_MENU
+* Función encargada de mostrar e inicializar la pantalla del menu de inicio.
+* Recibe: puntero a una estructura element_t y una window_state_t
+* Devuelve: -
+*/
 void showMenu(element_t *elem, window_state_t *state)
 {
     // música

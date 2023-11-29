@@ -11,6 +11,7 @@
 #include "highscore.h"
 #include "game_al.h"
 
+/*MAIN DE ALLEGRO*/
 int main(void)
 {
     // ELEMENTOS DE ALLEGRO

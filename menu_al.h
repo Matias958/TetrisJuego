@@ -1,6 +1,5 @@
-
-#ifndef TETRIS_P1_INTERFAZ_AL_H
-#define TETRIS_P1_INTERFAZ_AL_H
+#ifndef MENU_AL_H
+#define MENU_AL_H
 
 /************** HEADERS ***************/
 
@@ -9,6 +8,11 @@
 
 /************** PROTOTIPOS ***************/
 
+/* SHOW_MENU
+* Función encargada de mostrar e inicializar la pantalla del menu de inicio.
+* Recibe: puntero a una estructura element_t y una window_state_t
+* Devuelve: -
+*/
 void showMenu(element_t *elem, window_state_t *state);
 
-#endif // TETRIS_P1_INTERFAZ_AL_H
+#endif // MENU_AL_H

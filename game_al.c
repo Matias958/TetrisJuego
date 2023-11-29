@@ -1,9 +1,12 @@
+/*HEADERS*/
 #include <stdlib.h>
 #include <stdio.h>
 #include "game_al.h"
 #include "buttons_al.h"
 #include "game.h"
 
+
+/*MACROS*/
 #define BOARD_WIDTH WIDTH_OF_BOARD
 #define BOARD_LENGHT HEIGHT_OF_BOARD
 
@@ -43,6 +46,7 @@
 
 #define SIZE_OF_TITLE 200
 
+/*ESTRUCTURAS*/
 enum bordes
 {
 	EMPTY_B = BORDER + 1,
@@ -66,6 +70,7 @@ enum pause_options
 	QUIT
 };
 
+
 static const int posPieza[7][4][2] = {
 	{{SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}, {SQUARE_SIG_SIZE * 2, SQUARE_SIG_SIZE * 2.5}, {3 * SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}, {4 * SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}},	  // I   0
 	{{SQUARE_SIG_SIZE * 1.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 2.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 3.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 3.5, 3 * SQUARE_SIG_SIZE}}, // J    0
@@ -76,23 +81,58 @@ static const int posPieza[7][4][2] = {
 	{{3.5 * SQUARE_SIG_SIZE, 3 * SQUARE_SIG_SIZE}, {2.5 * SQUARE_SIG_SIZE, 3 * SQUARE_SIG_SIZE}, {2.5 * SQUARE_SIG_SIZE, 2 * SQUARE_SIG_SIZE}, {1.5 * SQUARE_SIG_SIZE, 2 * SQUARE_SIG_SIZE}}, // Z   0
 };
 
+/*PROTOTIPOS*/
+
+/* DRAW_BOARD()
+ * Función encargada de dibujar el tablero de juego.
+ * Recibe: dos matrices del tamaño de juego (una con el estado actual del juego y la otra
+ * con el tablero de predicción de caída de la pieza) y dos arreglos de ALLEGRO_COLOR que indica
+ * los colores que tiene que usar para las casillas y para los bordes respectivamente.
+ * Devuelve: -
+ */
 static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[]);
+
 static void initBoardColors(ALLEGRO_COLOR squareColors[]);
 static void initBoardBorderColors(ALLEGRO_COLOR squareColors[]);
 static void drawActiveModes(element_t *elem, game_mode_t gameModes);
+
+/* SHOW_NEXT_PIECE()
+ * Función encargada de calcular y mostrar la próxima pieza que va a aparecer.
+ * Recibe: dos arreglos de ALLEGRO_COLOR que indica los colores que tiene que usar para
+ * las casillas y para los bordes respectivamente y un puntero a una estructura element_t 
+ * con los elementos de alegro.
+ * Devuelve: -
+ */
 static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t *elem);
+
+/* SHOW_SCORE()
+ * Función encargada de mostrar los puntajes (indicando, en caso de ser necesario,
+ * si se trata de un nuevo highscore).
+ * Recibe: un puntero a una estructura element_t con los elementos de alegro;
+ * un int con el puntaje actual y una estructura highscore_t con los highscores.
+ * Devuelve: -
+ */
 static void showScore(element_t *elem, int score, highscore_t *highscore);
+
+/* IS_TETRIS_ANIMATION()
+ * Función encargada de mostrar la animación indicandi que se hizo tetris.
+ * Recibe: un arreglo de char con las lineas que tienen tetris.
+ * un arreglo de ALLEGRO_COLOR que indica los colores que tiene que usar para las
+ * casillas y un puntero a una estructura element_t con los elementos de allegro
+ * Devuelve: -
+ */
 static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLEGRO_COLOR squareColors[], element_t *elem);
+
 static void gameOver(window_state_t *state, element_t *elem, int score, highscore_t *highscore);
 static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing);
 
 /* DRAW_BOARD()
- *
- *
- *
- *
+ * Función encargada de dibujar el tablero de juego.
+ * Recibe: dos matrices del tamaño de juego (una con el estado actual del juego y la otra
+ * con el tablero de predicción de caída de la pieza) y dos arreglos de ALLEGRO_COLOR que indica
+ * los colores que tiene que usar para las casillas y para los bordes respectivamente.
+ * Devuelve: -
  */
-
 static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[])
 {
 	int i;
@@ -126,6 +166,14 @@ static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_boa
 	}
 
 }
+
+/* SHOW_SCORE()
+ * Función encargada de mostrar los puntajes (indicando, en caso de ser necesario,
+ * si se trata de un nuevo highscore).
+ * Recibe: un puntero a una estructura element_t con los elementos de alegro;
+ * un int con el puntaje actual y una estructura highscore_t con los highscores.
+ * Devuelve: -
+ */
 static void showScore(element_t *elem, int score, highscore_t *highscore)
 {
 
@@ -165,6 +213,13 @@ static void showScore(element_t *elem, int score, highscore_t *highscore)
 
 }
 
+/* SHOW_NEXT_PIECE()
+ * Función encargada de calcular y mostrar la próxima pieza que va a aparecer.
+ * Recibe: dos arreglos de ALLEGRO_COLOR que indica los colores que tiene que usar para
+ * las casillas y para los bordes respectivamente y un puntero a una estructura element_t 
+ * con los elementos de alegro.
+ * Devuelve: -
+ */
 static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t *elem)
 {
 	al_draw_text(elem->buttonsBorder, al_map_rgb(66, 67, 62), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2, NEXT_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "NEXT PIECE");
@@ -184,6 +239,13 @@ static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBord
 
 }
 
+/* IS_TETRIS_ANIMATION()
+ * Función encargada de mostrar la animación indicandi que se hizo tetris.
+ * Recibe: un arreglo de char con las lineas que tienen tetris.
+ * un arreglo de ALLEGRO_COLOR que indica los colores que tiene que usar para las
+ * casillas y un puntero a una estructura element_t con los elementos de allegro
+ * Devuelve: -
+ */
 static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLEGRO_COLOR squareColors[], element_t *elem)
 {
 	int i;
@@ -436,7 +498,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 		if (draw && playing)
 		{
 			int i, j;
-			// copia la matris de juego en una auxiliar para mostrar
+			// copia la matriz de juego en una auxiliar para mostrar
 			for (i = 0; i < BOARD_LENGHT; i++)
 			{
 				for (j = 0; j < BOARD_WIDTH; j++)

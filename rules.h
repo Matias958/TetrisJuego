@@ -21,85 +21,79 @@
 
 /************** PROTOTIPOS ***************/
 
-/*createPiece()
+/*CREATE_PIECE()
  * Funcion encargada de crear y devolver la estructura de una pieza
- * Recibe: no recibe parámetros
- * Devuelve: estructura bloque_t con la pieza creada
+ * Recibe: -
+ * Devuelve: estructura piece_t con la pieza creada
  */
 piece_t createPiece(void);
 
-/*turnPiece()
+/*TURN_PIECE()
  * Funcion encargada de rotar una pieza
- * Recibe: estructura bloque_t * con la pieza a girar y char matris [][12]
- * con tablero del juego.
+ * Recibe: puntero a piece_t con la pieza a girar y una matriz con el tablero del juego.
  * Devuelve: -
  */
 void turnPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD]);
 
-/*CHOQUE()
- * Función encargada de comprobar si una pieza choco contra un borde
- * Recibe: char matris[][12] con tablero del juego y bloque_t * con la pieza
+/*COLLISION()
+ * Función encargada de comprobar si una pieza chocó contra un borde
+ * Recibe: una matriz con el tablero del juego y un puntero a piece_t con la pieza
  * Devuelve: int que indica si hubo o no un choque
  */
 int collision(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], piece_t *piece);
 
-/*MOVER_PIEZA()
- * Funcion encargada de mover a los lados la pieza
- * Recibe: bloque_t * con la pieza a mover, int con la dirección de movimiento,
- * char matris[][12] con el tablero de juego
+/*MOVE_PIECE()
+ * Funcion encargada de mover a los lados la pieza.
+ * Recibe: puntero a piece_t con la pieza a mover, int con la dirección de movimiento y
+ * una matriz con el tablero de juego.
  * Devuelve: -
  */
 void movePiece(piece_t *piece, int direction, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD]);
 
-/* BAJAR_PIEZA()
+/* MOVE_PIECE_DOWN()
  * Funcion encargada de mover una pieza hacia abajo
- * Recibe: bloque_t * pieza a bajar, char matris[][12]
- * tablero del juego
- * Devuelve: un bool, flag en caso de no poder bajar, false es que no pudo
- * realizar el movimiento
+ * Recibe: puntero a piece_t con la pieza a bajar, una matriz con el tablero del juego
+ * Devuelve: un flag en caso de no poder bajar, false es que no pudo realizar el movimiento
  */
 bool movePieceDown(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD]);
 
-/* ESTACIONAR()
+/* PARK_PIECE()
  * Función encargada de guardar una pieza en su posición final
- * Recibe: bloque_t * con la pieza a "estacionar", char matris [][12]
+ * Recibe: puntero a piece_t con la pieza a "estacionar", una matriz con el
  * tablero del juego actual
- * Devuelve: char que indica si se estaciono la pieza por fuera de la
- * matris del juego
+ * Devuelve: un char indicando si se estacionó la pieza por fuera de la matriz del juego
  */
 char parkPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD]);
 
-/* BORRARFILA()
+/* DELETE_LINE()
  * Función encargada de borrar las filas que se completaron
- * Recibe: char tablero[18][12] con el tablero actual, un char filas_tetris[18] con
- * las filas del tablero y un bool * donde se guarda si se consiguió hacer tetris.
- * Devuelve: un int con el puntaje que suma, dependiendo de la cantidad de filas
- * que se borraron (considerando el caso de "hacer TETRIS", elimnar 4 filas de un movimiento)
+ * Recibe: una matriz con el tablero actual, una matis de char con las lineas donde ocurre el tetris
+ * un puntero a un bool que va a indicar si se "hizo TETRIS", se eliminan 4 filas consecutivas de un movimiento
+ * Devuelve: Puntaje que suma, dependiendo de la cantidad de filas
+ * que se borraron (considerando el caso de "hacer TETRIS")
  */
-
 int deleteLine(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], char linesOfMatrix[18], bool *isTetris);
 
 /* WALL_KICK()
  * Función encargada de comprobar si al girar una pieza esta choca contra un borde y
  * si esto sucede la acomoda
- * Recibe: bloque_t pieza a "estacionar", char matris [][12]
- * tablero del juego actual
+ * Recibe: puntero a piece_t pieza a "estacionar", una matriz con el tablero del juego actual
  * Devuelve: un int que indica si logro solucionar el choque
  */
 int wallKick(piece_t *piece, char matrix[HEIGHT_OF_BOARD][12]);
 
-/* INICIALIZARTIEMPO()
+/* INIT_TIME()
  * Función encargada de inicializar el timer
  * Recibe: -
  * Devuelve: -
  */
 void initTime(void);
 
-/* TIEMPO_TRANSCURRIDO()
+/* CHECK_ELAPSED_TIME()
  * Función encargada de devolver el tiempo transcurrido
  * Recibe: double con el timestep
  * Devuelve: booleano que indica si pudo obtener el tiempo transcurrido
  */
 bool checkElapsedTime(double timestep);
 
-#endif
+#endif //RULES_H

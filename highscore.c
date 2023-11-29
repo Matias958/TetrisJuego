@@ -1,8 +1,13 @@
+/*HEADERS*/
 #include <stdlib.h>
 #include <stdio.h>
-
 #include "highscore.h"
 
+/*GET_HIGHSCORE()
+ * Función encargada de recuperar el highscore
+ * Recibe: un puntero a una highscore_t donde se va a guardar el highscore
+ * Devuelve: un bool indicando si funcionó correctamente
+ */
 bool getHighscore(highscore_t *highscore)
 {
 
@@ -45,15 +50,28 @@ bool getHighscore(highscore_t *highscore)
 	return true;
 }
 
+/*CHECK_IF_HIGHSCORE()
+ * Función encargada de fijarse en que puesto del highscore esta el puntaje actual
+ * Recibe: un int con el puntaje de la jugada actual y un puntero a una highscore_t donde esta el highscore
+ * Devuelve: un int con el puesto donde se encuentra
+ */
 int checkIfHighscore(int score, highscore_t *highscore)
 {
 	int i;
 	for (i = 0; i <= NUMBER_OF_PLAYERS && highscore->highscores[i] >= score; i++)
+	{
 		;
+	}
 
 	return i + 1;
 }
 
+/*SET_HIGHSCORE()
+ * Función encargada de guardar el puntaje actual dentro el highscore
+ * Recibe: un puntero a una highscore_t donde esta el highscore, un int con el puntaje actual y
+ * un arreglo de char de tamaño "CHARACTERS" con el alias del nombre del jugador actual
+ * Devuelve: un bool indicando si funcionó correctamente
+ */
 bool setHighscore(highscore_t *highscore, int score, char name[CHARACTERS])
 {
 	// buscamos la posici�n que le corresponde
