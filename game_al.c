@@ -104,9 +104,9 @@ static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_boa
 			float x1 = BOARD_START_X + j * SQUARE_SIZE;
 			float y1 = BOARD_START_Y + i * SQUARE_SIZE;
 
-			al_draw_filled_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, squareColors[board[i][j]]);
+			al_draw_filled_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, squareColors[(int)board[i][j]]);
 
-			al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, squareBorderColors[board[i][j]], 2);
+			al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, squareBorderColors[(int)board[i][j]], 2);
 		}
 	}
 
@@ -120,12 +120,11 @@ static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_boa
 
 			if (prediction_board[i][j] != EMPTY && prediction_board[i][j] != board[i][j])
 			{
-				al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, squareBorderColors[prediction_board[i][j]], 3);
+				al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, squareBorderColors[(int)prediction_board[i][j]], 3);
 			}
 		}
 	}
 
-	al_flip_display();
 }
 static void showScore(element_t *elem, int score, highscore_t *highscore)
 {
@@ -140,14 +139,19 @@ static void showScore(element_t *elem, int score, highscore_t *highscore)
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y / 5, 1, buffer);
 
 	int position = checkIfHighscore(score, highscore);
-	static bool isHighScore = false;
-	static int prevPosition = NUMBER_OF_PLAYERS + 1;
+	static bool isHighScore;
+	static int prevPosition;
 
-	if (prevPosition > position)
+	isHighScore = position <= NUMBER_OF_PLAYERS;
+	if (!isHighScore)
+	{
+		prevPosition = NUMBER_OF_PLAYERS + 1;
+	}
+
+	if (position <= NUMBER_OF_PLAYERS && prevPosition > position)
 	{
 		isHighScore = true;
-		al_stop_sample(elem->effectTetris);
-		al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+		while(!al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 		prevPosition = position;
 	}
 
@@ -159,7 +163,6 @@ static void showScore(element_t *elem, int score, highscore_t *highscore)
 		al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2 + 7, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y - 35, 0, buffer);
 	}
 
-	al_flip_display();
 }
 
 static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t *elem)
@@ -179,7 +182,6 @@ static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBord
 		al_draw_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareBorderColors[nextPiece], 2);
 	}
 
-	al_flip_display();
 }
 
 static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLEGRO_COLOR squareColors[], element_t *elem)
@@ -253,7 +255,6 @@ static void drawActiveModes(element_t *elem, game_mode_t gameMode) // falta term
 		}
 	}
 
-	al_flip_display();
 }
 
 static void initBoardColors(ALLEGRO_COLOR squareColors[])
@@ -289,7 +290,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 
 	al_stop_samples();
 
-	al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	while(!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	al_set_sample_instance_gain(elem->sampleGameReg, 1);
 	al_play_sample_instance(elem->sampleGameReg);
 
@@ -389,7 +390,6 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 				case PAUSE:
 					drawPauseMenu(state, elem, &playing);
 					al_draw_bitmap(elem->gameBackround, 0, 0, 0);
-					al_flip_display();
 					break;
 				}
 
@@ -466,7 +466,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 
 			if (tetris)
 			{
-				al_play_sample(elem->effectTetris, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				while(!al_play_sample(elem->effectTetris, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 				isTetrisAnimation(arrayOfLinesWithTetris, squareColors, elem);
 				if (!off)
 				{
@@ -479,6 +479,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 			showNextPiece(squareColors, squareBorderColors, elem);
 			drawActiveModes(elem, mode);
 
+			al_flip_display();
 			draw = false;
 		}
 	}
@@ -506,7 +507,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 	al_flip_display();
 
 	al_stop_samples();
-	al_play_sample(elem->effectGameOver, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	while(!al_play_sample(elem->effectGameOver, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 
 	int numberOfBlinkings;
 	for (numberOfBlinkings = 0; numberOfBlinkings < 4; numberOfBlinkings++)
@@ -518,7 +519,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 	}
 
 	// al_play_sample(elem->effectGameOver, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-	al_play_sample(elem->sampleGameOver, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+	while(!al_play_sample(elem->sampleGameOver, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL));
 
 	// botones
 	button_t play = {"PLAY AGAIN", SCREEN_W / 2, SCREEN_H * 0.65, 130, 40, 20,
@@ -540,7 +541,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 
 	if (position <= NUMBER_OF_PLAYERS)
 	{
-		al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+		while(!al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 		char name[4] = "   ";
 		int c = 0;
 		bool waiting = true;
@@ -617,7 +618,6 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 			al_flip_display();
 		}
 
-		al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 		setHighscore(highScore, score, name);
 	}
 
@@ -638,6 +638,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 		al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCREEN_W / 2 - 10, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, "New #");
 		al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, buffer2);
 	}
+	while(!al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	al_flip_display();
 
 	// esperamos a alguna selección
@@ -669,7 +670,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 						draw = true;
 					}
 					buttons[i]->press = true; // actualizamos el estado del botón
-					al_play_sample(elem->effectCursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					while(!al_play_sample(elem->effectCursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 				}
 
 				else if (buttons[i]->press && (ev.mouse.x > buttons[i]->x_center + buttons[i]->width || ev.mouse.x < buttons[i]->x_center - buttons[i]->width || ev.mouse.y > buttons[i]->y_center + buttons[i]->height || ev.mouse.y < buttons[i]->y_center - buttons[i]->height))
@@ -689,17 +690,17 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 			if (ev.mouse.x <= buttons[PLAY]->x_center + buttons[PLAY]->width && ev.mouse.x >= buttons[PLAY]->x_center - buttons[PLAY]->width && ev.mouse.y <= buttons[PLAY]->y_center + buttons[PLAY]->height && ev.mouse.y >= buttons[PLAY]->y_center - buttons[PLAY]->height)
 			{
 				*state = GAME_SEL;
-				al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				while(!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 				al_rest(0.4);
 				al_stop_samples();
-				al_play_sample(elem->sampleMenu, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+				while(!al_play_sample(elem->sampleMenu, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL));
 				waitingForUpdate = false;
 			}
 
 			else if (ev.mouse.x <= buttons[SCORE]->x_center + buttons[SCORE]->width && ev.mouse.x >= buttons[SCORE]->x_center - buttons[SCORE]->width && ev.mouse.y <= buttons[SCORE]->y_center + buttons[SCORE]->height && ev.mouse.y >= buttons[SCORE]->y_center - buttons[SCORE]->height)
 			{
 				*state = HIGHSCORE;
-				al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				while(!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 				al_rest(0.6);
 				waitingForUpdate = false;
 			}
@@ -723,7 +724,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 
 static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 {
-	al_play_sample(elem->effectPause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	while(!al_play_sample(elem->effectPause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	al_set_sample_instance_gain(elem->sampleGameReg, 0.2);
 
 	ALLEGRO_EVENT ev;
@@ -759,7 +760,7 @@ static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 	{
 		if (!al_get_sample_instance_playing(elem->sampleGameReg))
 		{
-			al_play_sample_instance(elem->sampleGameReg);
+			while(!al_play_sample_instance(elem->sampleGameReg));
 			al_set_sample_instance_gain(elem->sampleGameReg, 0.2);
 		}
 
@@ -786,7 +787,7 @@ static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 						draw = true;
 					}
 					buttons[i]->press = true; // actualizamos el estado del botón
-					al_play_sample(elem->effectCursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					while(!al_play_sample(elem->effectCursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 				}
 
 				else if (buttons[i]->press && (ev.mouse.x > buttons[i]->x_center + buttons[i]->width || ev.mouse.x < buttons[i]->x_center - buttons[i]->width || ev.mouse.y > buttons[i]->y_center + buttons[i]->height || ev.mouse.y < buttons[i]->y_center - buttons[i]->height))
@@ -805,7 +806,7 @@ static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 		{
 			if (ev.mouse.x <= buttons[RESUME]->x_center + buttons[RESUME]->width && ev.mouse.x >= buttons[RESUME]->x_center - buttons[RESUME]->width && ev.mouse.y <= buttons[RESUME]->y_center + buttons[RESUME]->height && ev.mouse.y >= buttons[RESUME]->y_center - buttons[RESUME]->height)
 			{
-				al_play_sample(elem->effectPause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				while(!al_play_sample(elem->effectPause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 				al_rest(0.4);
 				al_set_sample_instance_gain(elem->sampleGameReg, 1.0);
 				waitingForUpdate = false;
@@ -813,7 +814,7 @@ static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 
 			else if (ev.mouse.x <= buttons[QUIT]->x_center + buttons[QUIT]->width && ev.mouse.x >= buttons[QUIT]->x_center - buttons[QUIT]->width && ev.mouse.y <= buttons[QUIT]->y_center + buttons[QUIT]->height && ev.mouse.y >= buttons[QUIT]->y_center - buttons[QUIT]->height)
 			{
-				al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				while(!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 				al_rest(0.4);
 				waitingForUpdate = false;
 				*playing = false;
@@ -822,7 +823,7 @@ static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == PAUSE)
 		{
-			al_play_sample(elem->effectPause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			while(!al_play_sample(elem->effectPause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 			al_rest(0.4);
 			al_set_sample_instance_gain(elem->sampleGameReg, 1.0);
 			waitingForUpdate = false;

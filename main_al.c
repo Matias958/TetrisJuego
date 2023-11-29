@@ -9,6 +9,7 @@
 #include "highscore_al.h"
 #include "game_state.h"
 #include "highscore.h"
+#include "game_al.h"
 
 int main(void)
 {

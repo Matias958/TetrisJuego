@@ -34,7 +34,7 @@ int initialize_al(element_t *elem)
     elem->effectTetris = NULL;
     elem->eventQueue = NULL;
     elem->fontInGame = NULL;
-    elem->fontInGameBorder;
+    elem->fontInGameBorder = NULL;
     elem->gameBackround = NULL;
     elem->gameModes = NULL;
     elem->gameModesDescription = NULL;

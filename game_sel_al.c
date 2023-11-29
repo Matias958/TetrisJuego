@@ -1,4 +1,4 @@
-#include "game_sel_al.h" ameMode
+#include "game_sel_al.h" 
 #include "buttons_al.h"
 
 #define LINES 4
@@ -91,21 +91,21 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
             {
                 gameMode->blinking = !gameMode->blinking; // se cambia el estado y el color cuando no esta pulsado
                 states[BLINKING] = gameMode->blinking;
-                al_play_sample(elem->effectSelect, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                while(!al_play_sample(elem->effectSelect, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
                 draw = true;
             }
             else if (buttons[MIRRORED]->press && !mouseClick)
             {
                 gameMode->mirrored = !gameMode->mirrored;
                 states[MIRRORED] = gameMode->mirrored;
-                al_play_sample(elem->effectSelect, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                while(!al_play_sample(elem->effectSelect, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
                 draw = true;
             }
             else if (buttons[NOT_EMPTY]->press && !mouseClick)
             {
                 gameMode->notEmpty = !gameMode->notEmpty;
                 states[NOT_EMPTY] = gameMode->notEmpty;
-                al_play_sample(elem->effectSelect, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                while(!al_play_sample(elem->effectSelect, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
                 draw = true;
             }
             else if (buttons[START]->press && !mouseClick)
@@ -123,8 +123,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
                 {
                     gameMode->difficulty = EASY;
                 }
-                al_stop_sample(elem->effectSelect);
-                al_play_sample(elem->effectSelect, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                while(!al_play_sample(elem->effectSelect, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
                 draw = true;
             }
             mouseClick = true;
@@ -144,7 +143,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
                     }
                     if (!mouseClick)
                     {
-                        al_play_sample(elem->effectCursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                        while(!al_play_sample(elem->effectCursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
                     }
                     buttons[i]->press = true; // actualizamos el estado del botón
                 }
