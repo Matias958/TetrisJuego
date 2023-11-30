@@ -1,5 +1,5 @@
 /* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
-*Titulo: rules.h
+*Titulo: rules.c
 *Descripcion: Manejo de piezas en Tetris.
 *Autores: Facundo Torres
 *         Julieta Libertad Rodriguez
@@ -79,27 +79,29 @@ void turnPiece(piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD])
 		return;
 	}
 
-	piece_t piece_temp = *piece; // creamos una estructura pieza temporal con la que trabajar
-	piece_temp.rotation++;		 // aumentamos en uno la rotacion
-	piece_temp.rotation %= 4;	 // si llega a 4 vuelve a 0
+	piece_t pieceTemp = *piece; // creamos una estructura pieza temporal con la que trabajar
+	pieceTemp.rotation++;		 // aumentamos en uno la rotacion
+	pieceTemp.rotation %= 4;	 // si llega a 4 vuelve a 0
 
 	for (int i = 0; i < 4; i++) // rotamos la pieza temporal
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			piece_temp.matrixOfPiece[j][3 - i] = piece->matrixOfPiece[i][j]; // regla de rotacion
+			pieceTemp.matrixOfPiece[j][3 - i] = piece->matrixOfPiece[i][j]; 
 		}
 	}
 
 	// nos fijamos si existe algun conflicto tras la rotacion
-	if (collision(matrix, &piece_temp) == SUCCESS) 
+	if (collision(matrix, &pieceTemp) == SUCCESS) 
 	{
-		*piece = piece_temp; 
+		*piece = pieceTemp; 
 	}
-	else if (wallKick(&piece_temp, matrix) == SUCCESS) // si hay un error salta al wallkick
+	// si hay un error salta al wallkick
+	else if (wallKick(&pieceTemp, matrix) == SUCCESS) 
 	{
-		*piece = piece_temp; // si se soluciona copia la pieza temporal con el desplazamiento
-	}						 // si no soluciona el wallkick la pieza no permite rotarla
+		*piece = pieceTemp; // si se soluciona copia la pieza temporal con el desplazamiento
+	}
+	// si no soluciona el wallkick la pieza no permite rotarla						 
 }
 
 /*collision()
@@ -133,12 +135,12 @@ int collision(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], piece_t *piece)
  */
 void movePiece(piece_t *piece, int direction, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD])
 {
-	piece_t piece_temp = *piece;					   
-	piece_temp.column = piece_temp.column + direction; // suma a la column la direccion
+	piece_t pieceTemp = *piece;					   
+	pieceTemp.column = pieceTemp.column + direction; // suma a la column la direccion
 
-	if (collision(matrix, &piece_temp) == SUCCESS) 
+	if (collision(matrix, &pieceTemp) == SUCCESS) 
 	{
-		*piece = piece_temp; // si se soluciona copia la pieza temporal con la direccion
+		*piece = pieceTemp; // si se soluciona copia la pieza temporal con la direccion
 	}
 }
 

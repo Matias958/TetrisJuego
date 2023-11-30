@@ -1,17 +1,32 @@
-/*HEADERS*/
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: element_al.c
+*Descripcion: inicializacion y destruccion de
+*            elementos de Allegro
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
+
+/************** HEADERS ***************/
 #include <stdio.h>
 #include <stdlib.h>
 #include "element_al.h"
 
+/************** MACROS ***************/
 #define FPS 10
 
-/*INICIALIZA_AL()
+/*initializeElements()
  * Función encargada de inicializar los elementos de allegro.
  * Recibe: Una estructura element_t con los elementos a inicializar.
- * Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
+ * Devuelve: EXIT_SUCCESS si logro inicializar todos los elementos
+ *  EXIT_FAILURE de lo contrario.
  */
-int initialize_al(element_t *elem)
+int initializeElements(element_t *elem)
 {
+
+    //inicializamos todos los elementos con NULL
     elem->bitmap = NULL;
     elem->blinking = NULL;
     elem->blinkingLogo = NULL;
@@ -118,7 +133,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->titleBorder)
     {
-        fprintf(stderr, "Falla al crear la fuente del borde del título");
+        fprintf(stderr, "Falla al crear la fuente del borde del título\n");
         return EXIT_FAILURE;
     }
 
@@ -142,7 +157,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->gameModesDescription)
     {
-        fprintf(stderr, "Falla al crear la fuente de la descripción de modo de juego");
+        fprintf(stderr, "Falla al crear la fuente de la descripción de modo de juego\n");
         return EXIT_FAILURE;
     }
 
@@ -150,7 +165,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->gameModesDescriptionBorder)
     {
-        fprintf(stderr, "Falla al crear la fuente del borde de la descripción de modo de juego");
+        fprintf(stderr, "Falla al crear la fuente del borde de la descripción de modo de juego\n");
         return EXIT_FAILURE;
     }
 
@@ -158,7 +173,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->gameModes)
     {
-        fprintf(stderr, "Falla al crear la fuente de la selección de modo de juego");
+        fprintf(stderr, "Falla al crear la fuente de la selección de modo de juego\n");
         return EXIT_FAILURE;
     }
 
@@ -166,14 +181,14 @@ int initialize_al(element_t *elem)
 
     if (!elem->difficulty)
     {
-        fprintf(stderr, "Falla al crear la fuente de la dificultad");
+        fprintf(stderr, "Falla al crear la fuente de la dificultad\n");
         return EXIT_FAILURE;
     }
     elem->difficultyBorder = al_load_ttf_font("fonts/Starborn.ttf", 35, 0);
 
     if (!elem->difficultyBorder)
     {
-        fprintf(stderr, "Falla al crear la fuente del borde de la dificultad");
+        fprintf(stderr, "Falla al crear la fuente del borde de la dificultad\n");
         return EXIT_FAILURE;
     }
 
@@ -181,7 +196,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->fontInGame)
     {
-        fprintf(stderr, "Falla al crear la fuente de puntaje en juego");
+        fprintf(stderr, "Falla al crear la fuente de puntaje en juego\n");
         return EXIT_FAILURE;
     }
 
@@ -189,7 +204,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->fontInGameBorder)
     {
-        fprintf(stderr, "Falla al crear la fuente del borde del puntaje en juego");
+        fprintf(stderr, "Falla al crear la fuente del borde del puntaje en juego\n");
         return EXIT_FAILURE;
     }
 
@@ -197,7 +212,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->gameOver)
     {
-        fprintf(stderr, "Falla al crear la fuente del game over");
+        fprintf(stderr, "Falla al crear la fuente del game over\n");
         return EXIT_FAILURE;
     }
 
@@ -205,7 +220,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->pauseMenu)
     {
-        fprintf(stderr, "Falla al crear la fuente del menu de pausa");
+        fprintf(stderr, "Falla al crear la fuente del menu de pausa\n");
         return EXIT_FAILURE;
     }
 
@@ -213,7 +228,7 @@ int initialize_al(element_t *elem)
 
     if (!elem->highscoreNews)
     {
-        fprintf(stderr, "Falla al crear la fuente de la noticia de highscore");
+        fprintf(stderr, "Falla al crear la fuente de la noticia de highscore\n");
         return EXIT_FAILURE;
     }
 
@@ -482,6 +497,7 @@ int initialize_al(element_t *elem)
         return EXIT_FAILURE;
     }
 
+    //registramos los elementos en la cola de eventos
     al_register_event_source(elem->eventQueue, al_get_keyboard_event_source());
     al_register_event_source(elem->eventQueue, al_get_display_event_source(elem->display));
     al_register_event_source(elem->eventQueue, al_get_timer_event_source(elem->timerOn));
@@ -493,7 +509,7 @@ int initialize_al(element_t *elem)
 
 
 // Función para destruir un display
-void destroyDisplay(ALLEGRO_DISPLAY *display)
+static void destroyDisplay(ALLEGRO_DISPLAY *display)
 {
     if (display)
     {
@@ -502,7 +518,7 @@ void destroyDisplay(ALLEGRO_DISPLAY *display)
 }
 
 // Función para destruir un bitmap
-void destroyBitmap(ALLEGRO_BITMAP *bitmap)
+static void destroyBitmap(ALLEGRO_BITMAP *bitmap)
 {
     if (bitmap)
     {
@@ -511,7 +527,7 @@ void destroyBitmap(ALLEGRO_BITMAP *bitmap)
 }
 
 // Función para destruir un eventQueue
-void destroyEventQueue(ALLEGRO_EVENT_QUEUE *eventQueue)
+static void destroyEventQueue(ALLEGRO_EVENT_QUEUE *eventQueue)
 {
     if (eventQueue)
     {
@@ -520,7 +536,7 @@ void destroyEventQueue(ALLEGRO_EVENT_QUEUE *eventQueue)
 }
 
 // Función para destruir un timer
-void destroyTimer(ALLEGRO_TIMER *timer)
+static void destroyTimer(ALLEGRO_TIMER *timer)
 {
     if (timer)
     {
@@ -529,7 +545,7 @@ void destroyTimer(ALLEGRO_TIMER *timer)
 }
 
 // Función para destruir una fuente
-void destroyFont(ALLEGRO_FONT *font)
+static void destroyFont(ALLEGRO_FONT *font)
 {
     if (font)
     {
@@ -538,7 +554,7 @@ void destroyFont(ALLEGRO_FONT *font)
 }
 
 // Función para destruir un sample
-void destroySample(ALLEGRO_SAMPLE *sample)
+static void destroySample(ALLEGRO_SAMPLE *sample)
 {
     if (sample)
     {
@@ -547,7 +563,7 @@ void destroySample(ALLEGRO_SAMPLE *sample)
 }
 
 // Función para destruir una sample instance
-void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance)
+static void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance)
 {
     if (sample_instance)
     {
@@ -555,7 +571,12 @@ void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance)
     }
 }
 
-// Función para destruir cada elemento
+/* destructorOfElements()
+* Función encargada de destruir todos los elementos de Allegro
+* que contiene la estructura element_t
+* Recibe: Una estructura element_t con los elementos a destruir.
+* Devuelve: EXIT_SUCCESS si logro destruir todos los elementos 
+*/
 int destructorOfElements(element_t *elem)
 {
     destroyDisplay(elem->display);

@@ -1,3 +1,12 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: buttons_al.c
+*Descripcion: dibujo de botones en Allegro
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
 #ifndef BUTTONS_AL_H
 #define BUTTONS_AL_H
 
@@ -10,6 +19,10 @@
 #include "allegro5/allegro_ttf.h"
 
 /************** ESTRUCTURAS ***************/
+
+/*button_t
+* Estructura que contiene toda la información de un boton
+*/
 typedef struct
 {
     char *name;
@@ -26,11 +39,11 @@ typedef struct
 
 /************** PROTOTIPOS ***************/
 
-/*DRAW_BUTTONS()
+/*drawButtons()
  * Función encargada de dibujar todos los botones de un arreglo, colocando el texto en el color dado
- * Recibe: arreglo de botones a dibjuar y color de texto (en formato de ALLEGRO_COLOR)
+ * Recibe: buttons (arreglo de botones a dibjuar) y textColor (color de texto)
  * Devuelve: -
  */
-void drawButtons(button_t *buttons[], ALLEGRO_COLOR text);
+void drawButtons(button_t *buttons[], ALLEGRO_COLOR textColor);
 
 #endif

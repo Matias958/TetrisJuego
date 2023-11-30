@@ -1,8 +1,18 @@
-/*HEADERS*/
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: menu_al.c
+*Descripcion: aspecto gráfico del menu en Allegro.
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
+/************** HEADERS ***************/
+#include <time.h>
 #include "menu_al.h"
 #include "buttons_al.h"
 
-/*POSICÓN DEL TÍTULO EN LA PANTALLA*/
+/************** MACROS***************/
 #define CENTER_X (SCREEN_W * 0.10)
 #define CENTER_Y (SCREEN_H * 0.25)
 #define STEP 120
@@ -11,8 +21,16 @@ enum menuOptions
 {
     PLAY,
     SCORE
-}; // menu
+};
 
+
+/*showMenu
+* Funcion encargada de mostrar el menu, y analizar la selección del jugador.
+* Recibe: elem ( puntero a estructura con los elementos de Allegro) y state
+* (estructura que contiene el estado de la ventana - game_state -: CLOSE_DISPLAY, MENU,
+* GAME_SEL, HIGHSCORE o GAME)
+* Devuelve: -
+*/
 void showMenu(element_t *elem, window_state_t *state)
 {
     // música
@@ -30,7 +48,6 @@ void showMenu(element_t *elem, window_state_t *state)
                               al_map_rgb(255, 255, 0),
                               al_map_rgb(0, 200, 245),
                               al_map_rgb(200, 30, 200)};
-    // ALLEGRO_COLOR *colors[] = {"red", "green", "orange", "violet", "blue", "yellow"};
     int step[] = {180, 290, 400, 520, 640, 700};
 
     int i;
@@ -53,7 +70,7 @@ void showMenu(element_t *elem, window_state_t *state)
 
     drawButtons(buttons, al_color_name("white"));
 
-    al_flip_display(); // cargamos el buffer en el display
+    al_flip_display();
 
     // esperamos a alguna selección
     ALLEGRO_EVENT ev;
@@ -63,7 +80,8 @@ void showMenu(element_t *elem, window_state_t *state)
 
     while (waitingForUpdate)
     {
-        al_get_next_event(elem->eventQueue, &ev); // pedimos el evento que venga
+        // pedimos el evento que venga
+        al_get_next_event(elem->eventQueue, &ev); 
 
         // analizamos si se cerró la ventana
         if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -79,21 +97,23 @@ void showMenu(element_t *elem, window_state_t *state)
             {
                 if (!buttons[i]->press && (ev.mouse.x <= buttons[i]->x_center + buttons[i]->width && ev.mouse.x >= buttons[i]->x_center - buttons[i]->width && ev.mouse.y <= buttons[i]->y_center + buttons[i]->height && ev.mouse.y >= buttons[i]->y_center - buttons[i]->height))
                 {
-                    if (!buttons[i]->press) // si el botón cambia de estado, dibujamos
+                    // si el botón cambia de estado, dibujamos
+                    if (!buttons[i]->press) 
                     {
                         draw = true;
                     }
-                    buttons[i]->press = true; // actualizamos el estado del botón
+                    buttons[i]->press = true; 
                     al_play_sample(elem->effectCursor, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 }
 
                 else if (buttons[i]->press && (ev.mouse.x > buttons[i]->x_center + buttons[i]->width || ev.mouse.x < buttons[i]->x_center - buttons[i]->width || ev.mouse.y > buttons[i]->y_center + buttons[i]->height || ev.mouse.y < buttons[i]->y_center - buttons[i]->height))
                 {
-                    if (buttons[i]->press) // si el botón cambia de estado, dibujamos
+                    // si el botón cambia de estado, dibujamos
+                    if (buttons[i]->press) 
                     {
                         draw = true;
                     }
-                    buttons[i]->press = false; // actualizamos el estado del botón
+                    buttons[i]->press = false; 
                 }
             }
         }
@@ -117,6 +137,7 @@ void showMenu(element_t *elem, window_state_t *state)
             }
         }
 
+        //refrescamos la pantalla
         if (++times % 1000)
         {
             draw = true;
@@ -127,8 +148,8 @@ void showMenu(element_t *elem, window_state_t *state)
         if (draw)
         {
             drawButtons(buttons, al_color_name("white"));
-            al_flip_display(); // cargamos el buffer en el display
-            draw = false;      // cambiamos el estado de draw
+            al_flip_display();
+            draw = false;     
         }
     }
 }

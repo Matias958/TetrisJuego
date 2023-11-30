@@ -1,13 +1,31 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: highscore.c
+*Descripcion: manejo de archivo que contiene el 
+*             registro de puntajes altos
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
+/************** HEADERS ***************/
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "highscore.h"
 
+
+/*getHighscore()
+* Función encargada de recopilar la información que se encuentra en el
+* archivo highscore.txt con el formato: AAA(nombre)99999(puntaje),
+* Recibe: highscore (estructura donde almacenar toda la información recopilada).
+* Devuelve: estado del proceso (true si fue exitoso o false de lo contrario)
+*/
 bool getHighscore(highscore_t *highscore)
 {
-
+	//abrimos el archivo como solo lectura
 	FILE *highscoreFile;
-	highscoreFile = fopen("highscore.txt", "r"); //abro un puntero al archivo
+	highscoreFile = fopen("highscore.txt", "r"); 
 
 	if (highscoreFile == NULL)
 	{
@@ -15,8 +33,9 @@ bool getHighscore(highscore_t *highscore)
 		return false;
 	}
 
+	// guardo el archivo en un buffer
 	char buffer[100];
-	fgets(buffer, 100, highscoreFile); // guardo el archivo en un buffer
+	fgets(buffer, 100, highscoreFile); 
 
 	int c = 0;
 	int i;
@@ -45,6 +64,16 @@ bool getHighscore(highscore_t *highscore)
 	return true;
 }
 
+
+/*checkIfHighscore()
+* Función encargada de determinar si se realizo un puntaje para colocarse
+*  en el TOP 5 historico del presente juego, y devolver la posición en la
+*  que se encuentra en dicho caso.
+* Recibe: score (puntaje a contrastar) y highscore (información del estado
+*  actual del TOP 5).
+* Devuelve: posición en la que se encuentra el puntaje dado dentro del TOP 5
+* o un valor mayor a NUMBER_OF_PLAYERS
+*/
 int checkIfHighscore(int score, highscore_t *highscore)
 {
 	int i;
@@ -53,12 +82,25 @@ int checkIfHighscore(int score, highscore_t *highscore)
 	return i + 1;
 }
 
+
+
+/*setHighScore()
+* Función encargada de guardar un puntaje en el TOP 5.
+* Recibe: highscore (estado actual del TOP 5), score (puntaje a guardar) y 
+*  name (nombre de 3 caracteres a guardar junto con el puntaje).
+* Devuelve: estado del proceso (true si fue exitoso o false de lo contrario)
+*/
 bool setHighscore(highscore_t *highscore, int score, char name[CHARACTERS])
 {
-	// buscamos la posici�n que le corresponde
+	// buscamos la posicion que le corresponde
 	int pos;
-	for (pos = 0; highscore->highscores[pos] > score; pos++)
-		;
+	for (pos = 0; highscore->highscores[pos] >= score && pos < NUMBER_OF_PLAYERS; pos++);
+
+	if(pos == NUMBER_OF_PLAYERS)
+	{
+		printf("El puntaje dado no corresponde a un puntaje alto!!\n");
+		return false;
+	}
 
 	int tempHighScore = highscore->highscores[pos];
 	char tempHighScoreName[CHARACTERS];
@@ -70,7 +112,7 @@ bool setHighscore(highscore_t *highscore, int score, char name[CHARACTERS])
 		tempHighScoreName[i] = highscore->nameOfHighscores[pos][i];
 	}
 
-	// guardamos el nuevo highscore en su posici�n
+	// guardamos el nuevo highscore en su posicion
 	highscore->highscores[pos] = score;
 	for (i = 0; i < CHARACTERS; i++)
 	{

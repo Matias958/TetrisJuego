@@ -1,3 +1,13 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: element_al.h
+*Descripcion: inicializacion y destruccion de
+*            elementos de Allegro
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
 #ifndef ELEMENT_AL_H
 #define ELEMENT_AL_H
 
@@ -19,6 +29,10 @@
 
 /************** ESTRUCTURAS ***************/
 
+/*element_t
+* Estructura que contiene punteros a todos los elementos de Allegro
+* utilizados en el programa.
+*/
 typedef struct
 {
     ALLEGRO_DISPLAY *display;
@@ -83,12 +97,20 @@ typedef struct
 
 /************** PROTOTIPOS ***************/
 
-/*INICIALIZA_AL()
+/*initializeElements()
  * Función encargada de inicializar los elementos de allegro.
  * Recibe: Una estructura element_t con los elementos a inicializar.
- * Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
+ * Devuelve: EXIT_SUCCESS si logro inicializar todos los elementos
+ *  EXIT_FAILURE de lo contrario.
  */
-int initialize_al(element_t *elem);
+int initializeElements(element_t *elem);
+
+/* destructorOfElements()
+* Función encargada de destruir todos los elementos de Allegro
+* que contiene la estructura element_t
+* Recibe: Una estructura element_t con los elementos a destruir.
+* Devuelve: EXIT_SUCCESS si logro destruir todos los elementos 
+*/
 int destructorOfElements(element_t *elem);
 
-#endif // INICIALIZACION_AL_H
+#endif 

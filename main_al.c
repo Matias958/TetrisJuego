@@ -1,5 +1,13 @@
-/*HEADERS*/
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: main_al.c
+*Descripcion: Tetris que funciona bajo Allegro5
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
 
+/************** HEADERS ***************/
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,12 +32,13 @@ int main(void)
 
     // HIGHSCORE
     highscore_t highscore;
-    if (!getHighscore(&highscore)) //cargo el highscore a la memoria
+    //cargo el highscore a la memoria
+    if (!getHighscore(&highscore)) 
     {
         return EXIT_FAILURE;
     }
 
-    if (initialize_al(&elem) == EXIT_FAILURE)
+    if (initializeElements(&elem) == EXIT_FAILURE)
     {
         printf("ERROR: no se pudieron inicializar los elementos de Allegro\n");
         destructorOfElements(&elem);
@@ -50,7 +59,7 @@ int main(void)
             playGame(&elem, game_mode, &estado, &highscore);
             break;
         case HIGHSCORE:
-            p_highscore(&elem, &highscore, &estado);
+            showHighScores(&elem, &highscore, &estado);
             break;
         }
     }

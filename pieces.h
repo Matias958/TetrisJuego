@@ -1,3 +1,12 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: pieces.h
+*Descripcion: definiciones para piezas.
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
 #ifndef PIECES_H
 #define PIECES_H
 
