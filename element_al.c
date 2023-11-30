@@ -3,11 +3,56 @@
 #include <stdlib.h>
 #include "element_al.h"
 
+/*PROTOTIPOS*/
+/*DESTROY_DISPLAY()
+ * Función encargada de destruir un display.
+ * Recibe: Un puntero al display.
+ * Devuelve: -
+ */
+void destroyDisplay(ALLEGRO_DISPLAY *display);
+/*DESTROY_BITMAP()
+ * Función encargada de destruir un bitmap.
+ * Recibe: Un puntero al bitmap.
+ * Devuelve: -
+ */
+void destroyBitmap(ALLEGRO_BITMAP *bitmap);
+/*DESTROY_EVENTQUEUE()
+ * Función encargada de destruir un eventQueue.
+ * Recibe: Un puntero al eventQueue.
+ * Devuelve: -
+ */
+void destroyEventQueue(ALLEGRO_EVENT_QUEUE *eventQueue);
+/*DESTROY_TIMER()
+ * Función encargada de destruir un timer.
+ * Recibe: Un puntero al timer.
+ * Devuelve: -
+ */
+void destroyTimer(ALLEGRO_TIMER *timer);
+/*DESTROY__FONT()
+ * Función encargada de destruir una fuente.
+ * Recibe: Un puntero a la fuente.
+ * Devuelve: -
+ */
+void destroyFont(ALLEGRO_FONT *font);
+/*DESTROYSAMPLE()
+ * Función encargada de destruir un sample.
+ * Recibe: Un puntero al sample.
+ * Devuelve: -
+ */
+void destroySample(ALLEGRO_SAMPLE *sample);
+/*DESTROY_SAMPLE_INSTANCE()
+ * Función encargada de destruir una sample instance.
+ * Recibe: Un puntero a la sample instance.
+ * Devuelve: -
+ */
+void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance);
+
+/*MACROS*/
 #define FPS 10
 
-/*INICIALIZA_AL()
+/*INICIALIZE_AL()
  * Función encargada de inicializar los elementos de allegro.
- * Recibe: Una estructura element_t con los elementos a inicializar.
+ * Recibe: Un puntero a una estructura element_t con los elementos a inicializar.
  * Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
  */
 int initialize_al(element_t *elem)
@@ -491,8 +536,11 @@ int initialize_al(element_t *elem)
     return EXIT_SUCCESS;
 }
 
-
-// Función para destruir un display
+/*DESTROY_DISPLAY()
+ * Función encargada de destruir un display.
+ * Recibe: Un puntero al display.
+ * Devuelve: -
+ */
 void destroyDisplay(ALLEGRO_DISPLAY *display)
 {
     if (display)
@@ -501,7 +549,11 @@ void destroyDisplay(ALLEGRO_DISPLAY *display)
     }
 }
 
-// Función para destruir un bitmap
+/*DESTROY_BITMAP()
+ * Función encargada de destruir un bitmap.
+ * Recibe: Un puntero al bitmap.
+ * Devuelve: -
+ */
 void destroyBitmap(ALLEGRO_BITMAP *bitmap)
 {
     if (bitmap)
@@ -510,7 +562,11 @@ void destroyBitmap(ALLEGRO_BITMAP *bitmap)
     }
 }
 
-// Función para destruir un eventQueue
+/*DESTROY_EVENTQUEUE()
+ * Función encargada de destruir un eventQueue.
+ * Recibe: Un puntero al eventQueue.
+ * Devuelve: -
+ */
 void destroyEventQueue(ALLEGRO_EVENT_QUEUE *eventQueue)
 {
     if (eventQueue)
@@ -519,7 +575,11 @@ void destroyEventQueue(ALLEGRO_EVENT_QUEUE *eventQueue)
     }
 }
 
-// Función para destruir un timer
+/*DESTROY_TIMER()
+ * Función encargada de destruir un timer.
+ * Recibe: Un puntero al timer.
+ * Devuelve: -
+ */
 void destroyTimer(ALLEGRO_TIMER *timer)
 {
     if (timer)
@@ -528,7 +588,11 @@ void destroyTimer(ALLEGRO_TIMER *timer)
     }
 }
 
-// Función para destruir una fuente
+/*DESTROY_FONT()
+ * Función encargada de destruir una fuente.
+ * Recibe: Un puntero a la fuente.
+ * Devuelve: -
+ */
 void destroyFont(ALLEGRO_FONT *font)
 {
     if (font)
@@ -537,7 +601,11 @@ void destroyFont(ALLEGRO_FONT *font)
     }
 }
 
-// Función para destruir un sample
+/*DESTROY_SAMPLE()
+ * Función encargada de destruir un sample.
+ * Recibe: Un puntero al sample.
+ * Devuelve: -
+ */
 void destroySample(ALLEGRO_SAMPLE *sample)
 {
     if (sample)
@@ -546,7 +614,11 @@ void destroySample(ALLEGRO_SAMPLE *sample)
     }
 }
 
-// Función para destruir una sample instance
+/*DESTROY_SAMPLE_INSTANCE()
+ * Función encargada de destruir una sample instance.
+ * Recibe: Un puntero a la sample instance.
+ * Devuelve: -
+ */
 void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance)
 {
     if (sample_instance)
@@ -555,7 +627,11 @@ void destroySampleInstance(ALLEGRO_SAMPLE_INSTANCE *sample_instance)
     }
 }
 
-// Función para destruir cada elemento
+/*DESTRUCTOR_OF_ELEMENTS()
+ * Función encargada de destruir cada uno de los elementos de allegro.
+ * Recibe: Un puntero a una estructura element_t con los elementos a destruir.
+ * Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
+ */
 int destructorOfElements(element_t *elem)
 {
     destroyDisplay(elem->display);

@@ -27,4 +27,4 @@ typedef struct
     int rotation;
 } piece_t;
 
-#endif
+#endif //PIECES_H

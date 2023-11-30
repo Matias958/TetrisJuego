@@ -8,9 +8,9 @@
 
 /************** PROTOTIPOS ***************/
 
-/*P_GAME_MODE()
- * Función encargada de crear y seleccionar el modo de juego elegido.
- * Recibe: Estructura element_t; window_state_t y game_mode_t
+/*SHOW_GAME_MODE_SEL()
+ * Función encargada de crear y mostrar la pantalla que permite seleccionar el modo de juego.
+ * Recibe: Punteros a una estructura element_t, una window_state_t y una game_mode_t
  * Devuelve: -
  */
 void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMode);

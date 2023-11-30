@@ -1,9 +1,12 @@
+/*HEADERS*/
 #include <stdlib.h>
 #include <stdio.h>
 #include "game_al.h"
 #include "buttons_al.h"
 #include "game.h"
 
+
+/*MACROS*/
 #define BOARD_WIDTH WIDTH_OF_BOARD
 #define BOARD_LENGHT HEIGHT_OF_BOARD
 
@@ -43,6 +46,7 @@
 
 #define SIZE_OF_TITLE 200
 
+/*ESTRUCTURAS*/
 enum bordes
 {
 	EMPTY_B = BORDER + 1,
@@ -66,6 +70,7 @@ enum pause_options
 	QUIT
 };
 
+
 static const int posPieza[7][4][2] = {
 	{{SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}, {SQUARE_SIG_SIZE * 2, SQUARE_SIG_SIZE * 2.5}, {3 * SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}, {4 * SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}},	  // I   0
 	{{SQUARE_SIG_SIZE * 1.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 2.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 3.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 3.5, 3 * SQUARE_SIG_SIZE}}, // J    0
@@ -76,31 +81,67 @@ static const int posPieza[7][4][2] = {
 	{{3.5 * SQUARE_SIG_SIZE, 3 * SQUARE_SIG_SIZE}, {2.5 * SQUARE_SIG_SIZE, 3 * SQUARE_SIG_SIZE}, {2.5 * SQUARE_SIG_SIZE, 2 * SQUARE_SIG_SIZE}, {1.5 * SQUARE_SIG_SIZE, 2 * SQUARE_SIG_SIZE}}, // Z   0
 };
 
+/*PROTOTIPOS*/
+
+/* DRAW_BOARD()
+ * Función encargada de dibujar el tablero de juego.
+ * Recibe: dos matrices del tamaño de juego (una con el estado actual del juego y la otra
+ * con el tablero de predicción de caída de la pieza) y dos arreglos de ALLEGRO_COLOR que indica
+ * los colores que tiene que usar para las casillas y para los bordes respectivamente.
+ * Devuelve: -
+ */
 static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[]);
+
 static void initBoardColors(ALLEGRO_COLOR squareColors[]);
 static void initBoardBorderColors(ALLEGRO_COLOR squareColors[]);
 static void drawActiveModes(element_t *elem, game_mode_t gameModes);
+
+/* SHOW_NEXT_PIECE()
+ * Función encargada de calcular y mostrar la próxima pieza que va a aparecer.
+ * Recibe: dos arreglos de ALLEGRO_COLOR que indica los colores que tiene que usar para
+ * las casillas y para los bordes respectivamente y un puntero a una estructura element_t 
+ * con los elementos de alegro.
+ * Devuelve: -
+ */
 static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t *elem);
+
+/* SHOW_SCORE()
+ * Función encargada de mostrar los puntajes (indicando, en caso de ser necesario,
+ * si se trata de un nuevo highscore).
+ * Recibe: un puntero a una estructura element_t con los elementos de alegro;
+ * un int con el puntaje actual y una estructura highscore_t con los highscores.
+ * Devuelve: -
+ */
 static void showScore(element_t *elem, int score, highscore_t *highscore);
+
+/* IS_TETRIS_ANIMATION()
+ * Función encargada de mostrar la animación indicandi que se hizo tetris.
+ * Recibe: un arreglo de char con las lineas que tienen tetris.
+ * un arreglo de ALLEGRO_COLOR que indica los colores que tiene que usar para las
+ * casillas y un puntero a una estructura element_t con los elementos de allegro
+ * Devuelve: -
+ */
 static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLEGRO_COLOR squareColors[], element_t *elem);
+
 static void gameOver(window_state_t *state, element_t *elem, int score, highscore_t *highscore);
 static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing);
 
 /* DRAW_BOARD()
- *
- *
- *
- *
+ * Función encargada de dibujar el tablero de juego.
+ * Recibe: dos matrices del tamaño de juego (una con el estado actual del juego y la otra
+ * con el tablero de predicción de caída de la pieza) y dos arreglos de ALLEGRO_COLOR que indica
+ * los colores que tiene que usar para las casillas y para los bordes respectivamente.
+ * Devuelve: -
  */
 static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[])
 {
 	int i;
 	int j;
-	for (i = 0; i < BOARD_LENGHT; i++) //dibujo cada pieza 
+	for (i = 0; i < BOARD_LENGHT; i++)
 	{
 		for (j = 0; j < BOARD_WIDTH; j++)
 		{
-			float x1 = BOARD_START_X + j * SQUARE_SIZE; 
+			float x1 = BOARD_START_X + j * SQUARE_SIZE;
 			float y1 = BOARD_START_Y + i * SQUARE_SIZE;
 
 			al_draw_filled_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, squareColors[(int)board[i][j]]);
@@ -126,37 +167,35 @@ static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_boa
 
 }
 
-
-
+/* SHOW_SCORE()
+ * Función encargada de mostrar los puntajes (indicando, en caso de ser necesario,
+ * si se trata de un nuevo highscore).
+ * Recibe: un puntero a una estructura element_t con los elementos de alegro;
+ * un int con el puntaje actual y una estructura highscore_t con los highscores.
+ * Devuelve: -
+ */
 static void showScore(element_t *elem, int score, highscore_t *highscore)
 {
-	//Nombre del cuadro
+
 	al_draw_text(elem->buttonsBorder, al_map_rgb(66, 67, 62), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y - 3 * SIZE_OF_SCORE_WINDOW_Y / 5 - 10, ALLEGRO_ALIGN_CENTER, "SCORE");
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y - 3 * SIZE_OF_SCORE_WINDOW_Y / 5 - 10, ALLEGRO_ALIGN_CENTER, "SCORE");
-
-	//Recuadro de score
 	al_draw_filled_rectangle(SCORE_WINDOW_POS_X, SCORE_WINDOW_POS_Y, SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y, al_map_rgb(66, 67, 62));
 	al_draw_rectangle(SCORE_WINDOW_POS_X, SCORE_WINDOW_POS_Y, SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y, al_map_rgb(124, 121, 108), 6);
-
-	//Dibujo del score dado
 	char buffer[6];
 	snprintf(buffer, sizeof(buffer), "%d", score);
 	al_draw_text(elem->buttonsBorder, al_map_rgb(0, 0, 0), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y / 5, 1, buffer);
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y / 5, 1, buffer);
 
-
-	//si hubo highscore se muestra en pantalla
 	int position = checkIfHighscore(score, highscore);
 	static bool isHighScore;
 	static int prevPosition;
 
-	isHighScore = position <= NUMBER_OF_PLAYERS; 
-	if (!isHighScore) 
+	isHighScore = position <= NUMBER_OF_PLAYERS;
+	if (!isHighScore)
 	{
 		prevPosition = NUMBER_OF_PLAYERS + 1;
 	}
 
-	//si se realiza una actuaización se realiza el sonido que lo indica
 	if (position <= NUMBER_OF_PLAYERS && prevPosition > position)
 	{
 		isHighScore = true;
@@ -174,12 +213,15 @@ static void showScore(element_t *elem, int score, highscore_t *highscore)
 
 }
 
-
-
+/* SHOW_NEXT_PIECE()
+ * Función encargada de calcular y mostrar la próxima pieza que va a aparecer.
+ * Recibe: dos arreglos de ALLEGRO_COLOR que indica los colores que tiene que usar para
+ * las casillas y para los bordes respectivamente y un puntero a una estructura element_t 
+ * con los elementos de alegro.
+ * Devuelve: -
+ */
 static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t *elem)
 {
-
-	//recuadro con el nombre
 	al_draw_text(elem->buttonsBorder, al_map_rgb(66, 67, 62), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2, NEXT_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "NEXT PIECE");
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2, NEXT_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "NEXT PIECE");
 	al_draw_filled_rectangle(NEXT_PIECE_WINDOW_POS_X, NEXT_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X, NEXT_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, al_map_rgb(66, 67, 62));
@@ -188,7 +230,6 @@ static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBord
 	int nextPiece = getNextPiece();
 	int i;
 
-	//dibujo la siguiente pieza
 	for (i = 0; i < 4; i++)
 	{
 		al_draw_filled_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareColors[nextPiece]);
@@ -198,13 +239,20 @@ static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBord
 
 }
 
+/* IS_TETRIS_ANIMATION()
+ * Función encargada de mostrar la animación indicandi que se hizo tetris.
+ * Recibe: un arreglo de char con las lineas que tienen tetris.
+ * un arreglo de ALLEGRO_COLOR que indica los colores que tiene que usar para las
+ * casillas y un puntero a una estructura element_t con los elementos de allegro
+ * Devuelve: -
+ */
 static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLEGRO_COLOR squareColors[], element_t *elem)
 {
 	int i;
 	int times;
-	for (times = 0; times < 4; times++) 
+	for (times = 0; times < 4; times++)
 	{
-		for (i = 0; arrayOfLinesWithTetris[i] != END_OF_ARRAY; i++) //si hay un tetris muestro una animacion
+		for (i = 0; arrayOfLinesWithTetris[i] != END_OF_ARRAY; i++)
 		{
 			int j;
 			for (j = 1; j < BOARD_WIDTH - 1; j++)
@@ -212,7 +260,7 @@ static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLE
 				float x1 = BOARD_START_X + j * SQUARE_SIZE;
 				float y1 = BOARD_START_Y + arrayOfLinesWithTetris[i] * SQUARE_SIZE;
 
-				al_draw_filled_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, times % 2 ? al_map_rgb(220, 20, 60) : al_map_rgb(35, 235, 195)); // pinto la fila de un color
+				al_draw_filled_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, times % 2 ? al_map_rgb(220, 20, 60) : al_map_rgb(35, 235, 195));
 				al_draw_rectangle(x1, y1, x1 + SQUARE_SIZE, y1 - SQUARE_SIZE, squareColors[EMPTY], 2);
 			}
 			al_draw_text(elem->fontInGameBorder, al_map_rgb(66, 67, 62), BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE,
@@ -227,7 +275,7 @@ static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLE
 	al_draw_bitmap(elem->gameBackround, 0, 0, 0);
 }
 
-static void drawActiveModes(element_t *elem, game_mode_t gameMode)
+static void drawActiveModes(element_t *elem, game_mode_t gameMode) // falta terminar
 {
 	bool gameModesActive[] = {gameMode.mirrored, gameMode.blinking, gameMode.notEmpty};
 	ALLEGRO_BITMAP *pictures_logo[] = {elem->mirroredLogo, elem->blinkingLogo, elem->notEmptyLogo};
@@ -238,7 +286,6 @@ static void drawActiveModes(element_t *elem, game_mode_t gameMode)
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), ACTIVE_GAME_MODES_POS_X, ACTIVE_GAME_MODES_POS_Y - 4 * SQUARE_SIZE, ALLEGRO_ALIGN_CENTER, "GAME MODE");
 
 	int i;
-
 	for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
 	{
 		al_set_target_bitmap(elem->borderLogo);
@@ -255,7 +302,6 @@ static void drawActiveModes(element_t *elem, game_mode_t gameMode)
 		al_draw_bitmap(pictures_logo[i], ACTIVE_GAME_MODES_POS_X - 50, ACTIVE_GAME_MODES_POS_Y - (i == 2 ? 50 : 42) + i * 120, 0);
 	}
 
-	//muestro en nivel de dificultad
 	int numberOfStars = gameMode.difficulty;
 	for (i = 0; i < 3; i++)
 	{
@@ -315,7 +361,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 	ALLEGRO_COLOR squareBorderColors[9];
 	initBoardColors(squareColors);
 	initBoardBorderColors(squareBorderColors);
-	//declaro todas las variables 
+
 	srand(time(NULL));
 	initTime();
 
@@ -343,21 +389,20 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 		}
 	}
 
-	if (mode.notEmpty) //llena con piezas el tablero si es necesario
+	if (mode.notEmpty)
 	{
 		createBoardforNotEmpty(matrix);
 	}
 	int score = 0;
 	int times = 0;
 
-	//inicializo el tiempo y creo la primera pieza
 	initTime();
 	initPiece();
 	piece_t piece = createPiece();
 	piece_t predictionPiece = piece;
 
 	ALLEGRO_EVENT ev;
-	if (mode.blinking) //empiezo un timer si es necesario
+	if (mode.blinking)
 	{
 		al_start_timer(elem->timerOn);
 	}
@@ -376,7 +421,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 		if (al_get_next_event(elem->eventQueue, &ev)) // pedimos el evento que venga
 		{
 
-			if (ev.type == ALLEGRO_EVENT_KEY_DOWN) //si se preciono una tecla llamo a la funcion jugar con dicha tecla
+			if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 			{
 				switch (ev.keyboard.keycode)
 				{
@@ -419,7 +464,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 				playing = false;
 			}
 
-			if (mode.blinking && ev.type == ALLEGRO_EVENT_TIMER) //verifico cuando es blinking
+			if (mode.blinking && ev.type == ALLEGRO_EVENT_TIMER)
 			{
 				if (ev.timer.source == elem->timerOff)
 				{
@@ -437,14 +482,14 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 			}
 		}
 
-		if (playing && *state == GAME) //si sigue jugando vemos si tiene que bajar la pieza
+		if (playing && *state == GAME)
 		{
 			playing = !playTetris('\0', &piece, matrix, &score, mode); // actualizamos
 		}
 
 		times++;
 
-		if (times % 1000 || tetris) //dibujo cada tantas veces o si hay tetris
+		if (times % 1000 || tetris)
 		{
 			times = 0;
 			draw = true;
@@ -453,7 +498,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 		if (draw && playing)
 		{
 			int i, j;
-			// copia la matris de juego en una auxiliar para mostrar
+			// copia la matriz de juego en una auxiliar para mostrar
 			for (i = 0; i < BOARD_LENGHT; i++)
 			{
 				for (j = 0; j < BOARD_WIDTH; j++)
@@ -478,7 +523,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 			{
 				drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
 			}
-			//verifico si hay tetris
+
 			score += deleteLine(matrix, arrayOfLinesWithTetris, &tetris);
 
 			if (tetris)
@@ -491,7 +536,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 				}
 				tetris = false;
 			}
-			//muestro el resto de informacion
+
 			showScore(elem, score, highscore);
 			showNextPiece(squareColors, squareBorderColors, elem);
 			drawActiveModes(elem, mode);
@@ -519,7 +564,6 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 static void gameOver(window_state_t *state, element_t *elem, int score, highscore_t *highScore)
 {
 	ALLEGRO_EVENT ev;
-	//dibujo el menu de game over
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 	al_draw_bitmap(elem->gameBackround, 0, 0, 0);
 	al_flip_display();
@@ -549,14 +593,14 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 						  elem->buttons};
 
 	button_t *buttons[] = {&play, &highscore, NULL};
-	//muestro en puntaje
+
 	char buffer[15];
 	snprintf(buffer, sizeof(buffer), "%s%d", "SCORE: ", score);
 
 	int position = checkIfHighscore(score, highScore);
 	char buffer2[4];
 	snprintf(buffer2, sizeof(buffer2), "%d", position);
-	//si hay un nuevo highscore
+
 	if (position <= NUMBER_OF_PLAYERS)
 	{
 		while(!al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
@@ -601,7 +645,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 				*state = CLOSE_DISPLAY;
 			}
 
-			if (ev.type == ALLEGRO_EVENT_KEY_DOWN) //guardo las teclas que se precionan
+			if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 			{
 				char key = ev.keyboard.keycode;
 
@@ -635,10 +679,10 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 
 			al_flip_display();
 		}
-		//guardo los nuevos highscore
+
 		setHighscore(highScore, score, name);
 	}
-	//dibujo el resto del menu
+
 	al_clear_to_color(al_map_rgb(20, 20, 20));
 
 	al_draw_bitmap(elem->gameBackround, 0, 0, 0);
@@ -655,9 +699,8 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 	{
 		al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCREEN_W / 2 - 10, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, "New #");
 		al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, buffer2);
-		while (!al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	}
-	
+	while(!al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	al_flip_display();
 
 	// esperamos a alguna selección
@@ -775,7 +818,7 @@ static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 	al_flip_display();
 
 	int times = 0;
-	while (waitingForUpdate) //se queda mientras continue la pausa
+	while (waitingForUpdate)
 	{
 		if (!al_get_sample_instance_playing(elem->sampleGameReg))
 		{
