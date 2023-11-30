@@ -1,6 +1,6 @@
 # TP FINAL POGRAMACION I | 2023 - 1C | TETRIS
 
-![Titulo](imagenes_readme/Tetris_99.webp)
+![Titulo](imagenes_readme/titulo.avif)
 ## Descripción 
 
 El presente proyecto corresponde al proyecto final de la materia Programación I en el Instituto Tecnologico de Buenos Aires, cuya consigna fue asignada durante el primer cuatrimestre de 2023.
@@ -151,7 +151,7 @@ En la ventana de puntajes altos se muestran los 5 mejores puntajes historicos de
 
 ![Imagen de ventana de highscore](<imagenes_readme/ventana_highscore.png>)
 
-## Creditos
+## Créditos
 
 Los creadores de este proyecto son:
 
