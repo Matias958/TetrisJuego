@@ -42,5 +42,7 @@ rules.o: pieces.h rules.c rules.h
 game.o: game.c game.h pieces.h game_state.h rules.h
 	${CC} game.c -c ${OPTIONS}
 
+
+#FACILITADOR DE COMANDOS
 clean:
 	rm *.o

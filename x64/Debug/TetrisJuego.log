@@ -1,2 +1,5 @@
-﻿  highscore.c
+﻿  game.c
+  game_al.c
+  main_al.c
+  Generando código...
   TetrisJuego.vcxproj -> C:\Users\herra\OneDrive\Documentos\GitHub\TetrisJuego\x64\Debug\TetrisJuego.exe
