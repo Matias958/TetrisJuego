@@ -86,11 +86,11 @@ static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLE
 static void gameOver(window_state_t *state, element_t *elem, int score, highscore_t *highscore);
 static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing);
 
-/* DRAW_BOARD()
- *
- *
- *
- *
+/*drawBoard()
+ * Funcion encargada de dibujar el tablero del juego
+ * Recibe: board(tablero a dibujar), prediction_board (tablero con la informacion de donde va a caer la pieza)
+ *			squareColors (arreglo de los colores de las piezas), squareBorderColors (arreglo de los colores de los bordes de las piezas)
+ * Devuelve: --
  */
 static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[])
 {
@@ -127,7 +127,12 @@ static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_boa
 }
 
 
-
+/*showScore()
+ * Funcion encargada de mostar el puntaje actual del jugador
+ * Recibe: elem (puntero a la estructura con todos los punteros de allegro),score (el puntaje que alcanzo el jugador),
+ *			 y highscore (puntero a la estructura que almacena los puntajes mas altos)
+ * Devuelve: --
+ */
 static void showScore(element_t *elem, int score, highscore_t *highscore)
 {
 	//Nombre del cuadro
@@ -175,7 +180,12 @@ static void showScore(element_t *elem, int score, highscore_t *highscore)
 }
 
 
-
+/*showNextPiece()
+ * Funcion encargada de mostrar la siguiente pieza 
+ * Recibe: squareColors (arreglo de los colores de las piezas), squareBorderColors (arreglo de los colores de los bordes de las piezas)
+ *			elem (puntero a la estructura con todos los punteros de allegro)	
+ * Devuelve: --
+ */
 static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t *elem)
 {
 
@@ -198,6 +208,12 @@ static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBord
 
 }
 
+/*isTetrisAnimation()
+ * Funcion encargada de animar un tetris
+ * Recibe: arrayOfLinesWithTetris (arreglo que dice que filas del tablero hay tetris), squareColors (arreglo de los colores de las piezas),
+ *			elem (puntero a la estructura con todos los punteros de allegro)	
+ * Devuelve: --
+ */
 static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLEGRO_COLOR squareColors[], element_t *elem)
 {
 	int i;
@@ -227,6 +243,11 @@ static void isTetrisAnimation(char arrayOfLinesWithTetris[HEIGHT_OF_BOARD], ALLE
 	al_draw_bitmap(elem->gameBackround, 0, 0, 0);
 }
 
+/*drawActiveModes()
+ * Funcion encargada de dibujar los modos activo
+ * Recibe: elem (puntero a la estructura con todos los punteros de allegro), gameMode (estructura que maneja la dificultad del juego)
+ * Devuelve: --
+ */
 static void drawActiveModes(element_t *elem, game_mode_t gameMode)
 {
 	bool gameModesActive[] = {gameMode.mirrored, gameMode.blinking, gameMode.notEmpty};
@@ -298,7 +319,12 @@ static void initBoardBorderColors(ALLEGRO_COLOR squareColors[])
 	squareColors[PIECE_T] = al_map_rgb(128, 0, 128);
 	squareColors[BORDER] = al_map_rgb(66, 67, 62);
 }
-
+/*playGame()
+ * Funcion encargada de manejar todo el juego
+ * Recibe: elem (puntero a la estructura con todos los punteros de allegro), mode (estructura que maneja la dificultad del juego)
+ *			state (puntero a la estructura del estado del display), y highscore (puntero a la estructura que almacena los puntajes mas altos)
+ * Devuelve: --
+ */
 void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscore_t *highscore)
 {
 	al_clear_to_color(al_map_rgb(20, 20, 20));
@@ -516,6 +542,12 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 	}
 }
 
+/*gameOver()
+ * Funcion encargada de mostar el menu de fin de juego
+ * Recibe: elem (puntero a la estructura con todos los punteros de allegro), state (puntero a la estructura del estado del display),
+			score (el puntaje que alcanzo el jugador), y highscore (puntero a la estructura que almacena los puntajes mas altos)
+ * Devuelve: --
+ */
 static void gameOver(window_state_t *state, element_t *elem, int score, highscore_t *highScore)
 {
 	ALLEGRO_EVENT ev;
@@ -741,6 +773,12 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 	}
 }
 
+/*gameOver()
+ * Funcion encargada de dibujar el menu de pausa
+ * Recibe:  state (puntero a la estructura del estado del display), elem (puntero a la estructura con todos los punteros de allegro),
+			playing (puntero al booleano del juego)
+ * Devuelve: --
+ */
 static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 {
 	while(!al_play_sample(elem->effectPause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));

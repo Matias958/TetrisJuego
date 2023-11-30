@@ -9,6 +9,12 @@
 
 /************** PROTOTIPOS ***************/
 
+/*playGame()
+ * Funcion encargada de manejar todo el juego
+ * Recibe: elem (puntero a la estructura con todos los punteros de allegro), mode (estructura que maneja la dificultad del juego)
+ *			state (puntero a la estructura del estado del display), y highscore (puntero a la estructura que almacena los puntajes mas altos)
+ * Devuelve: --
+ */
 void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscore_t *highscore);
 
 #endif // GAME_AL_H
