@@ -1,8 +1,6 @@
-/*HEADERS*/
 #include "game_sel_al.h" 
 #include "buttons_al.h"
 
-/*MACROS*/
 #define LINES 4
 
 /*MODOS DE JUEGO A SELECCIONAR*/
@@ -19,11 +17,12 @@ static const char *descriptions[][LINES] = {{"Swaps left and right", "buttons", 
                                             {"The pieces on the", "game disapear", "momentainusly from", "the board"},
                                             {"The board is not", "empty at the", "beginning of the", "game"}};
 
-/*SHOW_GAME_MODE_SEL()
- * Función encargada de crear y mostrar la pantalla que permite seleccionar el modo de juego.
- * Recibe: Punteros a una estructura element_t, una window_state_t y una game_mode_t
+/*P_GAME_MODE()
+ * Función encargada de crear y seleccionar el modo de juego elegido.
+ * Recibe: Estructura element_t; window_state_t y game_mode_t
  * Devuelve: -
  */
+
 void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMode)
 {
     al_clear_to_color(al_map_rgb(20, 20, 20));

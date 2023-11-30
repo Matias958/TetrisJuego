@@ -83,17 +83,12 @@ typedef struct
 
 /************** PROTOTIPOS ***************/
 
-/*INICIALIZE_AL()
+/*INICIALIZA_AL()
  * Función encargada de inicializar los elementos de allegro.
- * Recibe: Un puntero a una estructura element_t con los elementos a inicializar.
+ * Recibe: Una estructura element_t con los elementos a inicializar.
  * Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
  */
 int initialize_al(element_t *elem);
-/*DESTRUCTOR_OF_ELEMENTS()
- * Función encargada de destruir cada uno de los elementos de allegro.
- * Recibe: Un puntero a una estructura element_t con los elementos a destruir.
- * Devuelve: Un int que indica si se logró o no inicializar todo correctamente.
- */
 int destructorOfElements(element_t *elem);
 
-#endif // ELEMENT_AL_H
+#endif // INICIALIZACION_AL_H

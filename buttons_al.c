@@ -1,4 +1,3 @@
-/*HEADERS*/
 #include "buttons_al.h"
 
 /*DRAW_BUTTONS()

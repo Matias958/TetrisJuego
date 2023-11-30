@@ -1,14 +1,8 @@
-/*HEADERS*/
 #include <stdlib.h>
 #include "highscore_al.h"
 #include "buttons_al.h"
 #include <stdio.h>
 
-/*P_HIGHSCORE()
-* Función encargada del manejo y creación de la pantalla de highscore.
-* Recibe: punteros a una estructura element_t, una highscore_t y una window_state_t.
-* Devuelve: -
-*/
 void p_highscore(element_t *elem, highscore_t *highscore, window_state_t *state)
 {
     al_stop_samples();

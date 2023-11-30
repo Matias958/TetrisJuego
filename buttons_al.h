@@ -33,4 +33,4 @@ typedef struct
  */
 void drawButtons(button_t *buttons[], ALLEGRO_COLOR text);
 
-#endif //BUTTONS_AL_H
+#endif
