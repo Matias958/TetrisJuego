@@ -88,6 +88,8 @@ Para modificar el nivel de dificultad del juego, se ha de seleccionar el botón 
 
 ![Dificultad](<imagenes_readme/dificultad.png>)
 
+Al igual que el resto de botones, esta selección es interactiva.
+
 ![Gif de dificultad](<imagenes_readme/dificultad.gif>)
 
 ### Juego 
@@ -99,11 +101,15 @@ Dentro del juego, cada vez que se realiza un tetris se muestra un animación sob
 
 ![Imagen de highscore dentro de juego](imagenes_readme/juego_highscore.png)
 
+La aparición de dicho aviso se da de la siguiente manera:
+
 ![Gif de highscore dentro de juego](imagenes_readme/juego_highscore.gif)
 
 Por otro lado, es posible pausar el juego con la tecla ESC, la cual abre un menu interactivo que permite terminar el jugo o reanudarlo (dentro de este menu se baja el volumen de la música):
 
 ![Imagen de menu de pausa](<imagenes_readme/pausa.png>)
+
+En el siguiente GIF se muestra como se interactua con este.
 
 ![Gif de menu de pausa](<imagenes_readme/pausa.gif>)
 
@@ -128,11 +134,15 @@ Cuando se termine el juego se mostrara la ventana de Game Over, en la cual dejar
 
 ![Imagen de game over](<imagenes_readme/GameOver_foto.png>)
 
+Siendo la animación mencionada:
+
 ![Gif de game over](<imagenes_readme/GameOver.gif>)
 
 En caso de alcanzar un puntaje dentro del top 5 historico se mostrará una ventana donde dejara elegir el nombre para identificar este puntaje, que debe estar compuesto por 3 caracteres entre letras y números.
 
 ![Imagen de game over con highscore](<imagenes_readme/game_over highscore.png>)
+
+El ingreso de esta información se da de esta manera:
 
 ![Gif de Highscore](<imagenes_readme/HighScore.gif>)
 
