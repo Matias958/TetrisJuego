@@ -2,7 +2,7 @@
 #include "game.h"
 #include "rules.h"
 
-piece_t nextPiece;
+static piece_t nextPiece;
 
 /*playTetris()
  * Función encargada de ir moviendo las piezas en base a los comandos enviados y llamar a las
