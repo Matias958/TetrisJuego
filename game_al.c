@@ -341,9 +341,8 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 	ALLEGRO_COLOR squareBorderColors[9];
 	initBoardColors(squareColors);
 	initBoardBorderColors(squareBorderColors);
-	//declaro todas las variables 
+
 	srand(time(NULL));
-	initTime();
 
 	char matrix[BOARD_LENGHT][BOARD_WIDTH];
 	char auxiliaryMatrix[BOARD_LENGHT][BOARD_WIDTH];

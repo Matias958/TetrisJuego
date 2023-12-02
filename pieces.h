@@ -24,8 +24,6 @@ enum piezas
     BORDER
 };
 
-extern const char positionOfGeneration[7][4][4];
-
 // Estructura que define y edita la pieza movil
 typedef struct
 {
