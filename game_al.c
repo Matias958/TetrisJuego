@@ -334,6 +334,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 
 	while(!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	al_set_sample_instance_gain(elem->sampleGameReg, 1);
+	al_set_sample_instance_speed(elem->sampleGameReg, 1.0);
 	al_play_sample_instance(elem->sampleGameReg);
 
 	// creamos e inicializamos un arreglo con los colores de las distintas piezas
@@ -506,6 +507,8 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 			//verifico si hay tetris
 			score += deleteLine(matrix, arrayOfLinesWithTetris, &tetris);
 
+
+
 			if (tetris)
 			{
 				while(!al_play_sample(elem->effectTetris, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
@@ -514,6 +517,10 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 				{
 					drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
 				}
+
+				//modificamos la velocidad de la música en función del puntaje
+				al_set_sample_instance_speed(elem->sampleGameReg, 1.0 + score / 7500.0);
+
 				tetris = false;
 			}
 			//muestro el resto de informacion
