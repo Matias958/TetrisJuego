@@ -182,7 +182,9 @@
     <ClCompile Include="game.c" />
     <ClCompile Include="main_al.c" />
     <ClCompile Include="menu_al.c" />
+    <ClCompile Include="raspberry.c" />
     <ClCompile Include="rules.c" />
+    <ClCompile Include="score_ras.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buttons_al.h" />
@@ -193,9 +195,12 @@
     <ClInclude Include="highscore_al.h" />
     <ClInclude Include="element_al.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="joydrv.h" />
     <ClInclude Include="menu_al.h" />
     <ClInclude Include="pieces.h" />
+    <ClInclude Include="raspberry.h" />
     <ClInclude Include="rules.h" />
+    <ClInclude Include="score_ras.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="highscore.txt" />

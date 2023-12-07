@@ -11,13 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "rules.h"
 #include "raspberry.h"
-#include "disdrv.h"
-#include "joydrv.h"
 #include "game_state.h"
 #include "highscore.h"
-#include "game.h"
 #include "score_ras.h"
 
 int main(void)
@@ -41,16 +37,12 @@ int main(void)
             break;
         case GAME:
             score = playGame_ras(game_mode, &highscore, &state);
-            if(state != GAME)
+            if (state == GAME)
             {
-                break;
+                score_ras(score, &highscore);
+                game_over(&state);
             }
-            else
-            {
-            score_ras(score, &highscore);
-            game_over(&state);
             break;
-            }
         case HIGHSCORE:
             showHighScores(&highscore,&state);
             break;
@@ -61,7 +53,6 @@ int main(void)
             break;
         }
     }
-
         
     return EXIT_SUCCESS;
 };

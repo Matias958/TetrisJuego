@@ -63,6 +63,12 @@
     <ClCompile Include="main_al.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="raspberry.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="score_ras.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pieces.h">
@@ -96,6 +102,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="highscore_al.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="joydrv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="raspberry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="score_ras.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

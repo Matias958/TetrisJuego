@@ -135,31 +135,30 @@ static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_boa
  */
 static void showScore(element_t *elem, int score, highscore_t *highscore)
 {
+	static bool isHighScore;
+	//si hubo highscore se muestra en pantalla
+	int position = checkIfHighscore(score, highscore);
+	static int prevPosition;
+
+	isHighScore = position <= NUMBER_OF_PLAYERS;
+	if (!isHighScore)
+	{
+		prevPosition = NUMBER_OF_PLAYERS + 1;
+	}
+
 	//Nombre del cuadro
 	al_draw_text(elem->buttonsBorder, al_map_rgb(66, 67, 62), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y - 3 * SIZE_OF_SCORE_WINDOW_Y / 5 - 10, ALLEGRO_ALIGN_CENTER, "SCORE");
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y - 3 * SIZE_OF_SCORE_WINDOW_Y / 5 - 10, ALLEGRO_ALIGN_CENTER, "SCORE");
 
 	//Recuadro de score
 	al_draw_filled_rectangle(SCORE_WINDOW_POS_X, SCORE_WINDOW_POS_Y, SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y, al_map_rgb(66, 67, 62));
-	al_draw_rectangle(SCORE_WINDOW_POS_X, SCORE_WINDOW_POS_Y, SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y, al_map_rgb(124, 121, 108), 6);
+	al_draw_rectangle(SCORE_WINDOW_POS_X, SCORE_WINDOW_POS_Y, SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y, isHighScore ? al_map_rgb(190, 171, 30) : al_map_rgb(124, 121, 108), 6);
 
 	//Dibujo del score dado
 	char buffer[6];
 	snprintf(buffer, sizeof(buffer), "%d", score);
 	al_draw_text(elem->buttonsBorder, al_map_rgb(0, 0, 0), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y / 5, 1, buffer);
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCORE_WINDOW_POS_X + SIZE_OF_SCORE_WINDOW_X / 2, SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y / 5, 1, buffer);
-
-
-	//si hubo highscore se muestra en pantalla
-	int position = checkIfHighscore(score, highscore);
-	static bool isHighScore;
-	static int prevPosition;
-
-	isHighScore = position <= NUMBER_OF_PLAYERS; 
-	if (!isHighScore) 
-	{
-		prevPosition = NUMBER_OF_PLAYERS + 1;
-	}
 
 	//si se realiza una actuaización se realiza el sonido que lo indica
 	if (position <= NUMBER_OF_PLAYERS && prevPosition > position)
