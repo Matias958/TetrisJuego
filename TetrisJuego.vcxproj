@@ -150,6 +150,7 @@
     <Media Include="audio\game.wav" />
     <Media Include="audio\game_over.wav" />
     <Media Include="audio\menu.wav" />
+    <Media Include="audio\controls.wav" />
     <Media Include="audio\me_game_gameover.wav" />
     <Media Include="audio\play.wav" />
     <Media Include="audio\rotate.wav" />
@@ -182,9 +183,7 @@
     <ClCompile Include="game.c" />
     <ClCompile Include="main_al.c" />
     <ClCompile Include="menu_al.c" />
-    <ClCompile Include="raspberry.c" />
     <ClCompile Include="rules.c" />
-    <ClCompile Include="score_ras.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buttons_al.h" />
@@ -198,26 +197,13 @@
     <ClInclude Include="joydrv.h" />
     <ClInclude Include="menu_al.h" />
     <ClInclude Include="pieces.h" />
-    <ClInclude Include="raspberry.h" />
     <ClInclude Include="rules.h" />
-    <ClInclude Include="score_ras.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="highscore.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="pictures\blinking.bmp" />
-    <Image Include="pictures\blinking_logo.bmp" />
-    <Image Include="pictures\blinking_prs.bmp" />
-    <Image Include="pictures\game.bmp" />
-    <Image Include="pictures\highscore.bmp" />
-    <Image Include="pictures\menu.bmp" />
-    <Image Include="pictures\mirrored.bmp" />
-    <Image Include="pictures\mirrored_logo.bmp" />
-    <Image Include="pictures\mirrored_prs.bmp" />
-    <Image Include="pictures\not_empty_logo.bmp" />
-    <Image Include="pictures\no_empty.bmp" />
-    <Image Include="pictures\no_empty_prs.bmp" />
+    <Image Include="pictures\controls.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

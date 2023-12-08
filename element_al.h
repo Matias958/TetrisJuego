@@ -56,10 +56,13 @@ typedef struct
     ALLEGRO_BITMAP *notEmptyLogo;
     ALLEGRO_BITMAP *borderLogo;
 
+    ALLEGRO_BITMAP *controls;
+
     ALLEGRO_EVENT_QUEUE *eventQueue;
 
     ALLEGRO_TIMER *timerOn;
     ALLEGRO_TIMER *timerOff;
+    ALLEGRO_TIMER *timerControls;
 
     ALLEGRO_FONT *title;
     ALLEGRO_FONT *titleBorder;
@@ -93,6 +96,7 @@ typedef struct
     ALLEGRO_SAMPLE *effectPause;
     ALLEGRO_SAMPLE *effectGameOver;
     ALLEGRO_SAMPLE *effectHighscore;
+    ALLEGRO_SAMPLE *controlsMusic;
 } element_t;
 
 /************** PROTOTIPOS ***************/

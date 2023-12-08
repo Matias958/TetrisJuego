@@ -63,12 +63,6 @@
     <ClCompile Include="main_al.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="raspberry.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="score_ras.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pieces.h">
@@ -105,12 +99,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="joydrv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="raspberry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="score_ras.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -160,45 +148,15 @@
     <Media Include="audio\se_game_perfect.wav">
       <Filter>Resource Files</Filter>
     </Media>
+    <Media Include="audio\controls.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
   <ItemGroup>
     <Text Include="highscore.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="pictures\mirrored.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\no_empty.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\blinking.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\blinking_prs.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\mirrored_prs.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\no_empty_prs.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\menu.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\highscore.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\game.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\mirrored_logo.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\blinking_logo.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="pictures\not_empty_logo.bmp">
+    <Image Include="pictures\controls.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

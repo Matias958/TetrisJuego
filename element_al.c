@@ -23,7 +23,7 @@
  * Devuelve: EXIT_SUCCESS si logro inicializar todos los elementos
  *  EXIT_FAILURE de lo contrario.
  */
-int initializeElements(element_t *elem)
+int initializeElements(element_t* elem)
 {
 
     //inicializamos todos los elementos con NULL
@@ -66,12 +66,14 @@ int initializeElements(element_t *elem)
     elem->notEmptyLogo = NULL;
     elem->notEmptyPrs = NULL;
     elem->pauseMenu = NULL;
+    elem->controls = NULL;
     elem->sampleGameOver = NULL;
     elem->sampleGameReg = NULL;
     elem->sampleHighscore = NULL;
     elem->sampleMenu = NULL;
     elem->timerOff = NULL;
     elem->timerOn = NULL;
+    elem->timerControls = NULL;
     elem->title = NULL;
     elem->titleBorder = NULL;
 
@@ -113,6 +115,15 @@ int initializeElements(element_t *elem)
         fprintf(stderr, "Fallo al crear el timer!\n");
         return EXIT_FAILURE;
     }
+
+    elem->timerControls = al_create_timer(6.0);
+
+    if (!elem->timerControls) // verificamos que se haya creado el timer
+    {
+        fprintf(stderr, "Fallo al crear el timer!\n");
+        return EXIT_FAILURE;
+    }
+
 
     /*INICIALIZACIÓN DE FUENTES*/
     if (!al_init_font_addon() || !al_init_ttf_addon()) // inicializamos la fuente
@@ -340,6 +351,13 @@ int initializeElements(element_t *elem)
         return EXIT_FAILURE;
     }
 
+    elem->controlsMusic = al_load_sample("audio/controls.wav");
+    if (!elem->controlsMusic)
+    {
+        printf("No se cargo el audio del audio de menu de controles\n");
+        return EXIT_FAILURE;
+    }
+
     elem->effectGameOver = al_load_sample("audio/me_game_gameover.wav");
     if (!elem->effectGameOver)
     {
@@ -415,6 +433,13 @@ int initializeElements(element_t *elem)
     if (!elem->gameBackround)
     {
         fprintf(stderr, "Falla al crear el bitmap del fondo del juego.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->controls = al_load_bitmap("pictures/controls.bmp");
+    if (!elem->controls)
+    {
+        fprintf(stderr, "Falla al crear imagen de los controles del juego.\n");
         return EXIT_FAILURE;
     }
 
@@ -502,6 +527,7 @@ int initializeElements(element_t *elem)
     al_register_event_source(elem->eventQueue, al_get_display_event_source(elem->display));
     al_register_event_source(elem->eventQueue, al_get_timer_event_source(elem->timerOn));
     al_register_event_source(elem->eventQueue, al_get_timer_event_source(elem->timerOff));
+    al_register_event_source(elem->eventQueue, al_get_timer_event_source(elem->timerControls));
     al_register_event_source(elem->eventQueue, al_get_mouse_event_source());
 
     return EXIT_SUCCESS;
@@ -596,11 +622,13 @@ int destructorOfElements(element_t *elem)
     destroyBitmap(elem->blinkingLogo);
     destroyBitmap(elem->notEmptyLogo);
     destroyBitmap(elem->borderLogo);
+    destroyBitmap(elem->controls);
 
     destroyEventQueue(elem->eventQueue);
 
     destroyTimer(elem->timerOn);
     destroyTimer(elem->timerOff);
+    destroyTimer(elem->timerControls);
 
     destroyFont(elem->title);
     destroyFont(elem->titleBorder);
@@ -621,6 +649,7 @@ int destructorOfElements(element_t *elem)
     destroySample(elem->sampleGame);
     destroySample(elem->sampleGameOver);
     destroySample(elem->sampleHighscore);
+    destroySample(elem->controlsMusic);
 
     destroySampleInstance(elem->sampleGameReg);
 

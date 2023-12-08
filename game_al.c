@@ -326,7 +326,72 @@ static void initBoardBorderColors(ALLEGRO_COLOR squareColors[])
  */
 void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscore_t *highscore)
 {
-	al_clear_to_color(al_map_rgb(20, 20, 20));
+
+	ALLEGRO_EVENT ev;
+	al_stop_samples();
+	while (!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
+	while (!al_play_sample(elem->controlsMusic, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
+
+	//mostramos los controles
+	al_draw_bitmap(elem->controls, 0, 0, 0);
+	al_flip_display();
+
+	al_start_timer(elem->timerControls);
+	al_start_timer(elem->timerOff);
+
+	al_get_next_event(elem->eventQueue, &ev);
+	float carga = 0.0;
+	char buffer[5];
+	snprintf(buffer, sizeof(buffer), "%d%%",(int) (carga * 100));
+
+	while ((ev.type != ALLEGRO_EVENT_TIMER || ev.timer.source == elem->timerOff) && ev.type != ALLEGRO_EVENT_KEY_DOWN)
+	{
+		if (ev.timer.source == elem->timerOff)
+		{
+			carga += 0.2;
+			al_draw_bitmap(elem->controls, 0, 0, 0);
+			snprintf(buffer, sizeof(buffer), "%d%%",(int) (carga * 100));
+		}
+
+		al_draw_filled_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, SCREEN_W / 3.0 + carga  * (SCREEN_W / 3.0), 6 * SCREEN_H / 7.0 + 20, al_map_rgb(0, 75, 205));
+		al_draw_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, 2 * SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 + 20, al_color_name("white"), 4);
+
+		al_draw_text(elem->gameModesDescription, al_color_name("white"), SCREEN_W / 2, 6 * SCREEN_H / 7.0 - 7, ALLEGRO_ALIGN_CENTER, buffer);
+
+		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+		{
+			*state = CLOSE_DISPLAY;
+			al_stop_timer(elem->timerControls);
+			al_stop_timer(elem->timerOff);
+			return;
+		}
+
+		al_flip_display();
+		while (!al_get_next_event(elem->eventQueue, &ev));
+
+		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+		{
+			//cargamos el fondo
+			al_draw_bitmap(elem->controls, 0, 0, 0);
+
+			//ponemos la barra en 100
+			carga = 1.0;
+			snprintf(buffer, sizeof(buffer), "%d%%", (int)(carga * 100));
+
+			//dibujamos
+			al_draw_filled_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, SCREEN_W / 3.0 + carga * (SCREEN_W / 3.0), 6 * SCREEN_H / 7.0 + 20, al_map_rgb(0, 75, 205));
+			al_draw_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, 2 * SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 + 20, al_color_name("white"), 4);
+			al_draw_text(elem->gameModesDescription, al_color_name("white"), SCREEN_W / 2, 6 * SCREEN_H / 7.0 - 7, ALLEGRO_ALIGN_CENTER, buffer);
+
+			//mostramos
+			al_flip_display();
+			al_rest(0.5);
+		}
+	}
+
+	al_stop_timer(elem->timerOff);
+	al_stop_timer(elem->timerControls);
+		
 	al_draw_bitmap(elem->gameBackround, 0, 0, 0);
 
 	al_stop_samples();
@@ -381,7 +446,6 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 	piece_t piece = createPiece();
 	piece_t predictionPiece = piece;
 
-	ALLEGRO_EVENT ev;
 	if (mode.blinking) //empiezo un timer si es necesario
 	{
 		al_start_timer(elem->timerOn);
