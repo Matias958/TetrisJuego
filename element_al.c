@@ -28,6 +28,7 @@ int initializeElements(element_t* elem)
 
     //inicializamos todos los elementos con NULL
     elem->bitmap = NULL;
+    elem->bitmapTrans = NULL;
     elem->blinking = NULL;
     elem->blinkingLogo = NULL;
     elem->blinkingPrs = NULL;
@@ -399,6 +400,13 @@ int initializeElements(element_t* elem)
     if (!elem->bitmap)
     {
         fprintf(stderr, "Falla al crear el bitmap.\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->bitmapTrans = al_create_bitmap(SCREEN_W , SCREEN_H);
+    if (!elem->bitmapTrans)
+    {
+        fprintf(stderr, "Falla al crear el bitmap de transicion.\n");
         return EXIT_FAILURE;
     }
 

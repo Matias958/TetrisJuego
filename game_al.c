@@ -324,7 +324,7 @@ static void initBoardBorderColors(ALLEGRO_COLOR squareColors[])
  *			state (puntero a la estructura del estado del display), y highscore (puntero a la estructura que almacena los puntajes mas altos)
  * Devuelve: --
  */
-void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscore_t *highscore)
+void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscore_t* highscore)
 {
 
 	ALLEGRO_EVENT ev;
@@ -333,6 +333,27 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 	while (!al_play_sample(elem->controlsMusic, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 
 	//mostramos los controles
+
+	int trans;
+	for (trans = 255; trans > 0; trans -= 2)
+	{
+		al_get_next_event(elem->eventQueue, &ev);
+		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+		{
+			*state = CLOSE_DISPLAY;
+			return;
+		}
+		al_draw_bitmap(elem->controls, 0, 0, 0);
+		al_set_target_bitmap(elem->bitmapTrans);
+
+		al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+		al_set_target_backbuffer(elem->display);
+		al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+		al_flip_display();
+	}
+
 	al_draw_bitmap(elem->controls, 0, 0, 0);
 	al_flip_display();
 
@@ -342,7 +363,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 	al_get_next_event(elem->eventQueue, &ev);
 	float carga = 0.0;
 	char buffer[5];
-	snprintf(buffer, sizeof(buffer), "%d%%",(int) (carga * 100));
+	snprintf(buffer, sizeof(buffer), "%d%%", (int)(carga * 100));
 
 	while ((ev.type != ALLEGRO_EVENT_TIMER || ev.timer.source == elem->timerOff) && ev.type != ALLEGRO_EVENT_KEY_DOWN)
 	{
@@ -350,10 +371,10 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 		{
 			carga += 0.2;
 			al_draw_bitmap(elem->controls, 0, 0, 0);
-			snprintf(buffer, sizeof(buffer), "%d%%",(int) (carga * 100));
+			snprintf(buffer, sizeof(buffer), "%d%%", (int)(carga * 100));
 		}
 
-		al_draw_filled_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, SCREEN_W / 3.0 + carga  * (SCREEN_W / 3.0), 6 * SCREEN_H / 7.0 + 20, al_map_rgb(0, 75, 205));
+		al_draw_filled_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, SCREEN_W / 3.0 + carga * (SCREEN_W / 3.0), 6 * SCREEN_H / 7.0 + 20, al_map_rgb(138, 7, 78));
 		al_draw_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, 2 * SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 + 20, al_color_name("white"), 4);
 
 		al_draw_text(elem->gameModesDescription, al_color_name("white"), SCREEN_W / 2, 6 * SCREEN_H / 7.0 - 7, ALLEGRO_ALIGN_CENTER, buffer);
@@ -379,7 +400,7 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 			snprintf(buffer, sizeof(buffer), "%d%%", (int)(carga * 100));
 
 			//dibujamos
-			al_draw_filled_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, SCREEN_W / 3.0 + carga * (SCREEN_W / 3.0), 6 * SCREEN_H / 7.0 + 20, al_map_rgb(0, 75, 205));
+			al_draw_filled_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, SCREEN_W / 3.0 + carga * (SCREEN_W / 3.0), 6 * SCREEN_H / 7.0 + 20, al_map_rgb(138, 7, 78));
 			al_draw_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, 2 * SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 + 20, al_color_name("white"), 4);
 			al_draw_text(elem->gameModesDescription, al_color_name("white"), SCREEN_W / 2, 6 * SCREEN_H / 7.0 - 7, ALLEGRO_ALIGN_CENTER, buffer);
 
@@ -389,6 +410,28 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 		}
 	}
 
+	while (!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
+
+	for (trans = 0; trans < 255; trans += 2)
+	{
+		al_get_next_event(elem->eventQueue, &ev);
+		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+		{
+			*state = CLOSE_DISPLAY;
+			return;
+		}
+
+		al_draw_bitmap(elem->controls, 0, 0, 0);
+		al_set_target_bitmap(elem->bitmapTrans);
+
+		al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+		al_set_target_backbuffer(elem->display);
+		al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+		al_flip_display();
+	}
+
 	al_stop_timer(elem->timerOff);
 	al_stop_timer(elem->timerControls);
 		
@@ -396,7 +439,6 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 
 	al_stop_samples();
 
-	while(!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	al_set_sample_instance_gain(elem->sampleGameReg, 1);
 	al_set_sample_instance_speed(elem->sampleGameReg, 1.0);
 	al_play_sample_instance(elem->sampleGameReg);
@@ -424,11 +466,13 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 			{
 				matrix[i][j] = BORDER;
 				blinkingMatrix[i][j] = BORDER;
+				auxiliaryMatrix[i][j] = BORDER;
 			}
 			else
 			{
 				matrix[i][j] = EMPTY;
 				blinkingMatrix[i][j] = EMPTY;
+				auxiliaryMatrix[i][j] = EMPTY;
 			}
 		}
 	}
@@ -454,6 +498,34 @@ void playGame(element_t *elem, game_mode_t mode, window_state_t *state, highscor
 	bool draw = true;
 	bool tetris = false;
 	bool off = false;
+
+	parkPiece(&piece, auxiliaryMatrix); // estacionamos la pieza que se esta moviendo para visualizarla
+	for (trans = 255; trans > 0; trans -= 2)
+	{
+		al_get_next_event(elem->eventQueue, &ev);
+		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+		{
+			*state = CLOSE_DISPLAY;
+			return;
+		}
+
+		al_draw_bitmap(elem->gameBackround, 0, 0, 0);
+		showScore(elem, score, highscore);
+		showNextPiece(squareColors, squareBorderColors, elem);
+		drawActiveModes(elem, mode);
+		drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
+
+		al_set_target_bitmap(elem->bitmapTrans);
+
+		al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+		al_set_target_backbuffer(elem->display);
+		al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+		al_flip_display();
+	}
+
+	al_flush_event_queue(elem->eventQueue);
 
 	while (playing)
 	{
@@ -840,9 +912,49 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 			draw = false;	   // cambiamos el estado de draw
 		}
 	}
+	if (*state != CLOSE_DISPLAY)
+	{
+		int trans;
+		for (trans = 0; trans < 255; trans += 2)
+		{
+			al_get_next_event(elem->eventQueue, &ev);
+			if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+			{
+				*state = CLOSE_DISPLAY;
+				return;
+			}
+
+			al_draw_bitmap(elem->gameBackround, 0, 0, 0);
+
+			drawButtons(buttons, al_color_name("white"));
+
+			al_draw_text(elem->titleBorder, al_color_name("black"), SCREEN_W / 2, SCREEN_H / 6, 1, "GAME OVER");
+			al_draw_text(elem->title, al_color_name("white"), SCREEN_W / 2, SCREEN_H / 6, 1, "GAME OVER");
+
+			al_draw_text(elem->buttonsBorder, al_color_name("black"), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTER, buffer);
+			al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTER, buffer);
+
+
+			if (position <= NUMBER_OF_PLAYERS)
+			{
+				al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCREEN_W / 2 - 10, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, "New #");
+				al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, buffer2);
+			}
+
+			al_set_target_bitmap(elem->bitmapTrans);
+			al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+			al_set_target_backbuffer(elem->display);
+			al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+			al_flip_display();
+
+
+		}
+	}
 }
 
-/*gameOver()
+/*drawPauseMenu()
  * Funcion encargada de dibujar el menu de pausa
  * Recibe:  state (puntero a la estructura del estado del display), elem (puntero a la estructura con todos los punteros de allegro),
 			playing (puntero al booleano del juego)

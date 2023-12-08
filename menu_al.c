@@ -152,4 +152,38 @@ void showMenu(element_t *elem, window_state_t *state)
             draw = false;     
         }
     }
+
+
+    if (*state != CLOSE_DISPLAY)
+    {
+        int trans;
+        for (trans = 0; trans < 255; trans += 2)
+        {
+            al_get_next_event(elem->eventQueue, &ev);
+            if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+            {
+                *state = CLOSE_DISPLAY;
+                return;
+            }
+
+            al_draw_bitmap(elem->menuBackround, 0, 0, 0);
+
+            int i;
+            for (i = 0; i < 6; i++)
+            {
+                al_draw_text(elem->titleBorder, al_color_name("black"), CENTER_X + step[i], CENTER_Y, 0, title[i]);
+                al_draw_text(elem->title, colors[i], CENTER_X + step[i], CENTER_Y, 0, title[i]);
+            }
+            drawButtons(buttons, al_color_name("white"));
+
+            al_set_target_bitmap(elem->bitmapTrans);
+
+            al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+            al_set_target_backbuffer(elem->display);
+            al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+            al_flip_display();
+        }
+    }
 }

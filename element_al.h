@@ -38,6 +38,7 @@ typedef struct
     ALLEGRO_DISPLAY *display;
 
     ALLEGRO_BITMAP *bitmap;
+    ALLEGRO_BITMAP *bitmapTrans;
     ALLEGRO_BITMAP *modesDescription;
     ALLEGRO_BITMAP *menuBackround;
     ALLEGRO_BITMAP *highscoreBackround;

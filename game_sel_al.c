@@ -80,14 +80,117 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
 
     drawButtons(buttons, al_color_name("white"));
 
-    al_flip_display(); // cargamos el buffer en el display
-
     // esperamos a alguna selección
     ALLEGRO_EVENT ev;
     bool waitingForUpdate = true;
     bool draw = true;
     bool mouseClick = false;
     int times = 0;
+
+    int trans;
+    for (trans = 255; trans > 0; trans --)
+    {
+        al_get_next_event(elem->eventQueue, &ev);
+        if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+        {
+            *state = CLOSE_DISPLAY;
+            return;
+        }
+
+        al_draw_bitmap(elem->menuBackround, 0, 0, 0);
+
+        int i;
+        for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+        {
+            buttons[i]->color_uprs = states[i] ? al_map_rgb(215, 25, 70) : al_map_rgb(0, 0, 0);
+            buttons[i]->color_prs = states[i] ? al_map_rgb(195, 45, 75) : al_map_rgb(20, 20, 20);
+        }
+
+        drawButtons(buttons, al_color_name("white"));
+
+        for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+        {
+            al_draw_bitmap(states[i] ? pictures_prs[i] : pictures[i], buttons[i]->x_center - buttons[i]->width + 2,
+                buttons[i]->y_center - 98, ALLEGRO_ALIGN_CENTER);
+            al_draw_rectangle(buttons[i]->x_center - buttons[i]->width, buttons[i]->y_center + buttons[i]->height,
+                buttons[i]->x_center + buttons[i]->width, buttons[i]->y_center - buttons[i]->height,
+                al_map_rgb(255, 255, 255), states[i] ? 6 : 4);
+
+            if (buttons[i]->press)
+            {
+                al_set_target_bitmap(elem->modesDescription);
+
+                // Dibujar un rectángulo con transparencia
+                al_clear_to_color(al_map_rgba(10, 10, 10, 70));
+
+                al_set_target_backbuffer(elem->display);
+
+                al_draw_bitmap(elem->modesDescription, buttons[i]->x_center - buttons[i]->width + 2,
+                    buttons[i]->y_center - 98, 0);
+
+                int j;
+                for (j = 0; j < LINES; j++)
+                {
+                    al_draw_text(elem->gameModesDescriptionBorder, al_map_rgb(10, 10, 10), buttons[i]->x_center,
+                        buttons[i]->y_center + j * 30, ALLEGRO_ALIGN_CENTER, descriptions[i][j]);
+                    al_draw_text(elem->gameModesDescription, al_map_rgb(255, 255, 255), buttons[i]->x_center,
+                        buttons[i]->y_center + j * 30, ALLEGRO_ALIGN_CENTER, descriptions[i][j]);
+                }
+            }
+        }
+
+        for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+        {
+            al_set_target_bitmap(elem->borderLogo);
+
+            if (buttons[i]->press)
+            {
+                al_clear_to_color(states[i] ? al_map_rgb(210, 70, 100) : al_map_rgb(66, 67, 62));
+            }
+            else
+            {
+                al_clear_to_color(states[i] ? al_map_rgb(210, 70, 100) : al_map_rgb(66, 67, 62));
+            }
+            al_draw_rectangle(0, 0, 75, 75, al_map_rgb(255, 255, 255), states[i] ? 5 : 4);
+
+            al_set_target_backbuffer(elem->display);
+
+            al_draw_rotated_bitmap(elem->borderLogo, al_get_bitmap_width(elem->borderLogo) / 2.0,
+                al_get_bitmap_height(elem->borderLogo) / 2.0, buttons[i]->x_center,
+                buttons[i]->y_center - buttons[i]->height, ALLEGRO_PI / 4, 0);
+
+            al_draw_bitmap(pictures_logo[i], buttons[i]->x_center - 50,
+                buttons[i]->y_center - buttons[i]->height - ((i == NOT_EMPTY) ? 50 : 42), 0);
+        }
+
+        int numberOfStars = gameMode->difficulty;
+        for (i = 0; i < 3; i++)
+        {
+            if (i < numberOfStars)
+            {
+                al_draw_text(elem->difficultyBorder, al_map_rgb(0, 0, 0), buttons[DIFFICULTY]->x_center - 40 + i * 40,
+                    buttons[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                al_draw_text(elem->difficulty, al_map_rgb(200, 175, 0), buttons[DIFFICULTY]->x_center - 40 + i * 40,
+                    buttons[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+            }
+            else
+            {
+                al_draw_text(elem->difficultyBorder, al_map_rgb(0, 0, 0), buttons[DIFFICULTY]->x_center - 40 + i * 40,
+                    buttons[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                al_draw_text(elem->difficulty, al_map_rgb(100, 100, 100), buttons[DIFFICULTY]->x_center - 40 + i * 40,
+                    buttons[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+            }
+        }
+
+        al_set_target_bitmap(elem->bitmapTrans);
+
+        al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+        al_set_target_backbuffer(elem->display);
+        al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+        al_flip_display();
+    }
 
     while (waitingForUpdate)
     {
@@ -280,6 +383,114 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
 
             al_flip_display(); // cargamos el buffer en el display
             draw = false;
+        }
+    }
+
+    if (*state != CLOSE_DISPLAY)
+    {
+        int trans;
+        for (trans = 0; trans < 255; trans += 2)
+        {
+            al_get_next_event(elem->eventQueue, &ev);
+            if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+            {
+                *state = CLOSE_DISPLAY;
+                return;
+            }
+
+            al_draw_bitmap(elem->menuBackround, 0, 0, 0);
+
+            int i;
+            for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+            {
+                buttons[i]->color_uprs = states[i] ? al_map_rgb(215, 25, 70) : al_map_rgb(0, 0, 0);
+                buttons[i]->color_prs = states[i] ? al_map_rgb(195, 45, 75) : al_map_rgb(20, 20, 20);
+            }
+
+            drawButtons(buttons, al_color_name("white"));
+
+            for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+            {
+                al_draw_bitmap(states[i] ? pictures_prs[i] : pictures[i], buttons[i]->x_center - buttons[i]->width + 2,
+                    buttons[i]->y_center - 98, ALLEGRO_ALIGN_CENTER);
+                al_draw_rectangle(buttons[i]->x_center - buttons[i]->width, buttons[i]->y_center + buttons[i]->height,
+                    buttons[i]->x_center + buttons[i]->width, buttons[i]->y_center - buttons[i]->height,
+                    al_map_rgb(255, 255, 255), states[i] ? 6 : 4);
+
+                if (buttons[i]->press)
+                {
+                    al_set_target_bitmap(elem->modesDescription);
+
+                    // Dibujar un rectángulo con transparencia
+                    al_clear_to_color(al_map_rgba(10, 10, 10, 70));
+
+                    al_set_target_backbuffer(elem->display);
+
+                    al_draw_bitmap(elem->modesDescription, buttons[i]->x_center - buttons[i]->width + 2,
+                        buttons[i]->y_center - 98, 0);
+
+                    int j;
+                    for (j = 0; j < LINES; j++)
+                    {
+                        al_draw_text(elem->gameModesDescriptionBorder, al_map_rgb(10, 10, 10), buttons[i]->x_center,
+                            buttons[i]->y_center + j * 30, ALLEGRO_ALIGN_CENTER, descriptions[i][j]);
+                        al_draw_text(elem->gameModesDescription, al_map_rgb(255, 255, 255), buttons[i]->x_center,
+                            buttons[i]->y_center + j * 30, ALLEGRO_ALIGN_CENTER, descriptions[i][j]);
+                    }
+                }
+            }
+
+            for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
+            {
+                al_set_target_bitmap(elem->borderLogo);
+
+                if (buttons[i]->press)
+                {
+                    al_clear_to_color(states[i] ? al_map_rgb(210, 70, 100) : al_map_rgb(66, 67, 62));
+                }
+                else
+                {
+                    al_clear_to_color(states[i] ? al_map_rgb(210, 70, 100) : al_map_rgb(66, 67, 62));
+                }
+                al_draw_rectangle(0, 0, 75, 75, al_map_rgb(255, 255, 255), states[i] ? 5 : 4);
+
+                al_set_target_backbuffer(elem->display);
+
+                al_draw_rotated_bitmap(elem->borderLogo, al_get_bitmap_width(elem->borderLogo) / 2.0,
+                    al_get_bitmap_height(elem->borderLogo) / 2.0, buttons[i]->x_center,
+                    buttons[i]->y_center - buttons[i]->height, ALLEGRO_PI / 4, 0);
+
+                al_draw_bitmap(pictures_logo[i], buttons[i]->x_center - 50,
+                    buttons[i]->y_center - buttons[i]->height - ((i == NOT_EMPTY) ? 50 : 42), 0);
+            }
+
+            int numberOfStars = gameMode->difficulty;
+            for (i = 0; i < 3; i++)
+            {
+                if (i < numberOfStars)
+                {
+                    al_draw_text(elem->difficultyBorder, al_map_rgb(0, 0, 0), buttons[DIFFICULTY]->x_center - 40 + i * 40,
+                        buttons[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                    al_draw_text(elem->difficulty, al_map_rgb(200, 175, 0), buttons[DIFFICULTY]->x_center - 40 + i * 40,
+                        buttons[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                }
+                else
+                {
+                    al_draw_text(elem->difficultyBorder, al_map_rgb(0, 0, 0), buttons[DIFFICULTY]->x_center - 40 + i * 40,
+                        buttons[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                    al_draw_text(elem->difficulty, al_map_rgb(100, 100, 100), buttons[DIFFICULTY]->x_center - 40 + i * 40,
+                        buttons[DIFFICULTY]->y_center - 18, ALLEGRO_ALIGN_CENTER, "a");
+                }
+            }
+
+            al_set_target_bitmap(elem->bitmapTrans);
+
+            al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+            al_set_target_backbuffer(elem->display);
+            al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+            al_flip_display();
         }
     }
 }

@@ -23,57 +23,71 @@
 */
 void showHighScores(element_t *elem, highscore_t *highscore, window_state_t *state)
 {
+    ALLEGRO_EVENT ev;
     al_stop_samples();
     al_play_sample(elem->sampleHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+    
+    button_t play = { "PLAY", SCREEN_W / 2, SCREEN_H * 0.9, 100, 40, 20,
+                     false, al_map_rgb(190, 171, 30), al_map_rgb(124, 109, 20),
+                     elem->buttons };
 
-    //dibujo el menu
-    al_clear_to_color(al_map_rgb(20, 20, 20));
-    al_draw_bitmap(elem->highscoreBackround, 0, 0, 0);
+    button_t* buttons[] = { &play, NULL };
 
-    al_draw_filled_rectangle(SCREEN_W / 5, SCREEN_H / 3, 4 * SCREEN_W / 5, 11 * SCREEN_H / 14,
-                             al_map_rgb(120, 110, 40));
-    al_draw_rectangle(SCREEN_W / 5 + 10, SCREEN_H / 3 + 10, 4 * SCREEN_W / 5 - 10, 11 * SCREEN_H / 14 - 10, 
-                      al_map_rgb(255, 255, 255), 5);
 
-    al_draw_text(elem->title, al_map_rgb(255, 255, 255), SCREEN_W / 2, 0, ALLEGRO_ALIGN_CENTRE, "HALL OF FAME");
-
-    al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), SCREEN_W / 4 + 20, 5 * SCREEN_H / 12 - 40, 
-                 ALLEGRO_ALIGN_CENTER, "POSITION");
-    al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), SCREEN_W / 2, 5 * SCREEN_H / 12 - 40, 
-                 ALLEGRO_ALIGN_CENTER, "NAME");
-    al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 - 40, 2, "SCORE");
-
-    //muestro nombres
-    int i;
-    for (i = 0; i < NUMBER_OF_PLAYERS; i++)
+    int trans;
+    for (trans = 255; trans > 0; trans -= 2)
     {
-        char position[3] = {'#', i + 1 + '0', '\0'};
-        al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i,
-                     0, position);
+        al_get_next_event(elem->eventQueue, &ev);
+        if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+        {
+            *state = CLOSE_DISPLAY;
+            return;
+        }
 
-        al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), SCREEN_W / 2, 5 * SCREEN_H / 12 + 50 * i,
-                     ALLEGRO_ALIGN_CENTER, highscore->nameOfHighscores[i]);
+        al_draw_bitmap(elem->highscoreBackround, 0, 0, 0);
 
-        char score[10];
-        snprintf(score, sizeof(score), "% d", highscore->highscores[i]);
-        al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i,
-                     2, score);
+        al_draw_filled_rectangle(SCREEN_W / 5, SCREEN_H / 3, 4 * SCREEN_W / 5, 11 * SCREEN_H / 14,
+            al_map_rgb(120, 110, 40));
+        al_draw_rectangle(SCREEN_W / 5 + 10, SCREEN_H / 3 + 10, 4 * SCREEN_W / 5 - 10, 11 * SCREEN_H / 14 - 10,
+            al_map_rgb(255, 255, 255), 5);
+
+        al_draw_text(elem->title, al_map_rgb(255, 255, 255), SCREEN_W / 2, 0, ALLEGRO_ALIGN_CENTRE, "HALL OF FAME");
+
+        al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), SCREEN_W / 4 + 20, 5 * SCREEN_H / 12 - 40,
+            ALLEGRO_ALIGN_CENTER, "POSITION");
+        al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), SCREEN_W / 2, 5 * SCREEN_H / 12 - 40,
+            ALLEGRO_ALIGN_CENTER, "NAME");
+        al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 - 40, 2, "SCORE");
+
+        //muestro nombres
+        int i;
+        for (i = 0; i < NUMBER_OF_PLAYERS; i++)
+        {
+            char position[3] = { '#', i + 1 + '0', '\0' };
+            al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i,
+                0, position);
+
+            al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), SCREEN_W / 2, 5 * SCREEN_H / 12 + 50 * i,
+                ALLEGRO_ALIGN_CENTER, highscore->nameOfHighscores[i]);
+
+            char score[10];
+            snprintf(score, sizeof(score), "% d", highscore->highscores[i]);
+            al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i,
+                2, score);
+        }
+        drawButtons(buttons, al_color_name("white"));
+
+        al_set_target_bitmap(elem->bitmapTrans);
+
+        al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+        al_set_target_backbuffer(elem->display);
+        al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+        al_flip_display();
     }
 
-    //dibujo los botones
-
-    button_t play = {"PLAY", SCREEN_W / 2, SCREEN_H * 0.9, 100, 40, 20,
-                     false, al_map_rgb(190, 171, 30), al_map_rgb(124, 109, 20),
-                     elem->buttons};
-
-    button_t *buttons[] = {&play, NULL};
-
-    drawButtons(buttons, al_color_name("white"));
-
-    al_flip_display();
-
     // esperamos a alguna selecci�n
-    ALLEGRO_EVENT ev;
     bool waitingForUpdate = true;
     bool draw = true;
     int times = 0;
@@ -146,6 +160,55 @@ void showHighScores(element_t *elem, highscore_t *highscore, window_state_t *sta
             drawButtons(buttons, al_color_name("white"));
             al_flip_display(); // cargamos el buffer en el display
             draw = false;
+        }
+    }
+
+    if (*state != CLOSE_DISPLAY)
+    {
+        int trans;
+        for (trans = 0; trans < 255; trans += 2)
+        {
+            al_draw_bitmap(elem->highscoreBackround, 0, 0, 0);
+
+            al_draw_filled_rectangle(SCREEN_W / 5, SCREEN_H / 3, 4 * SCREEN_W / 5, 11 * SCREEN_H / 14,
+                al_map_rgb(120, 110, 40));
+            al_draw_rectangle(SCREEN_W / 5 + 10, SCREEN_H / 3 + 10, 4 * SCREEN_W / 5 - 10, 11 * SCREEN_H / 14 - 10,
+                al_map_rgb(255, 255, 255), 5);
+
+            al_draw_text(elem->title, al_map_rgb(255, 255, 255), SCREEN_W / 2, 0, ALLEGRO_ALIGN_CENTRE, "HALL OF FAME");
+
+            al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), SCREEN_W / 4 + 20, 5 * SCREEN_H / 12 - 40,
+                ALLEGRO_ALIGN_CENTER, "POSITION");
+            al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), SCREEN_W / 2, 5 * SCREEN_H / 12 - 40,
+                ALLEGRO_ALIGN_CENTER, "NAME");
+            al_draw_text(elem->highscoreNews, al_map_rgb(60, 50, 5), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 - 40, 2, "SCORE");
+
+            //muestro nombres
+            int i;
+            for (i = 0; i < NUMBER_OF_PLAYERS; i++)
+            {
+                char position[3] = { '#', i + 1 + '0', '\0' };
+                al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i,
+                    0, position);
+
+                al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), SCREEN_W / 2, 5 * SCREEN_H / 12 + 50 * i,
+                    ALLEGRO_ALIGN_CENTER, highscore->nameOfHighscores[i]);
+
+                char score[10];
+                snprintf(score, sizeof(score), "% d", highscore->highscores[i]);
+                al_draw_text(elem->highscoreNews, al_map_rgb(255, 255, 255), 3 * SCREEN_W / 4, 5 * SCREEN_H / 12 + 50 * i,
+                    2, score);
+            }
+            drawButtons(buttons, al_color_name("white"));
+
+            al_set_target_bitmap(elem->bitmapTrans);
+
+            al_clear_to_color(al_map_rgba(0, 0, 0, trans));
+
+            al_set_target_backbuffer(elem->display);
+            al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
+
+            al_flip_display();
         }
     }
 }
