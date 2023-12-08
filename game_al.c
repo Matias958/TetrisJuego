@@ -484,8 +484,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	int score = 0;
 	int times = 0;
 
-	//inicializo el tiempo y creo la primera pieza
-	initTime();
+	//creo la primera pieza
 	initPiece();
 	piece_t piece = createPiece();
 	piece_t predictionPiece = piece;
@@ -526,6 +525,8 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	}
 
 	al_flush_event_queue(elem->eventQueue);
+
+	initTime(); //inicializo el tiempo
 
 	while (playing)
 	{

@@ -616,6 +616,7 @@ int destructorOfElements(element_t *elem)
     destroyDisplay(elem->display);
 
     destroyBitmap(elem->bitmap);
+    destroyBitmap(elem->bitmapTrans);
     destroyBitmap(elem->modesDescription);
     destroyBitmap(elem->menuBackround);
     destroyBitmap(elem->highscoreBackround);
