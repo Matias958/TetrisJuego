@@ -1,6 +1,7 @@
 /* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
 *Titulo: raspberry.h
-*Descripcion: Manejo de funciones para la raspberry.
+*Descripcion: manejo funciones para la Raspberry 
+*             (manejo joystick, display y distintos menus/pantallas)
 *Autores: Facundo Torres
 *         Julieta Libertad Rodriguez
 *         Matias Minitti
@@ -30,52 +31,92 @@
 
 /************** PROTOTIPOS ***************/
 
-/*JOYSTICK()
-* Función encargada de analizar el estado del joystick.
-* Recibe: un puntero a char donde se va a guardar el estado del joystick.
-* Devuelve: Un bool que indica si logro recolectar algun estado valido (true) o no (false).
-*/
-bool joystick(char* direction);
-
-/*SHOW_DISPLAY()
-* Función encargada de ir actualizando la pantalla.
-* Recibe: Una matriz con el tablero de juego.
-* Devuelve: -
-*/
-void showDisplay(char matrix[][WIDTH_OF_BOARD], int pieceType);
-
-/*INIT()
-* Función encargada de inicializar la pantalla con la palabra "tetris" y esperar hasta
-* que se presione el botón del joystick para empezar el juego.
-* Recibe: puntero a estado de la ventana
-* Devuelve: -
-*/
+/* init()
+ * Función encargada de inicializar la pantalla con la palabra "TETRIS" y esperar hasta
+ * que se mueva el joystick en cualquier dirección. Luego te deja elegir entre empezar a 
+ * jugar ("PLAY"), ver el highscore ("HS") o apagar la pantalla ("TRN OFF").
+ * Recibe: window_state_t *state, puntero al estado de la ventana
+ * Devuelve: -
+ * 
+ * Nota: Para cambiar opción mover hacia arriba ó abajo, para seleccionar usar el botón.
+ */
 void init(window_state_t *state);
 
-/*playGame_ras()
- * Funcion encargada de manejar todo el juego
- * Recibe: elem (puntero a la estructura con todos los punteros de allegro), mode (estructura que maneja la dificultad del juego)
- *			state (puntero a la estructura del estado del display), y highscore (puntero a la estructura que almacena los puntajes mas altos)
- * Devuelve: puntaje obtenido en el juego
+/* joystick()
+ * Función encargada de analizar el estado del joystick.
+ * Recibe: un puntero a char donde se va a guardar el estado del joystick.
+ * Devuelve: Un bool que indica si logro recolectar algun estado valido (true) o no (false).
+ * 
+ * Nota: estados posibles: apuntar hacia arriba, abajo, derecha, izquierda, presionar el botón
+ * mantener presionado el botón.
  */
-int playGame_ras(game_mode_t mode, highscore_t *highscore,  window_state_t * state); 
+bool joystick(char* direction);
 
-void tetrisAnimation(char rows_tetris[HEIGHT_OF_BOARD]);
-
-/*game_over()
- * Función encargada de imprimir una "END" en la pantalla y esperar a que se presione el boton
- * (nueva partida) o se mueva hacia abajo el joystick (salir juego)
- * Recibe: puntero estado de la ventana
- * Devuelve:-
+/* showDisplay()
+ * Función encargada de ir actualizando la pantalla durante el juego.
+ * Recibe: Una matriz con el tablero de juego y un int con el tipo de pieza siguiente.
+ * Devuelve: -
  */
+void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type);
 
-void game_over(window_state_t *state);
+/* gameModeSelRas()
+ * Función encargada de seleccionar el modo de juego, inicializa la pantalla con la palabra "MDE
+ * SEL" y espera hasta que se mueva el joystick en cualquier dirección. Luego te deja elegir los
+ * diferentes modos de juego.
+ * Recibe: Un puntero a window_state_t con el estado de la ventana y uno a game_mode_t con el modo
+ * de juego de la partida.
+ * Devuelve: -
+ * 
+ * Nota: Permite elegir dificultad del 1-3 ("DIF"), modo Not Empty ("NOE"), Blinking ("BLK")
+ * y Mirrored ("MRR").
+ * 
+ * Nota: Para cambiar opción mover hacia arriba ó abajo, para seleccionar usar el botón 
+ * ("X": seleccionado, "O":no seleccionado). Para empezar la partida  mover el joystick hacia
+ * la derecha y para volver al menú hacia la izquierda.
+ */
+void gameModeSelRas(window_state_t *state, game_mode_t *gameMode);
 
-void gameModeSel_ras(window_state_t *state, game_mode_t *gameMode);
+/* playGameRas()
+ * Función encargada de manejar el juego, muestra tablero de juego actual y siguiente pieza y 
+ * permite realizar movimientos o ir al menu de pausa.
+ * Recibe: Una estuctura game_mode_t con el modo de juego seleccionado, un puntero a highscore_t
+ * con el highscore actual y un puntero a window_state_t con el estado de la ventana.
+ * Devuelve: un int con el puntaje de la partida.
+ * 
+ * Nota: Las direcciones abajo, derecha, izquierda del joystick permiten mover la pieza en dichas
+ * direcciones (invirtiendo der-izq si se encuentra en modo "Mirrored"), arriba te permite girar
+ * la pieza 90°, el botón  permite hacer un "hard drop" de la pieza y mantener pulsado el botón
+ * lleva al menú de pausa.
+ * 
+ */
+int playGameRas(game_mode_t mode, highscore_t *highscore,  window_state_t * state); 
 
+/* wait()
+ * Función encargada de esperar un determinado tiempo.
+ * Recibe: Un float con el tiempo en segundos a esperar.
+ * Devuelve: -
+ * 
+ */
 void wait(float time);
 
-void showHighScores(highscore_t *highscore, window_state_t *state);
+/* tetrisAnimation()
+ * Función encargada de hacer una animación cuando se elimina una o más filas (hace parpadear esas
+ * filas antes de que se borren).
+ * Recibe: Un arreglo de char con las filas que se borraron
+ * Devuelve: -
+ * 
+ */
+void tetrisAnimation(char rows_tetris[HEIGHT_OF_BOARD]);
 
+/*gameOver()
+ * Función encargada de manejar el menú de game_over. Imprime "END" en la pantalla y espera a que
+ * muevan el joystick. Luego permite elegir entre ir al menú inicial ("MENU") o terminar el juego/
+ * apagar el display ("TRN OFF")
+ * Recibe: un puntero a window_state_t con el estado de la ventana
+ * Devuelve: -
+ * 
+ * Nota: Para cambiar opción mover hacia arriba ó abajo, para seleccionar usar el botón.
+ */
+void gameOver(window_state_t *state);
 
 #endif //RASPBERRY_H

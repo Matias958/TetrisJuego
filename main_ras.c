@@ -16,6 +16,8 @@
 #include "highscore.h"
 #include "score_ras.h"
 
+/*MAIN*/
+
 int main(void)
 {
     highscore_t highscore; // inicializo variables generales
@@ -36,18 +38,18 @@ int main(void)
             init(&state); // muestra una pantalla de inicio en el display y espera al boton
             break;
         case GAME:
-            score = playGame_ras(game_mode, &highscore, &state);
+            score = playGameRas(game_mode, &highscore, &state);
             if (state == GAME)
             {
-                score_ras(score, &highscore);
-                game_over(&state);
+                scoreRas(score, &highscore);
+                gameOver(&state);
             }
             break;
         case HIGHSCORE:
             showHighScores(&highscore,&state);
             break;
         case GAME_SEL:
-            gameModeSel_ras(&state, &game_mode);
+            gameModeSelRas(&state, &game_mode);
             break;
         default:
             break;

@@ -1,8 +1,10 @@
 {
     "cmake.sourceDirectory": "${workspaceFolder}/$Recycle.Bin/S-1-5-21-2330724258-3265781333-2503569393-1001/$RD18M6N",
     "files.associations": {
+        "COMMIT_EDITMSG": "c",
         "game_state.h": "c",
         "element_al.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "disdrv.h": "c"
     }
 }

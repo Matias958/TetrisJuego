@@ -1,4 +1,14 @@
-/*headers*/
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: raspberry.c
+*Descripcion: manejo funciones para la Raspberry 
+*             (manejo joystick, display y distintos menus/pantallas)
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
+/*HEADERS*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -11,6 +21,7 @@
 #include "pieces.h"
 #include "score_ras.h"
 
+/*MACROS*/
 enum game_mode_options
 {
     MIRRORED,
@@ -18,26 +29,31 @@ enum game_mode_options
     NOT_EMPTY,
     DIFFICULTY
 };
-enum highscore_state
-{
-    NAME,
-    SCORE
-};
 
-/* pause_ras()
- * Función que realiza el menu de pausa. Muestra "PAUSE" pos espera a que se mueva el joystick en
+
+/*PROTOTIPOS*/
+
+/* pauseRas()
+ * Función que realiza el menu de pausa. Muestra "PAUSE" y espera a que se mueva el joystick en
  * cualquier dirección. Luego te deja seguir jugando ("PLAY"), terminar la partida ("MENU") o
- * apagar la pantalla ("OFF").
- * Recibe: window_state_t *state
+ * apagar la pantalla ("TRN OFF").
+ * Recibe: window_state_t *state, puntero al estado de la ventana
  * Devuelve: -
+ * 
+ * Nota: Para cambiar opción mover hacia arriba ó abajo, para seleccionar usar el botón.
  */
-static void pause_ras(window_state_t *state);
+static void pauseRas(window_state_t *state);
 
-/*INICIO()
- * Función encargada de inicializar la pantalla con la palabra "tetris" pos esperar hasta
- * que se presione el botón del joystick para empezar el juego.
- * Recibe: puntero a estado de la ventana
+/*CÓDIGO*/
+
+/* init()
+ * Función encargada de inicializar la pantalla con la palabra "TETRIS" y esperar hasta
+ * que se mueva el joystick en cualquier dirección. Luego te deja elegir entre empezar a 
+ * jugar ("PLAY"), ver el highscore ("HS") o apagar la pantalla ("TRN OFF").
+ * Recibe: window_state_t *state, puntero al estado de la ventana
  * Devuelve: -
+ * 
+ * Nota: Para cambiar opción mover hacia arriba ó abajo, para seleccionar usar el botón.
  */
 void init(window_state_t *state)
 {
@@ -47,7 +63,7 @@ void init(window_state_t *state)
     disp_clear(); // apaga el display por completo (preventivo)
     disp_update();
 
-    disp_write((dcoord_t){2, 2}, D_ON); // dibuje una pantalla que escribe tetris
+    disp_write((dcoord_t){2, 2}, D_ON); // dibuja una pantalla que escribe "TETRIS"
     disp_write((dcoord_t){3, 2}, D_ON);
     disp_write((dcoord_t){4, 2}, D_ON);
     disp_write((dcoord_t){6, 2}, D_ON);
@@ -122,49 +138,66 @@ void init(window_state_t *state)
     direction = WAIT;
     *state = GAME_SEL;
     disp_clear(); // apaga el display por completo
-    print_letter('P', 0, 0);
-    print_letter('L', 9, 0);
-    print_letter('A', 0, 8);
-    print_letter('Y', 9, 8);
+
+    printCharacter('P', 0, 0); //muestra opción de iniciar una partida
+    printCharacter('L', 9, 0);
+    printCharacter('A', 0, 8);
+    printCharacter('Y', 9, 8);
     disp_update();
 
-    while (direction != BUTTON)
+    while (direction != BUTTON) //espera a que se seleccione una opción con el botón
     {
         while (!joystick(&direction))
             ;
 
-        if (direction == DOWN || direction == UP)
+        if (direction == DOWN || direction == UP) // pasa por las diferentes opciones del menú
         {
             if (*state == GAME_SEL)
             {
-                *state = HIGHSCORE;
-                disp_clear(); // apaga el display por completo
-                print_letter('H', 0, 0);
-                print_letter('S', 9, 0);
+                *state = HIGHSCORE; // opción ver highscore
+                disp_clear(); 
+                printCharacter('H', 0, 0);
+                printCharacter('S', 9, 0);
                 disp_update();
             }
+            else if (*state == HIGHSCORE)
+            {
+                *state = CLOSE_DISPLAY; // opción salir del juego
+                disp_clear(); 
+                printCharacter('T', 0, 0);
+                printCharacter('R', 6, 0);
+                printCharacter('N', 11, 0);
+                printCharacter('O', 0, 8);
+                printCharacter('F', 6, 8);
+                printCharacter('F', 11, 8);
+                disp_update();
+            }
+            
             else
             {
-                disp_clear(); // apaga el display por completo
-                print_letter('P', 0, 0);
-                print_letter('L', 9, 0);
-                print_letter('A', 0, 8);
-                print_letter('Y', 9, 8);
+                *state = GAME_SEL; // opción de iniciar una partida
+                disp_clear(); 
+                printCharacter('P', 0, 0);
+                printCharacter('L', 9, 0);
+                printCharacter('A', 0, 8);
+                printCharacter('Y', 9, 8);
                 disp_update();
-                *state = GAME_SEL;
             }
         }
     }
 
-    disp_clear(); // apaga el display por completo
+    disp_clear(); 
     disp_update();
-    wait(3);
+    wait(2); // espera 2 segundos
 }
 
-/*JOYSTICK()
+/* joystick()
  * Función encargada de analizar el estado del joystick.
  * Recibe: un puntero a char donde se va a guardar el estado del joystick.
  * Devuelve: Un bool que indica si logro recolectar algun estado valido (true) o no (false).
+ * 
+ * Nota: estados posibles: apuntar hacia arriba, abajo, derecha, izquierda, presionar el botón
+ * mantener presionado el botón.
  */
 bool joystick(char *direction)
 {
@@ -175,34 +208,34 @@ bool joystick(char *direction)
     if (coordenates.sw == J_PRESS)
     {
         *direction = BUTTON;
-        // printf("boton\n");
+        
     }
     else if (((-100 <= coordenates.x) && (coordenates.x <= 100)) && ((100 <= coordenates.y) && (coordenates.y <= 127)))
     {
         *direction = UP;
-        // printf("arriba\n");
+        
     }
     else if (((-100 <= coordenates.x) && (coordenates.x <= 100)) && ((-128 <= coordenates.y) && (coordenates.y <= -100)))
     {
         *direction = DOWN;
-        // printf("abajo\n");
+        
     }
     else if (((-128 <= coordenates.x) && (coordenates.x <= -100)) && ((-100 <= coordenates.y) && (coordenates.y <= 100)))
     {
         *direction = LEFT_RAS;
-        // printf("izquierda\n");
+        
     }
     else if (((100 <= coordenates.x) && (coordenates.x <= 127)) && ((-100 <= coordenates.y) && (coordenates.y <= 100)))
     {
         *direction = RIGHT_RAS;
-        // printf("derecha\n");
+        
     }
     else
     {
         *direction = WAIT;
     }
 
-    if (*direction == BUTTON)
+    if (*direction == BUTTON) // si el botón estaba pulsado, se fija que siga estando pulsado luego de 1 seg
     {
         wait(1);
         coordenates = joy_read();
@@ -212,7 +245,7 @@ bool joystick(char *direction)
         }
     }
 
-    if (prevDirection == *direction)
+    if (prevDirection == *direction) // analiza si se hizo un movimiento del joystick valido o no
     {
         return false;
     }
@@ -223,9 +256,9 @@ bool joystick(char *direction)
     }
 }
 
-/*SHOW_DISPLAY()
- * Función encargada de ir actualizando la pantalla.
- * Recibe: Una matriz con el tablero de juego.
+/* showDisplay()
+ * Función encargada de ir actualizando la pantalla durante el juego.
+ * Recibe: Una matriz con el tablero de juego y un int con el tipo de pieza siguiente.
  * Devuelve: -
  */
 void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type)
@@ -234,7 +267,7 @@ void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type)
 
     dcoord_t position;
 
-    for (uint8_t j = 0; j <= DISP_MAX_Y; j++)
+    for (uint8_t j = 0; j <= DISP_MAX_Y; j++) //dibuja el tablero con los bordes
     {
         for (uint8_t i = 0; i < (DISP_MAX_X - 3); i++)
         {
@@ -252,7 +285,7 @@ void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type)
         }
     }
 
-    switch (type)
+    switch (type) //dibuja la siguiente pieza
     {
     case PIECE_I:
         disp_write((dcoord_t){14, 1}, D_ON);
@@ -303,18 +336,33 @@ void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type)
     return;
 }
 
-void gameModeSel_ras(window_state_t *state, game_mode_t *gameMode)
+/* gameModeSelRas()
+ * Función encargada de seleccionar el modo de juego, inicializa la pantalla con la palabra "MDE
+ * SEL" y espera hasta que se mueva el joystick en cualquier dirección. Luego te deja elegir los
+ * diferentes modos de juego.
+ * Recibe: Un puntero a window_state_t con el estado de la ventana y uno a game_mode_t con el modo
+ * de juego de la partida.
+ * Devuelve: -
+ * 
+ * Nota: Permite elegir dificultad del 1-3 ("DIF"), modo Not Empty ("NOE"), Blinking ("BLK")
+ * y Mirrored ("MRR").
+ * 
+ * Nota: Para cambiar opción mover hacia arriba ó abajo, para seleccionar usar el botón 
+ * ("X": seleccionado, "O":no seleccionado). Para empezar la partida  mover el joystick hacia
+ * la derecha y para volver al menú hacia la izquierda.
+ */
+void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
 {
     disp_clear();
     disp_update();
 
-    print_letter('M', 0, 0);
-    print_letter('D', 6, 0);
-    print_letter('E', 12, 0);
+    printCharacter('M', 0, 0); //pone pantalla inicial
+    printCharacter('D', 6, 0);
+    printCharacter('E', 12, 0);
 
-    print_letter('S', 0, 8);
-    print_letter('E', 6, 8);
-    print_letter('L', 11, 8);
+    printCharacter('S', 0, 8);
+    printCharacter('E', 6, 8);
+    printCharacter('L', 11, 8);
 
     disp_update();
 
@@ -333,7 +381,7 @@ void gameModeSel_ras(window_state_t *state, game_mode_t *gameMode)
         while (!joystick(&direction))
             ;
 
-        if (direction == UP || direction == DOWN)
+        if (direction == UP || direction == DOWN) //modifica modo de juego a seleccionar
         {
             if (direction == UP)
             {
@@ -361,7 +409,7 @@ void gameModeSel_ras(window_state_t *state, game_mode_t *gameMode)
             }
         }
 
-        else if (direction == BUTTON)
+        else if (direction == BUTTON) // va modificando que modos de juego estan activos
         {
             switch (i)
             {
@@ -383,61 +431,61 @@ void gameModeSel_ras(window_state_t *state, game_mode_t *gameMode)
             }
         }
 
-        else if (direction == LEFT_RAS)
+        else if (direction == LEFT_RAS) //vuelve al menú si se mueve a la izq
         {
             *state = MENU;
         }
 
-        else if (direction == RIGHT_RAS)
+        else if (direction == RIGHT_RAS) //inicia partida si se mueve a la der
         {
             *state = GAME;
         }
 
-        if (draw)
+        if (draw) //va actualizando pantalla
         {
             switch (i)
             {
             case MIRRORED:
                 disp_clear();
-                print_letter('M', 0, 0);
-                print_letter('R', 6, 0);
-                print_letter('R', 11, 0);
+                printCharacter('M', 0, 0);
+                printCharacter('R', 6, 0);
+                printCharacter('R', 11, 0);
 
-                print_letter(*states[i] ? 'X' : 'O', 6, 8);
+                printCharacter(*states[i] ? 'X' : 'O', 6, 8);
 
                 disp_update();
                 break;
             case BLINKING:
                 disp_clear();
-                print_letter('B', 0, 0);
-                print_letter('L', 6, 0);
-                print_letter('K', 11, 0);
+                printCharacter('B', 0, 0);
+                printCharacter('L', 6, 0);
+                printCharacter('K', 11, 0);
 
-                print_letter(*states[i] ? 'X' : 'O', 6, 8);
+                printCharacter(*states[i] ? 'X' : 'O', 6, 8);
 
                 disp_update();
                 break;
 
             case NOT_EMPTY:
                 disp_clear();
-                print_letter('N', 0, 0);
-                print_letter('O', 6, 0);
-                print_letter('E', 11, 0);
+                printCharacter('N', 0, 0);
+                printCharacter('O', 6, 0);
+                printCharacter('E', 12, 0);
 
-                print_letter(*states[i] ? 'X' : 'O', 6, 8);
+                printCharacter(*states[i] ? 'X' : 'O', 6, 8);
 
                 disp_update();
                 break;
 
             case DIFFICULTY:
                 disp_clear();
-                print_letter('D', 0, 0);
-                print_letter('I', 6, 0);
-                print_letter('F', 11, 0);
+                printCharacter('D', 0, 0);
+                printCharacter('I', 6, 0);
+                printCharacter('F', 11, 0);
 
-                print_letter('X', 0, 8);
-                print_letter(gameMode->difficulty >= MEDIUM ? 'X' : 'O', 6, 8);
-                print_letter(gameMode->difficulty == HARD ? 'X' : 'O', 11, 8);
+                printCharacter('X', 0, 8);
+                printCharacter(gameMode->difficulty >= MEDIUM ? 'X' : 'O', 6, 8);
+                printCharacter(gameMode->difficulty == HARD ? 'X' : 'O', 11, 8);
 
                 disp_update();
                 break;
@@ -451,7 +499,20 @@ void gameModeSel_ras(window_state_t *state, game_mode_t *gameMode)
     wait(1);
 }
 
-int playGame_ras(game_mode_t mode, highscore_t *highscore, window_state_t *state)
+/* playGameRas()
+ * Función encargada de manejar el juego, muestra tablero de juego actual y siguiente pieza y 
+ * permite realizar movimientos o ir al menu de pausa.
+ * Recibe: Una estuctura game_mode_t con el modo de juego seleccionado, un puntero a highscore_t
+ * con el highscore actual y un puntero a window_state_t con el estado de la ventana.
+ * Devuelve: un int con el puntaje de la partida.
+ * 
+ * Nota: Las direcciones abajo, derecha, izquierda del joystick permiten mover la pieza en dichas
+ * direcciones (invirtiendo der-izq si se encuentra en modo "Mirrored"), arriba te permite girar
+ * la pieza 90°, el botón  permite hacer un "hard drop" de la pieza y mantener pulsado el botón
+ * lleva al menú de pausa.
+ * 
+ */
+int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
 {
     // inicializo la semilla pos el timer
     srand(time(NULL));
@@ -499,14 +560,14 @@ int playGame_ras(game_mode_t mode, highscore_t *highscore, window_state_t *state
     {
         if (joystick(&movement))
         {
-            if (movement != LONG_PRESS)
+            if (movement != LONG_PRESS) //si no hizo pausa juega con el movimiento elegido
             {
                 match = playTetris(movement, &piece, matrix, &score, mode);
                 draw = true;
             }
             else
             {
-                pause_ras(state);
+                pauseRas(state);
                 if (*state != GAME)
                 {
                     return score;
@@ -541,7 +602,7 @@ int playGame_ras(game_mode_t mode, highscore_t *highscore, window_state_t *state
             draw = false;
         }
 
-        if (tetris)
+        if (tetris) //si elimino una ó más lineas hace la animación correspondiente y actualiza el display
         {
             tetrisAnimation(rows_tetris);
             showDisplay(auxiliaryMatrix, getNextPiece());
@@ -553,6 +614,12 @@ int playGame_ras(game_mode_t mode, highscore_t *highscore, window_state_t *state
     return score;
 }
 
+/* wait()
+ * Función encargada de esperar un determinado tiempo.
+ * Recibe: Un float con el tiempo en segundos a esperar.
+ * Devuelve: -
+ * 
+ */
 void wait(float time)
 {
     long int initialNumberOfClocks = clock();
@@ -564,19 +631,25 @@ void wait(float time)
     }
 }
 
+/* tetrisAnimation()
+ * Función encargada de hacer una animación cuando se elimina una o más filas (hace parpadear esas
+ * filas antes de que se borren).
+ * Recibe: Un arreglo de char con las filas que se borraron
+ * Devuelve: -
+ * 
+ */
 void tetrisAnimation(char rows_tetris[HEIGHT_OF_BOARD])
 {
     int m;
     int veces;
 
-    for (veces = 0; veces < 6; veces++)
+    for (veces = 0; veces < 6; veces++) //cant de veces que parpadea
     {
         for (m = 0; rows_tetris[m] != (char)END_OF_ARRAY; m++)
         {
             for (uint8_t n = 1; n < WIDTH_OF_BOARD - 1; n++)
             {
                 disp_write((dcoord_t){n, (uint8_t)(rows_tetris[m] - 1)}, veces % 2 ? D_ON : D_OFF);
-                // printf("%c\n", rows_tetris[m]);
             }
         }
         wait(0.3);
@@ -584,26 +657,29 @@ void tetrisAnimation(char rows_tetris[HEIGHT_OF_BOARD])
     }
 }
 
-/*game_over()
- * Función encargada de imprimir una "END" en la pantalla pos esperar a que se presione el boton
- * (nueva partida) o se mueva hacia abajo el joystick (salir juego)
- * Recibe: -
- * Devuelve: un bool que indica si se inicia una nueva partida (true) o se sale del juego (false)
+/*gameOver()
+ * Función encargada de manejar el menú de game_over. Imprime "END" en la pantalla y espera a que
+ * muevan el joystick. Luego permite elegir entre ir al menú inicial ("MENU") o terminar el juego/
+ * apagar el display ("TRN OFF")
+ * Recibe: un puntero a window_state_t con el estado de la ventana
+ * Devuelve: -
+ * 
+ * Nota: Para cambiar opción mover hacia arriba ó abajo, para seleccionar usar el botón.
  */
-void game_over(window_state_t *state)
+void gameOver(window_state_t *state)
 {
     disp_clear();
     disp_update();
 
-    print_letter('E', 0, 5);
-    print_letter('N', 5, 5);
-    print_letter('D', 11, 5);
+    printCharacter('E', 0, 5); //muestra pantalla "END"
+    printCharacter('N', 5, 5);
+    printCharacter('D', 11, 5);
 
     disp_update();
 
     wait(2);
 
-    char direction = WAIT; // espero a que toquen el boton para volver a
+    char direction = WAIT; 
     while (!joystick(&direction))
         ;
     while (!joystick(&direction))
@@ -611,37 +687,40 @@ void game_over(window_state_t *state)
 
     *state = MENU;
     disp_clear();
-    print_letter('M', 0, 0);
-    print_letter('E', 9, 0);
-    print_letter('N', 0, 8);
-    print_letter('U', 9, 8);
+    printCharacter('M', 0, 0); // opción menú
+    printCharacter('E', 9, 0);
+    printCharacter('N', 0, 8);
+    printCharacter('U', 9, 8);
 
     disp_update();
 
-    while (direction != BUTTON)
+    while (direction != BUTTON) //espera a que se seleccione una opción
     {
         while (!joystick(&direction))
             ;
 
-        if (direction == DOWN || direction == UP)
+        if (direction == DOWN || direction == UP) //modifica opción a seleccionar
         {
             if (*state == MENU)
             {
                 *state = CLOSE_DISPLAY;
                 disp_clear();
-                print_letter('O', 0, 5);
-                print_letter('F', 6, 5);
-                print_letter('F', 11, 5);
+                printCharacter('T', 0, 0); //opcion apagar display
+                printCharacter('R', 6, 0);
+                printCharacter('N', 11, 0);
+                printCharacter('O', 0, 8);
+                printCharacter('F', 6, 8);
+                printCharacter('F', 11, 8);
                 disp_update();
             }
             else
             {
                 *state = MENU;
                 disp_clear();
-                print_letter('M', 0, 0);
-                print_letter('E', 9, 0);
-                print_letter('N', 0, 8);
-                print_letter('U', 9, 8);
+                printCharacter('M', 0, 0); //opcion ir al menú
+                printCharacter('E', 9, 0);
+                printCharacter('N', 0, 8);
+                printCharacter('U', 9, 8);
 
                 disp_update();
             }
@@ -653,21 +732,23 @@ void game_over(window_state_t *state)
     wait(0.5);
 }
 
-/* pause_ras()
+/* pauseRas()
  * Función que realiza el menu de pausa. Muestra "PAUSE" pos espera a que se mueva el joystick en
  * cualquier dirección. Luego te deja seguir jugando ("PLAY"), terminar la partida ("MENU") o
- * apagar la pantalla ("OFF").
- * Recibe: window_state_t *state
+ * apagar la pantalla ("TRN OFF").
+ * Recibe: window_state_t *state, puntero al estado de la ventana
  * Devuelve: -
+ * 
+ * Nota: Para cambiar opción mover hacia arriba ó abajo, para seleccionar usar el botón.
  */
-static void pause_ras(window_state_t *state)
+static void pauseRas(window_state_t *state)
 {
     disp_clear();
-    print_letter('P', 0, 0);
-    print_letter('A', 5, 0);
-    print_letter('U', 10, 0);
-    print_letter('S', 0, 8);
-    print_letter('E', 5, 8);
+    printCharacter('P', 0, 0); //muestra pantalla "PAUSE"
+    printCharacter('A', 5, 0);
+    printCharacter('U', 10, 0);
+    printCharacter('S', 0, 8);
+    printCharacter('E', 5, 8);
     disp_update();
 
     wait(1);
@@ -679,47 +760,50 @@ static void pause_ras(window_state_t *state)
 
     direction = WAIT;
     *state = GAME;
-    disp_clear(); // apaga el display por completo
-    print_letter('P', 0, 0);
-    print_letter('L', 9, 0);
-    print_letter('A', 0, 8);
-    print_letter('Y', 9, 8);
+    disp_clear(); 
+    printCharacter('P', 0, 0); //opción seguir jugando
+    printCharacter('L', 9, 0);
+    printCharacter('A', 0, 8);
+    printCharacter('Y', 9, 8);
     disp_update();
 
-    while (direction != BUTTON)
+    while (direction != BUTTON) //espera a que se seleccione una opción
     {
         while (!joystick(&direction))
             ;
 
-        if (direction == DOWN || direction == UP)
+        if (direction == DOWN || direction == UP) //cambia opción a seleccionar
         {
             if (*state == GAME)
             {
                 *state = MENU;
-                disp_clear(); // apaga el display por completo
-                print_letter('M', 0, 0);
-                print_letter('E', 9, 0);
-                print_letter('N', 0, 8);
-                print_letter('U', 9, 8);
+                disp_clear(); 
+                printCharacter('M', 0, 0); //opción ir al menu
+                printCharacter('E', 9, 0);
+                printCharacter('N', 0, 8);
+                printCharacter('U', 9, 8);
                 disp_update();
             }
             else if (*state == MENU)
             {
                 *state = CLOSE_DISPLAY;
                 disp_clear();
-                print_letter('O', 0, 5);
-                print_letter('F', 6, 5);
-                print_letter('F', 11, 5);
+                printCharacter('T', 0, 0); // opción apagar display
+                printCharacter('R', 6, 0);
+                printCharacter('N', 11, 0);
+                printCharacter('O', 0, 8);
+                printCharacter('F', 6, 8);
+                printCharacter('F', 11, 8);
                 disp_update();
             }
             else
             {
                 *state = GAME;
-                disp_clear(); // apaga el display por completo
-                print_letter('P', 0, 0);
-                print_letter('L', 9, 0);
-                print_letter('A', 0, 8);
-                print_letter('Y', 9, 8);
+                disp_clear(); 
+                printCharacter('P', 0, 0); // opción seguir jugando
+                printCharacter('L', 9, 0);
+                printCharacter('A', 0, 8);
+                printCharacter('Y', 9, 8);
                 disp_update();
             }
         }
@@ -730,94 +814,4 @@ static void pause_ras(window_state_t *state)
     wait(1);
 }
 
-void showHighScores(highscore_t *highscore, window_state_t *state)
-{
-
-    disp_clear();
-    disp_update();
-
-    // muestro nombres
-    int i, pos = 0, winState = NAME;
-    char direction;
-    char buffer[4];
-    bool draw = true;
-    joystick(&direction);
-
-    while (*state != GAME_SEL)
-    {
-        if (direction == DOWN)
-        {
-            pos++;
-            pos %= NUMBER_OF_PLAYERS;
-            draw = true;
-        }
-        else if (direction == UP)
-        {
-            pos--;
-            if (pos < 0)
-            {
-                pos = NUMBER_OF_PLAYERS - 1;
-            }
-            draw = true;
-        }
-
-        else if(direction == RIGHT_RAS)
-        {
-            if(winState == NAME)
-            {
-                winState = SCORE;
-                draw = true;
-            }
-        }
-
-        else if(direction == LEFT_RAS)
-        {
-            if(winState == NAME)
-            {
-                *state = GAME_SEL;
-            }
-            else
-            {
-                winState = NAME;
-                draw = true;
-            }
-        }
-
-        if (draw)
-        {
-            if (winState == NAME)
-            {
-                disp_clear();
-                print_num(pos + 1, 0, 0);
-                for (i = 0; i < CHARACTERS; i++)
-                {
-                    print_letter(highscore->nameOfHighscores[pos][i], i * 5, 8);
-                }
-                disp_update();
-            }
-            else
-            {
-                disp_clear();
-                snprintf(buffer, sizeof(buffer), "%d", highscore->highscores[pos]);
-                for (i = 0; i < 2; i++)
-                {
-                    print_num(buffer[i] - '0', i * 8, 0);
-                }
-
-                for (i = 2; i < 4; i++)
-                {
-                    print_num(buffer[i] - '0', (i-2) * 8, 8);
-                }
-                disp_update();
-            }
-
-            draw = false;
-        }
-        while(!joystick(&direction));
-    }
-
-    disp_clear();
-    disp_update();
-    wait(1);
-}
 
