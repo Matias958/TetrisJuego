@@ -676,6 +676,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 				case PAUSE:
 					drawPauseMenu(state, elem, &playing);
 					al_draw_bitmap(elem->gameBackround, 0, 0, 0);
+					break;
 				case HOLD_1:
 				case HOLD_2:
 					if (hold(&piece))
@@ -690,6 +691,8 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 						al_rest(0.1);
 						al_draw_bitmap(elem->gameBackround,0,0,0);
 					}
+					break;
+				default:
 					break;
 				}
 
