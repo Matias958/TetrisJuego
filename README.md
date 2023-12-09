@@ -16,7 +16,7 @@ Este consiste en programar el juego Tetris de manera tal que este corra en una P
 Este proyecto utiliza Allegro 5, una biblioteca para desarrollo de juegos y aplicaciones multimedia en C/C++. A continuación, se detallan los pasos para instalar Allegro 5 en tu sistema.
 
 #### Paso 1: Instalar Allegro 5
-Asegúrate de tener CMake y un compilador de C/C++ instalados en tu sistema.
+Asegúrate de tener la toolchain de gcc instalados en tu sistema.
 
 En sistemas basados en Debian/Ubuntu, puedes usar el siguiente comando:
 
@@ -31,6 +31,19 @@ Para otras plataformas, sigue las instrucciones de instalación en la página of
 #### Paso 3: Compilar y ejecutar
     make tetris_al
     ./tetris_al
+
+
+### Raspberry
+Asegúrate de tener la toolchain de gcc y git instalados en tu sistema.
+
+#### Paso 1: Clonar este repositorio
+    git clone https://github.com/Matias958/TetrisJuego.git
+    cd TetrisJuego
+
+#### Paso 2: Compilar y ejecutar
+    make tetris_ras
+    ./tetris_ras
+
 
 ## Generalidades
 
@@ -49,19 +62,37 @@ A continuación se detallan los controles para interactuar con este proyecto:
 
 ```plaintext
 
-Teclas WASD o Flechas:
+Teclas WASD o Flechas y shifts:
 
   - W o Flecha Arriba:     Rotar la Pieza.
   - A o Flecha Izquierda:  Mover hacia la izquierda.
   - S o Flecha Abajo:      Bajar la Pieza.
   - D o Flecha Derecha:    Mover hacia la derecha.
+  - Shift izq o Shift der: Guardar pieza
 
 Tecla Espacio:        Bajar la pieza esta estacionarla.
 Tecla Esc:            Entrar en el menu de pausa. 
 
 ```
 
+![Imagen del menu](<pictures/controls.bmp>)
+
 ### Controles en Raspberry Pi
+
+```plaintext
+
+Movimiento del Joystick:
+
+  - Hacia arriba:        Rotar la Pieza.
+  - Hacia la izquierda:  Mover hacia la izquierda.
+  - Hacia abajo:         Bajar la Pieza.
+  - Hacia la derecha:    Mover hacia la derecha.
+
+Abajo y presionar:                 La pieza cae hasta donde pueda.
+Apretando el boton:                Guarda la pieza.
+Manteniendo presionado el boton:   Entrar en el menu de pausa. 
+
+```
 
 ## Aspectos gráficos en PC
 A continuación se detallaran los distintos elementos gráficos que se pueden observar en las distintas ventanas del juego.
@@ -92,10 +123,22 @@ Al igual que el resto de botones, esta selección es interactiva.
 
 ![Gif de dificultad](<imagenes_readme/dificultad.gif>)
 
+
+### Menu de carga
+Entre la selección del modo de juego, y el juego en si mismo, hay una pantalla de carga donde se muestran los controles del juego (y una frase célebre ).
+
+![Menu de carga](<imagenes_readme/menu de carga.png>)
+
+![Gif de menu de carga](<imagenes_readme/menu de carga.gif>)
+
 ### Juego 
-Ya una vez dentro del juego, se mostrara un ventana con los modos de juego activos y la dificultad, el tablero de juego, el puntaje y la siguiente pieza.
+Ya una vez dentro del juego, se mostrara un ventana con los modos de juego activos y la dificultad, el tablero de juego, el puntaje, la siguiente pieza y la pieza almacenada.
 
 ![juego](<imagenes_readme/juego1.png>)
+
+En lo que respecta a la pieza almacenada, el recuadro inferior derecho que se llama piece held, muestra la pieza guardada, como tambien una ayuda para saber si se puede usar esta funcion o no, donde el borde verde indicara que se puede usar y uno rojo, que no se puede usar.
+
+![juego](<imagenes_readme/hold.gif>)
 
 Dentro del juego, cada vez que se realiza un tetris se muestra un animación sobre la fila completada, y en caso de que el puntaje obtenido entre dentro del TOP5 se le informa al jugador de esto.
 

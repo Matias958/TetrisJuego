@@ -15,8 +15,8 @@
 
 /************** VARIABLES ***************/
 static piece_t nextPiece;
-static bool haveHold = false;
-static int holdPiece = EMPTY;
+static bool haveHold;
+static int holdPiece;
 
 /*playTetris()
  * Función encargada de ir moviendo las piezas en base a los comandos enviados y llamar a las
@@ -154,13 +154,15 @@ void createBoardforNotEmpty(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD])
 }
 
 /*initPiece()
- * Funcion encargada inicializar la siguiente pieza
+ * Funcion encargada inicializar la siguiente pieza y la pieza holdeada.
  * Recibe: --
  * Devuelve: --
  */
 void initPiece(void)
 {
     nextPiece = createPiece();
+    holdPiece = EMPTY;
+    haveHold = false;
 }
 
 /*getNextPiece()

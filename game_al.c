@@ -617,7 +617,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 		showScore(elem, score, highscore);
 		showNextPiece(squareColors, squareBorderColors, elem);
 		drawActiveModes(elem, mode);
-		showHoldPiece(squareColors, squareBorderColors, elem, canHold(), false);
+		showHoldPiece(squareColors, squareBorderColors, elem, mode.difficulty == HARD ? false : canHold(), false);
 		drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
 
 		al_set_target_bitmap(elem->bitmapTrans);
@@ -679,18 +679,18 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 					break;
 				case HOLD_1:
 				case HOLD_2:
-					if (hold(&piece))
-					{
-						al_play_sample(elem->effectHold, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-					}
-					else
-					{
-						al_play_sample(elem->effectCantHold, 2.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-						showHoldPiece(squareColors, squareBorderColors, elem, canHold(), true);
-						al_flip_display();
-						al_rest(0.1);
-						al_draw_bitmap(elem->gameBackround,0,0,0);
-					}
+						if (mode.difficulty != HARD && hold(&piece)) //holdeamos la pieza y reproducimos el sonido correspondiente
+						{ 
+							al_play_sample(elem->effectHold, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL); 
+						}
+						else
+						{
+							al_play_sample(elem->effectCantHold, 2.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+							showHoldPiece(squareColors, squareBorderColors, elem, mode.difficulty == HARD? false : canHold(), true);
+							al_flip_display();
+							al_rest(0.1);
+							al_draw_bitmap(elem->gameBackround, 0, 0, 0);
+						}
 					break;
 				default:
 					break;
@@ -762,7 +762,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 
 			if (!off)
 			{
-				drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
+				drawBoard(auxiliaryMatrix, mode.difficulty == HARD ? auxiliaryMatrix : predictionMatrix, squareColors, squareBorderColors);
 			}
 			//verifico si hay tetris
 			score += deleteLine(matrix, arrayOfLinesWithTetris, &tetris);
@@ -775,7 +775,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 				isTetrisAnimation(arrayOfLinesWithTetris, squareColors, elem);
 				if (!off)
 				{
-					drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
+					drawBoard(auxiliaryMatrix, mode.difficulty == HARD ? auxiliaryMatrix : predictionMatrix, squareColors, squareBorderColors);
 				}
 
 				//modificamos la velocidad de la música en función del puntaje
@@ -786,7 +786,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 			//muestro el resto de informacion
 			showScore(elem, score, highscore);
 			showNextPiece(squareColors, squareBorderColors, elem);
-			showHoldPiece(squareColors, squareBorderColors, elem, canHold(), false);
+			showHoldPiece(squareColors, squareBorderColors, elem, mode.difficulty == HARD? false : canHold(), false);
 			drawActiveModes(elem, mode);
 
 			al_flip_display();
@@ -800,7 +800,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	{
 		al_stop_timer(elem->timerOn);
 		al_stop_timer(elem->timerOff);
-		drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
+		drawBoard(auxiliaryMatrix, mode.difficulty == HARD ? auxiliaryMatrix : predictionMatrix, squareColors, squareBorderColors);
 	}
 
 	if (*state != CLOSE_DISPLAY)
