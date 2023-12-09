@@ -1,9 +1,21 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: game_al.c
+*Descripcion: módulo encargado del aspecto grafico y la interfaz del juego
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
+/************** HEADERS ***************/
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "game_al.h"
 #include "buttons_al.h"
 #include "game.h"
 
+/************** MACROS ***************/
 #define BOARD_WIDTH WIDTH_OF_BOARD
 #define BOARD_LENGHT HEIGHT_OF_BOARD
 
@@ -16,14 +28,14 @@
 #define SIZE_OF_SCORE_WINDOW_X (6 * SQUARE_SIG_SIZE)
 #define SIZE_OF_SCORE_WINDOW_Y 100
 #define SCORE_WINDOW_POS_X (BOARD_START_X + BOARD_WIDTH * SQUARE_SIZE + 50)
-#define SCORE_WINDOW_POS_Y BOARD_START_Y
+#define SCORE_WINDOW_POS_Y (BOARD_START_Y - 25)
 
 #define SIZE_OF_NEXT_PIECE_WINDOW_X (SIZE_OF_SCORE_WINDOW_X)
 #define SIZE_OF_NEXT_PIECE_WINDOW_Y 200
 #define NEXT_PIECE_WINDOW_POS_X SCORE_WINDOW_POS_X
-#define NEXT_PIECE_WINDOW_POS_Y (SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y + 100)
+#define NEXT_PIECE_WINDOW_POS_Y (SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y + 60)
 
-#define HOLD_PIECE_WINDOW_POS_Y (NEXT_PIECE_WINDOW_POS_Y + 100)
+#define HOLD_PIECE_WINDOW_POS_Y (NEXT_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y + 65)
 
 #define ACTIVE_GAME_MODES_POS_X (BOARD_START_X - 150)
 #define ACTIVE_GAME_MODES_POS_Y (BOARD_START_Y + 2 * SQUARE_SIZE)
@@ -45,9 +57,12 @@
 #define DOWN_AL_2 ALLEGRO_KEY_DOWN
 #define PAUSE ALLEGRO_KEY_ESCAPE
 #define DROP ALLEGRO_KEY_SPACE
+#define HOLD_1 ALLEGRO_KEY_RSHIFT
+#define HOLD_2 ALLEGRO_KEY_LSHIFT
 
 #define SIZE_OF_TITLE 200
 
+/************** DEFINICIONES ***************/
 enum bordes
 {
 	EMPTY_B = BORDER + 1,
@@ -71,6 +86,7 @@ enum pause_options
 	QUIT
 };
 
+/************** VARIABLES ***************/
 static const int posPieza[7][4][2] = {
 	{{SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}, {SQUARE_SIG_SIZE * 2, SQUARE_SIG_SIZE * 2.5}, {3 * SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}, {4 * SQUARE_SIG_SIZE, SQUARE_SIG_SIZE * 2.5}},	  // I   0
 	{{SQUARE_SIG_SIZE * 1.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 2.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 3.5, 2 * SQUARE_SIG_SIZE}, {SQUARE_SIG_SIZE * 3.5, 3 * SQUARE_SIG_SIZE}}, // J    0
@@ -88,9 +104,12 @@ static const char* quotes[NUM_OF_QUOTES][LINES_OF_QUOTES] = {
 															};
 															
 
+
+/************** PROTOTIPOS ***************/
 static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[]);
 static void initBoardColors(ALLEGRO_COLOR squareColors[]);
 static void initBoardBorderColors(ALLEGRO_COLOR squareColors[]);
+static void showHoldPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t* elem, bool canHold, bool tryToHold);
 static void drawActiveModes(element_t *elem, game_mode_t gameModes);
 static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t *elem);
 static void showScore(element_t *elem, int score, highscore_t *highscore);
@@ -219,21 +238,26 @@ static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBord
 
 }
 
-static void showHoldPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t* elem)
+/*showHoldPiece()
+ * Funcion encargada de mostrar la pieza holdeada
+ * Recibe: squareColors (arreglo de los colores de las piezas), squareBorderColors (arreglo de los colores de los bordes de las piezas)
+ *			elem (puntero a la estructura con todos los punteros de allegro)
+ * Devuelve: --
+ */
+static void showHoldPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t* elem, bool canHold, bool tryToHold)
 {
-
 	//recuadro con el nombre
-	al_draw_text(elem->buttonsBorder, al_map_rgb(66, 67, 62), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2, 100 + HOLD_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "NEXT PIECE");
-	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2, 100 + HOLD_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "NEXT PIECE");
-	al_draw_filled_rectangle(NEXT_PIECE_WINDOW_POS_X, HOLD_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X, 100 + HOLD_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, al_map_rgb(66, 67, 62));
-	al_draw_rectangle(NEXT_PIECE_WINDOW_POS_X, HOLD_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X,  HOLD_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, al_map_rgb(124, 121, 108), 6);
+	al_draw_text(elem->buttonsBorder, al_map_rgb(66, 67, 62), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2,HOLD_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "PIECE HELD");
+	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2, HOLD_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "PIECE HELD");
+	al_draw_filled_rectangle(NEXT_PIECE_WINDOW_POS_X, HOLD_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X, HOLD_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, al_map_rgb(66, 67, 62));
+	al_draw_rectangle(NEXT_PIECE_WINDOW_POS_X, HOLD_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X,  HOLD_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, canHold? al_map_rgb(112, 142, 73) : al_map_rgb(172, 65, 83), tryToHold && !canHold? 9 : 6);
 
 	int nextPiece = getHoldPiece();
 	int i;
 
 	//dibujo la siguiente pieza
-	if (nextPiece != 0)
-	{
+	if (nextPiece != EMPTY)
+	{ 
 		for (i = 0; i < 4; i++)
 		{
 			al_draw_filled_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareColors[nextPiece]);
@@ -489,7 +513,6 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 			return;
 		}
 
-
 		al_draw_bitmap(elem->controls, 0, 0, 0);
 
 		al_draw_text(elem->gameModesDescriptionBorder, al_map_rgb(0, 0, 0), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
@@ -544,12 +567,15 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 				matrix[i][j] = BORDER;
 				blinkingMatrix[i][j] = BORDER;
 				auxiliaryMatrix[i][j] = BORDER;
+				predictionMatrix[i][j] = BORDER;
+
 			}
 			else
 			{
 				matrix[i][j] = EMPTY;
 				blinkingMatrix[i][j] = EMPTY;
 				auxiliaryMatrix[i][j] = EMPTY;
+				predictionMatrix[i][j] = EMPTY;
 			}
 		}
 	}
@@ -586,9 +612,12 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 		}
 
 		al_draw_bitmap(elem->gameBackround, 0, 0, 0);
+
+
 		showScore(elem, score, highscore);
 		showNextPiece(squareColors, squareBorderColors, elem);
 		drawActiveModes(elem, mode);
+		showHoldPiece(squareColors, squareBorderColors, elem, canHold(), false);
 		drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
 
 		al_set_target_bitmap(elem->bitmapTrans);
@@ -596,17 +625,11 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 		al_clear_to_color(al_map_rgba(0, 0, 0, trans));
 
 		al_set_target_backbuffer(elem->display);
+
 		al_draw_bitmap(elem->bitmapTrans, 0, 0, 0);
 
 		al_flip_display();
 	}
-
-	al_draw_bitmap(elem->gameBackround, 0, 0, 0);
-	showScore(elem, score, highscore);
-	showNextPiece(squareColors, squareBorderColors, elem);
-	drawActiveModes(elem, mode);
-	drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
-	al_flip_display();
 
 	al_flush_event_queue(elem->eventQueue);
 
@@ -653,8 +676,20 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 				case PAUSE:
 					drawPauseMenu(state, elem, &playing);
 					al_draw_bitmap(elem->gameBackround, 0, 0, 0);
-				case ALLEGRO_KEY_C:
-						hold(&piece);
+				case HOLD_1:
+				case HOLD_2:
+					if (hold(&piece))
+					{
+						al_play_sample(elem->effectHold, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					}
+					else
+					{
+						al_play_sample(elem->effectCantHold, 2.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+						showHoldPiece(squareColors, squareBorderColors, elem, canHold(), true);
+						al_flip_display();
+						al_rest(0.1);
+						al_draw_bitmap(elem->gameBackround,0,0,0);
+					}
 					break;
 				}
 
@@ -748,7 +783,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 			//muestro el resto de informacion
 			showScore(elem, score, highscore);
 			showNextPiece(squareColors, squareBorderColors, elem);
-			showHoldPiece(squareColors, squareBorderColors, elem);
+			showHoldPiece(squareColors, squareBorderColors, elem, canHold(), false);
 			drawActiveModes(elem, mode);
 
 			al_flip_display();

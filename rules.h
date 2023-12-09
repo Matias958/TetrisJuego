@@ -38,6 +38,13 @@
  */
 piece_t createPiece(void);
 
+/*createSpecificPiece()
+ * Funcion encargada de crear y devolver la estructura de una pieza, en especifico
+ * Recibe: numberOfPiece (número de pieza de a crear)
+ * Devuelve: pieza creada
+ */
+piece_t createSpecificPiece(int numberOfPiece);
+
 /*turnPiece()
  * Funcion encargada de rotar una pieza
  * Recibe: piece (puntero a una pieza) y matrix (el tablero donde se esta rotando)

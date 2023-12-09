@@ -155,10 +155,12 @@
     <Media Include="audio\play.wav" />
     <Media Include="audio\rotate.wav" />
     <Media Include="audio\select.wav" />
+    <Media Include="audio\se_game_hold.wav" />
     <Media Include="audio\se_game_landing.wav" />
     <Media Include="audio\se_game_move.wav" />
     <Media Include="audio\se_game_pause.wav" />
     <Media Include="audio\se_game_perfect.wav" />
+    <Media Include="audio\se_sys_alert.wav" />
     <Media Include="audio\tetris.wav" />
     <Media Include="audio\highscore.wav" />
   </ItemGroup>

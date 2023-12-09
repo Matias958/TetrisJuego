@@ -43,6 +43,8 @@ int initializeElements(element_t* elem)
     elem->effectHighscore = NULL;
     elem->effectLanding = NULL;
     elem->effectMove = NULL;
+    elem->effectHold = NULL;
+    elem->effectCantHold = NULL;
     elem->effectPause = NULL;
     elem->effectPlay = NULL;
     elem->effectRotate = NULL;
@@ -328,6 +330,20 @@ int initializeElements(element_t* elem)
     if (!elem->effectRotate)
     {
         printf("No se cargo el audio del efecto: rotacion\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->effectHold = al_load_sample("audio/se_game_hold.wav"); // cargamos el audio para el effect hold
+    if (!elem->effectHold)
+    {
+        printf("No se cargo el audio del efecto: hold\n");
+        return EXIT_FAILURE;
+    }
+
+    elem->effectCantHold = al_load_sample("audio/se_sys_alert.wav"); // cargamos el audio para el effect hold
+    if (!elem->effectCantHold)
+    {
+        printf("No se cargo el audio del efecto: cant hold\n");
         return EXIT_FAILURE;
     }
 
@@ -668,6 +684,8 @@ int destructorOfElements(element_t *elem)
     destroySample(elem->effectSelect);
     destroySample(elem->effectRotate);
     destroySample(elem->effectMove);
+    destroySample(elem->effectHold);
+    destroySample(elem->effectCantHold);
     destroySample(elem->effectLanding);
     destroySample(elem->effectPause);
     destroySample(elem->effectGameOver);

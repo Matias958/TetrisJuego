@@ -151,6 +151,12 @@
     <Media Include="audio\controls.wav">
       <Filter>Resource Files</Filter>
     </Media>
+    <Media Include="audio\se_game_hold.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="audio\se_sys_alert.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
   <ItemGroup>
     <Text Include="highscore.txt" />

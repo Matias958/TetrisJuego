@@ -1,10 +1,22 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: game.c
+*Descripcion: módulo encargado de jugar al Tetris
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
+
+/************** HEADERS ***************/
 #include <stdbool.h>
 #include "game.h"
 #include "rules.h"
 
+/************** VARIABLES ***************/
 static piece_t nextPiece;
 static bool haveHold = false;
-static piece_t holdPiece ={EMPTY, {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}}, 0, 0, 0};
+static int holdPiece = EMPTY;
 
 /*playTetris()
  * Función encargada de ir moviendo las piezas en base a los comandos enviados y llamar a las
@@ -34,6 +46,7 @@ bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDT
             {
                 *piece = nextPiece;
                 nextPiece = createPiece();
+                haveHold=false;
             }
             else  //si no se puede seguir jugando devuelve true
             {
@@ -57,6 +70,7 @@ bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDT
         {
             *piece = nextPiece;
             nextPiece = createPiece();
+            haveHold=false;
         }
         else
         {
@@ -78,6 +92,7 @@ bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDT
             {
                 *piece = nextPiece;
                 nextPiece = createPiece();
+                haveHold=false;
             }
             else
             {
@@ -161,28 +176,51 @@ int getNextPiece(void)
 
 /*hold()
 * Funcion encargada de holdear una pieza.
-* Recibe:
-* 
+* Recibe: pieza 
+* Devuelve: un bool si se puedo holdear la pieza pieza o no
 */
-void hold (piece_t *piece)
+bool hold (piece_t *piece)
  {
-    if (haveHold == false && holdPiece.type == 0)
+    
+    if(haveHold == true)
     {
-        holdPiece = *piece;
+        return false;
+    }
+    else if (haveHold == false && holdPiece == EMPTY)
+    {
+        holdPiece = piece->type;
         *piece = nextPiece;
         nextPiece = createPiece();
         haveHold = true;
+        initTime();
     }
     else if (haveHold == false)
     {
-        piece_t auxPiece = *piece;
-        *piece = holdPiece;
+        int auxPiece = piece->type;
+        *piece = createSpecificPiece(holdPiece);
         holdPiece = auxPiece;
         haveHold = true;
+        initTime();
     }
+    return true;
  }
 
+/*getNextPiece()
+ * Funcion encargada de decir que pieza es la almacenada
+ * Recibe: --
+ * Devuelve: el tipo de la siguiente pieza
+ */
 int getHoldPiece(void)
 {
-    return holdPiece.type;
+    return holdPiece;
+}
+
+/*canHold()
+ * Funcion encargada de decir si se puede holdear una pieza o no
+ * Recibe: --
+ * Devuelve: booleano si se puede holdear una pieza o no
+ */
+bool canHold(void)
+{
+    return !haveHold;
 }

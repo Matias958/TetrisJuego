@@ -93,6 +93,8 @@ typedef struct
     ALLEGRO_SAMPLE *effectSelect;
     ALLEGRO_SAMPLE *effectRotate;
     ALLEGRO_SAMPLE *effectMove;
+    ALLEGRO_SAMPLE *effectHold;
+    ALLEGRO_SAMPLE *effectCantHold;
     ALLEGRO_SAMPLE *effectLanding;
     ALLEGRO_SAMPLE *effectPause;
     ALLEGRO_SAMPLE *effectGameOver;

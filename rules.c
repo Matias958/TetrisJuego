@@ -67,6 +67,32 @@ piece_t createPiece(void)
 	return piece;
 }
 
+/*createSpecificPiece()
+ * Funcion encargada de crear y devolver la estructura de una pieza, en especifico
+ * Recibe: numberOfPiece (número de pieza de a crear)
+ * Devuelve: pieza creada
+ */
+piece_t createSpecificPiece(int numberOfPiece)
+{
+	piece_t piece;
+
+	// copiamos la forma de la pieza que corresponda a la matris de la estructura
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+
+			piece.matrixOfPiece[i][j] = positionOfGeneration[numberOfPiece - 1][i][j];
+		}
+	}
+
+	piece.rotation = 0; // le decimos en que rotacion esta
+	piece.column = 4;	// la ubicamos en el espacio de la matris del juego
+	piece.line = 1;
+
+	return piece;
+}
+
 /*turnPiece()
  * Funcion encargada de rotar una pieza
  * Recibe: piece (puntero a una pieza) y matrix (el tablero donde se esta rotando)

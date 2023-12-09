@@ -1,3 +1,11 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: game_al.c
+*Descripcion: módulo encargado del aspecto grafico y la interfaz del juego
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
 
 #ifndef GAME_AL_H
 #define GAME_AL_H
