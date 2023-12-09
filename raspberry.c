@@ -21,6 +21,11 @@
 #include "pieces.h"
 #include "score_ras.h"
 
+#include "audio_ras.h"
+#include "audio.h"
+#include <pthread.h>
+
+
 /*MACROS*/
 enum game_mode_options
 {
@@ -44,6 +49,7 @@ enum game_mode_options
  */
 static void pauseRas(window_state_t *state);
 
+
 /*CÓDIGO*/
 
 /* init()
@@ -59,9 +65,20 @@ void init(window_state_t *state)
 {
     disp_init(); // inicializo el display
     joy_init();  // inicializo el joystick
-
+    
     disp_clear(); // apaga el display por completo (preventivo)
     disp_update();
+
+    initAudio();
+    pthread_t musicTh1;
+    pthread_create(&musicTh1,NULL,musicThread_menu,NULL);
+    pthread_join(musicTh1,NULL);
+    Audio*soundPlay=NULL;
+    soundPlay = createAudio(PLAY_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundSelect=NULL;
+    soundSelect = createAudio(SELECT_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundCursor=NULL;
+    soundCursor = createAudio(CURSOR_M, 0, SDL_MIX_MAXVOLUME);
 
     disp_write((dcoord_t){2, 2}, D_ON); // dibuja una pantalla que escribe "TETRIS"
     disp_write((dcoord_t){3, 2}, D_ON);
@@ -135,6 +152,8 @@ void init(window_state_t *state)
     while (!joystick(&direction))
         ;
 
+    playSoundFromMemory(soundPlay, SDL_MIX_MAXVOLUME);
+
     direction = WAIT;
     *state = GAME_SEL;
     disp_clear(); // apaga el display por completo
@@ -149,9 +168,10 @@ void init(window_state_t *state)
     {
         while (!joystick(&direction))
             ;
-
+        
         if (direction == DOWN || direction == UP) // pasa por las diferentes opciones del menú
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
             if (*state == GAME_SEL)
             {
                 *state = HIGHSCORE; // opción ver highscore
@@ -184,10 +204,19 @@ void init(window_state_t *state)
                 disp_update();
             }
         }
+        
     }
 
+    playSoundFromMemory(soundSelect, SDL_MIX_MAXVOLUME);
+    SDL_Delay(500);
+    
     disp_clear(); 
     disp_update();
+    endAudio();
+    freeAudio(soundPlay);
+    freeAudio(soundCursor);
+    freeAudio(soundSelect);
+
     wait(2); // espera 2 segundos
 }
 
@@ -333,6 +362,7 @@ void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type)
         break;
     }
     disp_update();
+
     return;
 }
 
@@ -355,6 +385,17 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
 {
     disp_clear();
     disp_update();
+    
+    initAudio();
+    pthread_t musicTh1;
+    pthread_create(&musicTh1,NULL,musicThread_menu,NULL);
+    pthread_join(musicTh1,NULL);
+    Audio*soundPlay=NULL;
+    soundPlay = createAudio(PLAY_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundSelect=NULL;
+    soundSelect = createAudio(SELECT_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundCursor=NULL;
+    soundCursor = createAudio(CURSOR_M, 0, SDL_MIX_MAXVOLUME);
 
     printCharacter('M', 0, 0); //pone pantalla inicial
     printCharacter('D', 6, 0);
@@ -383,6 +424,7 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
 
         if (direction == UP || direction == DOWN) //modifica modo de juego a seleccionar
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
             if (direction == UP)
             {
                 if (i != MIRRORED)
@@ -411,6 +453,7 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
 
         else if (direction == BUTTON) // va modificando que modos de juego estan activos
         {
+             playSoundFromMemory(soundSelect, SDL_MIX_MAXVOLUME);
             switch (i)
             {
             case DIFFICULTY:
@@ -439,6 +482,9 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
         else if (direction == RIGHT_RAS) //inicia partida si se mueve a la der
         {
             *state = GAME;
+            playSoundFromMemory(soundPlay, SDL_MIX_MAXVOLUME);
+            SDL_Delay(500);
+
         }
 
         if (draw) //va actualizando pantalla
@@ -496,6 +542,10 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
 
     disp_clear();
     disp_update();
+    endAudio();
+    freeAudio(soundPlay);
+    freeAudio(soundCursor);
+    freeAudio(soundSelect);
     wait(1);
 }
 
@@ -514,6 +564,24 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
  */
 int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
 {
+    initAudio();
+    pthread_t musicTh;
+    pthread_create(&musicTh,NULL,musicThread_game,NULL);
+    pthread_join(musicTh,NULL);
+    Audio*soundRotate=NULL;
+    soundRotate = createAudio(ROTATE_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundLand=NULL;
+    soundLand = createAudio(SE_GAME_LANDING_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundPause=NULL;
+    soundPause = createAudio(SE_GAME_PAUSE_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundMove=NULL;
+    soundMove = createAudio(SE_GAME_MOVE_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundGameOver=NULL;
+    soundGameOver = createAudio(ME_GAMEOVER_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundTetris=NULL;
+    soundTetris = createAudio(TETRIS_M, 0, SDL_MIX_MAXVOLUME);
+
+
     // inicializo la semilla pos el timer
     srand(time(NULL));
 
@@ -564,12 +632,28 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
             {
                 match = playTetris(movement, &piece, matrix, &score, mode);
                 draw = true;
+                if(movement == BUTTON)
+                {
+                    playSoundFromMemory(soundLand, SDL_MIX_MAXVOLUME);
+                }
+                else if(movement == UP)
+                {
+                    playSoundFromMemory(soundRotate, SDL_MIX_MAXVOLUME);
+    
+                }
+                else
+                {
+                    playSoundFromMemory(soundMove, SDL_MIX_MAXVOLUME);
+                }
             }
             else
-            {
+            {   
+                playSoundFromMemory(soundPause, SDL_MIX_MAXVOLUME);
+                SDL_Delay(2000);
                 pauseRas(state);
                 if (*state != GAME)
                 {
+                    endAudio();
                     return score;
                 }
             }
@@ -594,16 +678,18 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
             }
 
             parkPiece(&piece, auxiliaryMatrix); // estacionamos la pieza que se esta moviendo para visualizarla
-
+            
             showDisplay(auxiliaryMatrix, getNextPiece());
 
             score += deleteLine(matrix, rows_tetris, &tetris);
+
 
             draw = false;
         }
 
         if (tetris) //si elimino una ó más lineas hace la animación correspondiente y actualiza el display
         {
+            playSoundFromMemory(soundTetris, SDL_MIX_MAXVOLUME);
             tetrisAnimation(rows_tetris);
             showDisplay(auxiliaryMatrix, getNextPiece());
             tetris = false;
@@ -611,6 +697,18 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
         }
     }
 
+    disp_clear();
+    disp_update();
+    playSoundFromMemory(soundGameOver, SDL_MIX_MAXVOLUME);
+    SDL_Delay(2000);
+
+    endAudio();
+    freeAudio(soundLand);
+    freeAudio(soundRotate);
+    freeAudio(soundPause);
+    freeAudio(soundGameOver);
+    freeAudio(soundMove);
+    freeAudio(soundTetris);
     return score;
 }
 
@@ -640,6 +738,7 @@ void wait(float time)
  */
 void tetrisAnimation(char rows_tetris[HEIGHT_OF_BOARD])
 {
+    
     int m;
     int veces;
 
@@ -671,6 +770,16 @@ void gameOver(window_state_t *state)
     disp_clear();
     disp_update();
 
+    initAudio();
+    pthread_t musicTh;
+    pthread_create(&musicTh,NULL,musicThread_game_over,NULL); 
+    pthread_join(musicTh,NULL);
+    Audio*soundSelect=NULL;
+    soundSelect = createAudio(SELECT_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundCursor=NULL;
+    soundCursor = createAudio(CURSOR_M, 0, SDL_MIX_MAXVOLUME);
+
+
     printCharacter('E', 0, 5); //muestra pantalla "END"
     printCharacter('N', 5, 5);
     printCharacter('D', 11, 5);
@@ -684,7 +793,7 @@ void gameOver(window_state_t *state)
         ;
     while (!joystick(&direction))
         ;
-
+    
     *state = MENU;
     disp_clear();
     printCharacter('M', 0, 0); // opción menú
@@ -701,6 +810,7 @@ void gameOver(window_state_t *state)
 
         if (direction == DOWN || direction == UP) //modifica opción a seleccionar
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
             if (*state == MENU)
             {
                 *state = CLOSE_DISPLAY;
@@ -727,8 +837,14 @@ void gameOver(window_state_t *state)
         }
     }
 
-    disp_clear(); // apaga el display por completo
+    playSoundFromMemory(soundSelect, SDL_MIX_MAXVOLUME);
+    SDL_Delay(500);
+    
+    disp_clear(); 
     disp_update();
+    endAudio();
+    freeAudio(soundCursor);
+    freeAudio(soundSelect);
     wait(0.5);
 }
 
@@ -744,6 +860,8 @@ void gameOver(window_state_t *state)
 static void pauseRas(window_state_t *state)
 {
     disp_clear();
+    pauseAudio();
+
     printCharacter('P', 0, 0); //muestra pantalla "PAUSE"
     printCharacter('A', 5, 0);
     printCharacter('U', 10, 0);
@@ -812,6 +930,7 @@ static void pauseRas(window_state_t *state)
     disp_clear(); // apaga el display por completo
     disp_update();
     wait(1);
+    unpauseAudio();
 }
 
 

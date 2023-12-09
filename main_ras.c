@@ -15,6 +15,9 @@
 #include "game_state.h"
 #include "highscore.h"
 #include "score_ras.h"
+#include "audio_ras.h"
+#include "audio.h"
+
 
 /*MAIN*/
 
@@ -25,6 +28,7 @@ int main(void)
     {
         return EXIT_FAILURE;
     }
+    
 
     window_state_t state = MENU;
     game_mode_t game_mode = {EASY, false, false, false};

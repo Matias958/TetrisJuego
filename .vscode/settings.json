@@ -5,6 +5,7 @@
         "game_state.h": "c",
         "element_al.h": "c",
         "time.h": "c",
-        "disdrv.h": "c"
+        "disdrv.h": "c",
+        "audio_ras.h": "c"
     }
 }

@@ -34,18 +34,20 @@ game_al.o: game_al.c game_al.h buttons_al.h game.h highscore.h game_state.h elem
 
 #RASPBERRY
 
-tetris_ras: main_ras.o raspberry.o highscore.o rules.o game.o joydrv.o disdrv.o score_ras.o highscore.txt
-	${CC}  main_ras.o raspberry.o highscore.o rules.o game.o joydrv.o disdrv.o score_ras.o -o tetris_ras ${OPTIONS} 
+tetris_ras: main_ras.o raspberry.o highscore.o rules.o game.o joydrv.o disdrv.o score_ras.o audio_ras.o libAudioSDL2.o highscore.txt
+	${CC}  main_ras.o raspberry.o highscore.o rules.o game.o joydrv.o disdrv.o score_ras.o audio_ras.o libAudioSDL2.o -I/usr/local/include -L/usr/local/lib -lSDL2 -lpthread -o tetris_ras ${OPTIONS} 
 
 main_ras.o: main_ras.c raspberry.h highscore.h score_ras.h game_state.h
 	${CC} main_ras.c -c ${OPTIONS}
 
-raspberry.o: raspberry.c raspberry.h joydrv.h disdrv.h rules.h pieces.h score_ras.h
+raspberry.o: raspberry.c raspberry.h joydrv.h disdrv.h rules.h pieces.h score_ras.h 
 	${CC} raspberry.c -c ${OPTIONS}
 
 score_ras.o: score_ras.c score_ras.h raspberry.h joydrv.h disdrv.h
 	${CC} score_ras.c -c ${OPTIONS}
 
+audio_ras.o: audio_ras.c audio.h 
+	${CC} audio_ras.c -I/usr/local/include -L/usr/local/lib -lSDL2 -lpthread -c ${OPTIONS}
 
 
 #BACKEND

@@ -17,6 +17,8 @@
 #include "disdrv.h"
 #include "raspberry.h"
 #include "score_ras.h"
+#include "audio_ras.h"
+#include "audio.h"
 
 /*MACROS*/
 enum highscore_state
@@ -48,6 +50,12 @@ bool scoreRas(int score, highscore_t *highscore)
 {
     disp_clear(); // apaga el display por completo
     disp_update();
+    initAudio();
+    pthread_t musicTh;
+    pthread_create(&musicTh,NULL,musicThread_hs,NULL); 
+    pthread_join(musicTh,NULL);
+    Audio*soundSelect=NULL;
+    soundSelect = createAudio(SELECT_M, 0, SDL_MIX_MAXVOLUME);
 
     int position = checkIfHighscore(score, highscore); // analiza si el puntaje pertenece al highscore
     if (position <= NUMBER_OF_PLAYERS)                 // en caso de ser cierto imprime "HI" y el numero de posicion
@@ -57,27 +65,27 @@ bool scoreRas(int score, highscore_t *highscore)
 
         if (position >= 10)
         {
-            if (!printNum((position / 10), 0, 8))
+            if (!printNum((position / 10), 0, 9))
             {
                 return false;
             }
-            if (!printNum((position % 10), 9, 8))
+            if (!printNum((position % 10), 9, 9))
             {
                 return false;
             }
         }
         else
         {
-            if (!printNum(position, 0, 8))
+            if (!printNum(position, 0, 9))
             {
                 return false;
             }
         }
 
         disp_update();
-        wait(2);
+        wait(3);
     }
-
+    
     if (!printScore(score)) // imprime el puntaje
     {
         return false;
@@ -88,6 +96,9 @@ bool scoreRas(int score, highscore_t *highscore)
     {
         joystick(&direction);
     }
+
+    playSoundFromMemory(soundSelect, SDL_MIX_MAXVOLUME);
+    SDL_Delay(500);
 
     disp_clear(); // apaga el display por completo
     disp_update();
@@ -107,6 +118,8 @@ bool scoreRas(int score, highscore_t *highscore)
         disp_update();
     }
 
+    endAudio();
+    freeAudio(soundSelect);
     return true;
 }
 
@@ -120,6 +133,10 @@ bool scoreRas(int score, highscore_t *highscore)
  */
 void nameRas(char name[CHARACTERS])
 {
+    Audio*soundSelect=NULL;
+    soundSelect = createAudio(SELECT_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundCursor=NULL;
+    soundCursor = createAudio(CURSOR_M, 0, SDL_MIX_MAXVOLUME);
     disp_clear(); // apaga el display por completo
     disp_update();
 
@@ -136,6 +153,8 @@ void nameRas(char name[CHARACTERS])
 
         if (direction == UP) // cambia la letra
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
+    
             if (name[i] != 'Z')
             {
                 name[i]++;
@@ -147,6 +166,7 @@ void nameRas(char name[CHARACTERS])
         }
         else if (direction == DOWN)
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
             if (name[i] != 'A')
             {
                 name[i]--;
@@ -158,10 +178,12 @@ void nameRas(char name[CHARACTERS])
         }
         else if (direction == RIGHT_RAS && i != 2) // cambia la el espacio que se esta modificando
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
             i++;
         }
         else if (direction == LEFT_RAS && i != 0)
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
             i--;
         }
 
@@ -171,10 +193,14 @@ void nameRas(char name[CHARACTERS])
         printCharacter(name[2], 10, 0);
         disp_update();
     }
+    playSoundFromMemory(soundSelect, SDL_MIX_MAXVOLUME);
+    SDL_Delay(500);
 
     wait(2); // espera 2 seg
     disp_clear();
     disp_update();
+    freeAudio(soundSelect);
+    freeAudio(soundCursor);
 }
 
 /*printCharacter()
@@ -1024,7 +1050,15 @@ void showHighScores(highscore_t *highscore, window_state_t *state)
 
     disp_clear(); //apaga display
     disp_update();
-
+    initAudio();
+    pthread_t musicTh;
+    pthread_create(&musicTh,NULL,musicThread_hs,NULL); 
+    pthread_join(musicTh,NULL);
+    Audio*soundSelect=NULL;
+    soundSelect = createAudio(SELECT_M, 0, SDL_MIX_MAXVOLUME);
+    Audio*soundCursor=NULL;
+    soundCursor = createAudio(CURSOR_M, 0, SDL_MIX_MAXVOLUME);
+    
     int i, pos = 0, winState = NAME;
     char direction;
     bool draw = true;
@@ -1034,12 +1068,14 @@ void showHighScores(highscore_t *highscore, window_state_t *state)
     {
         if (direction == DOWN) //analizo movimiento joystick
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
             pos++;
             pos %= NUMBER_OF_PLAYERS;
             draw = true;
         }
         else if (direction == UP)
         {
+            playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
             pos--;
             if (pos < 0)
             {
@@ -1047,24 +1083,26 @@ void showHighScores(highscore_t *highscore, window_state_t *state)
             }
             draw = true;
         }
-
         else if (direction == RIGHT_RAS)
         {
             if (winState == NAME)
             {
+                playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
                 winState = SCORE;
                 draw = true;
             }
         }
-
         else if (direction == LEFT_RAS)
         {
             if (winState == NAME)
             {
+                playSoundFromMemory(soundSelect, SDL_MIX_MAXVOLUME);
+                SDL_Delay(500);
                 *state = GAME_SEL;
             }
             else
             {
+                playSoundFromMemory(soundCursor, SDL_MIX_MAXVOLUME);
                 winState = NAME;
                 draw = true;
             }
@@ -1096,5 +1134,8 @@ void showHighScores(highscore_t *highscore, window_state_t *state)
 
     disp_clear();
     disp_update();
+    endAudio();
+    freeAudio(soundSelect);
+    freeAudio(soundCursor);
     wait(1);
 }
