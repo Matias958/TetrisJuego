@@ -30,6 +30,9 @@
 #define WINDOW_POS_MODE_X (BOARD_START_X - SIZE_OF_GAME_MODE_WINDOW_X)
 #define WINDOW_POS_MODE_Y BOARD_START_Y
 
+#define LINES_OF_QUOTES 4
+#define NUM_OF_QUOTES 3
+
 #define TURN_AL ALLEGRO_KEY_W
 #define TURN_AL_2 ALLEGRO_KEY_UP
 #define RIGHT_AL ALLEGRO_KEY_D
@@ -75,6 +78,13 @@ static const int posPieza[7][4][2] = {
 	{{SQUARE_SIG_SIZE * 1.5, 2 * SQUARE_SIG_SIZE}, {2.5 * SQUARE_SIG_SIZE, 2 * SQUARE_SIG_SIZE}, {3.5 * SQUARE_SIG_SIZE, 2 * SQUARE_SIG_SIZE}, {2.5 * SQUARE_SIG_SIZE, 3 * SQUARE_SIG_SIZE}}, // T   0
 	{{3.5 * SQUARE_SIG_SIZE, 3 * SQUARE_SIG_SIZE}, {2.5 * SQUARE_SIG_SIZE, 3 * SQUARE_SIG_SIZE}, {2.5 * SQUARE_SIG_SIZE, 2 * SQUARE_SIG_SIZE}, {1.5 * SQUARE_SIG_SIZE, 2 * SQUARE_SIG_SIZE}}, // Z   0
 };
+
+static const char* quotes[NUM_OF_QUOTES][LINES_OF_QUOTES] = { 
+																{ {"Be yourself, everyone else"}, {"is already taken " }, { "<Oscar Wilde>" }, {""}},
+																{ {"The fool doth think he is wise,"}, {" but the wise man knows"}, {"himself to be a fool."}, {"<William Shakespeare>"}},
+																{ {"I have not failed."}, {"I've just found 10,000 ways"}, {"that won't work."}, { "<Tomas A.Edison>"}}
+															};
+															
 
 static void drawBoard(char board[BOARD_LENGHT][BOARD_WIDTH], char prediction_board[BOARD_LENGHT][BOARD_WIDTH], ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[]);
 static void initBoardColors(ALLEGRO_COLOR squareColors[]);
@@ -332,7 +342,8 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	while (!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	while (!al_play_sample(elem->controlsMusic, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 
-	//mostramos los controles
+	srand(time(NULL));
+	int quote = rand() % NUM_OF_QUOTES;
 
 	int trans;
 	for (trans = 255; trans > 0; trans -= 2)
@@ -343,7 +354,18 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 			*state = CLOSE_DISPLAY;
 			return;
 		}
+
+
 		al_draw_bitmap(elem->controls, 0, 0, 0);
+
+		al_draw_text(elem->gameModesDescriptionBorder, al_map_rgb(0, 0, 0), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+		al_draw_text(elem->gameModesDescription, al_map_rgb(199, 0, 57), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+		int i;
+		for (i = 0; i < LINES_OF_QUOTES; i++)
+		{
+			al_draw_text(elem->gameModesDescription, al_map_rgb(255, 255, 255), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225 + 30 * (i + 1), 1, quotes[quote][i]);
+		}
+
 		al_set_target_bitmap(elem->bitmapTrans);
 
 		al_clear_to_color(al_map_rgba(0, 0, 0, trans));
@@ -365,6 +387,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	char buffer[5];
 	snprintf(buffer, sizeof(buffer), "%d%%", (int)(carga * 100));
 
+
 	while ((ev.type != ALLEGRO_EVENT_TIMER || ev.timer.source == elem->timerOff) && ev.type != ALLEGRO_EVENT_KEY_DOWN)
 	{
 		if (ev.timer.source == elem->timerOff)
@@ -376,6 +399,15 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 
 		al_draw_filled_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, SCREEN_W / 3.0 + carga * (SCREEN_W / 3.0), 6 * SCREEN_H / 7.0 + 20, al_map_rgb(138, 7, 78));
 		al_draw_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, 2 * SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 + 20, al_color_name("white"), 4);
+
+		
+		al_draw_text(elem->gameModesDescriptionBorder, al_map_rgb(0,0,0) , SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+		al_draw_text(elem->gameModesDescription, al_map_rgb(199, 0, 57), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+		int i;
+		for (i = 0; i < LINES_OF_QUOTES; i++)
+		{
+			al_draw_text(elem->gameModesDescription, al_map_rgb(255, 255, 255), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225 + 30 * (i + 1), 1, quotes[quote][i]);
+		}
 
 		al_draw_text(elem->gameModesDescription, al_color_name("white"), SCREEN_W / 2, 6 * SCREEN_H / 7.0 - 7, ALLEGRO_ALIGN_CENTER, buffer);
 
@@ -404,6 +436,15 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 			al_draw_rectangle(SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 - 20, 2 * SCREEN_W / 3.0, 6 * SCREEN_H / 7.0 + 20, al_color_name("white"), 4);
 			al_draw_text(elem->gameModesDescription, al_color_name("white"), SCREEN_W / 2, 6 * SCREEN_H / 7.0 - 7, ALLEGRO_ALIGN_CENTER, buffer);
 
+			al_draw_text(elem->gameModesDescriptionBorder, al_map_rgb(0, 0, 0), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+			al_draw_text(elem->gameModesDescription, al_map_rgb(199, 0, 57), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+			int i;
+			for (i = 0; i < LINES_OF_QUOTES; i++)
+			{
+				al_draw_text(elem->gameModesDescription, al_map_rgb(255, 255, 255), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225 + 30 * (i + 1), 1, quotes[quote][i]);
+			}
+
+
 			//mostramos
 			al_flip_display();
 			al_rest(0.5);
@@ -421,7 +462,17 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 			return;
 		}
 
+
 		al_draw_bitmap(elem->controls, 0, 0, 0);
+
+		al_draw_text(elem->gameModesDescriptionBorder, al_map_rgb(0, 0, 0), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+		al_draw_text(elem->gameModesDescription, al_map_rgb(199, 0, 57), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+		int i;
+		for (i = 0; i < LINES_OF_QUOTES; i++)
+		{
+			al_draw_text(elem->gameModesDescription, al_map_rgb(255, 255, 255), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225 + 30 * (i + 1), 1, quotes[quote][i]);
+		}
+
 		al_set_target_bitmap(elem->bitmapTrans);
 
 		al_clear_to_color(al_map_rgba(0, 0, 0, trans));
@@ -449,7 +500,6 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	initBoardColors(squareColors);
 	initBoardBorderColors(squareBorderColors);
 
-	srand(time(NULL));
 
 	char matrix[BOARD_LENGHT][BOARD_WIDTH];
 	char auxiliaryMatrix[BOARD_LENGHT][BOARD_WIDTH];
@@ -523,6 +573,13 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 
 		al_flip_display();
 	}
+
+	al_draw_bitmap(elem->gameBackround, 0, 0, 0);
+	showScore(elem, score, highscore);
+	showNextPiece(squareColors, squareBorderColors, elem);
+	drawActiveModes(elem, mode);
+	drawBoard(auxiliaryMatrix, predictionMatrix, squareColors, squareBorderColors);
+	al_flip_display();
 
 	al_flush_event_queue(elem->eventQueue);
 

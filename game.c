@@ -3,6 +3,8 @@
 #include "rules.h"
 
 static piece_t nextPiece;
+static bool haveHold = false;
+static piece_t holdPiece ={EMPTY, {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}}, 0, 0, 0};
 
 /*playTetris()
  * Función encargada de ir moviendo las piezas en base a los comandos enviados y llamar a las
@@ -13,6 +15,7 @@ static piece_t nextPiece;
 bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int *score, game_mode_t gameMode)
 {
     bool flagGoDown = false;
+
     switch (movement)  //juego segun que movimiento se hizo 
     {
     case 'd':
@@ -154,3 +157,25 @@ int getNextPiece(void)
 {
     return nextPiece.type;
 }
+
+
+/*hold()
+* Funcion encargada de holdear una pieza.
+* Recibe:
+* 
+*/
+void hold (piece_t *piece)
+ {
+    if (haveHold == true && holdPiece.type == 0)
+    {
+        //holdPiece = *piece
+        //*piece = nextPiece;
+        //nextPiece = createPiece();
+    }
+    else if (haveHold == true)
+    {
+        piece_t auxPiece = *piece;
+        *piece = holdPiece;
+        holdPiece = auxPiece;
+    }
+ }
