@@ -166,16 +166,23 @@ int getNextPiece(void)
 */
 void hold (piece_t *piece)
  {
-    if (haveHold == true && holdPiece.type == 0)
+    if (haveHold == false && holdPiece.type == 0)
     {
-        //holdPiece = *piece
-        //*piece = nextPiece;
-        //nextPiece = createPiece();
+        holdPiece = *piece;
+        *piece = nextPiece;
+        nextPiece = createPiece();
+        haveHold = true;
     }
-    else if (haveHold == true)
+    else if (haveHold == false)
     {
         piece_t auxPiece = *piece;
         *piece = holdPiece;
         holdPiece = auxPiece;
+        haveHold = true;
     }
  }
+
+int getHoldPiece(void)
+{
+    return holdPiece.type;
+}

@@ -23,6 +23,8 @@
 #define NEXT_PIECE_WINDOW_POS_X SCORE_WINDOW_POS_X
 #define NEXT_PIECE_WINDOW_POS_Y (SCORE_WINDOW_POS_Y + SIZE_OF_SCORE_WINDOW_Y + 100)
 
+#define HOLD_PIECE_WINDOW_POS_Y (NEXT_PIECE_WINDOW_POS_Y + 100)
+
 #define ACTIVE_GAME_MODES_POS_X (BOARD_START_X - 150)
 #define ACTIVE_GAME_MODES_POS_Y (BOARD_START_Y + 2 * SQUARE_SIZE)
 
@@ -213,6 +215,31 @@ static void showNextPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBord
 		al_draw_filled_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareColors[nextPiece]);
 
 		al_draw_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + NEXT_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareBorderColors[nextPiece], 2);
+	}
+
+}
+
+static void showHoldPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBorderColors[], element_t* elem)
+{
+
+	//recuadro con el nombre
+	al_draw_text(elem->buttonsBorder, al_map_rgb(66, 67, 62), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2, 100 + HOLD_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "NEXT PIECE");
+	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X / 2, 100 + HOLD_PIECE_WINDOW_POS_Y - 65, ALLEGRO_ALIGN_CENTER, "NEXT PIECE");
+	al_draw_filled_rectangle(NEXT_PIECE_WINDOW_POS_X, HOLD_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X, 100 + HOLD_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, al_map_rgb(66, 67, 62));
+	al_draw_rectangle(NEXT_PIECE_WINDOW_POS_X, HOLD_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X,  HOLD_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, al_map_rgb(124, 121, 108), 6);
+
+	int nextPiece = getHoldPiece();
+	int i;
+
+	//dibujo la siguiente pieza
+	if (nextPiece != 0)
+	{
+		for (i = 0; i < 4; i++)
+		{
+			al_draw_filled_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareColors[nextPiece]);
+
+			al_draw_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareBorderColors[nextPiece], 2);
+		}
 	}
 
 }
@@ -626,6 +653,8 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 				case PAUSE:
 					drawPauseMenu(state, elem, &playing);
 					al_draw_bitmap(elem->gameBackround, 0, 0, 0);
+				case ALLEGRO_KEY_C:
+						hold(&piece);
 					break;
 				}
 
@@ -719,6 +748,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 			//muestro el resto de informacion
 			showScore(elem, score, highscore);
 			showNextPiece(squareColors, squareBorderColors, elem);
+			showHoldPiece(squareColors, squareBorderColors, elem);
 			drawActiveModes(elem, mode);
 
 			al_flip_display();

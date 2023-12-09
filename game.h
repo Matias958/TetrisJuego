@@ -37,4 +37,9 @@ void initPiece(void);
  */
 int getNextPiece(void);
 
+
+void hold(piece_t* piece);
+
+int getHoldPiece(void);
+
 #endif
