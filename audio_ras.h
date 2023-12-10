@@ -1,3 +1,13 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: audio_ras.h
+*Descripcion: librerias, macros y threads utiles para el 
+*             manejo de audio en la raspberry
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
 #ifndef AUDIO_RAS_H
 #define AUDIO_RAS_H
 

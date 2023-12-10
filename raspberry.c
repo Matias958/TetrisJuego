@@ -20,6 +20,7 @@
 #include "rules.h"
 #include "pieces.h"
 #include "score_ras.h"
+#include "timer.h"
 
 #include "audio_ras.h"
 #include "audio.h"
@@ -300,7 +301,8 @@ bool joystick(char *direction)
 
 /* showDisplay()
  * Función encargada de ir actualizando la pantalla durante el juego.
- * Recibe: Una matriz con el tablero de juego y un int con el tipo de pieza siguiente.
+ * Recibe: Una matriz con el tablero de juego,un int con el tipo de pieza siguiente y uno con
+ * la pieza holdeada.
  * Devuelve: -
  */
 void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int typeNext, int typeHold)
@@ -630,8 +632,9 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
  * 
  * Nota: Las direcciones abajo, derecha, izquierda del joystick permiten mover la pieza en dichas
  * direcciones (invirtiendo der-izq si se encuentra en modo "Mirrored"), arriba te permite girar
- * la pieza 90°, el botón  permite hacer un "hard drop" de la pieza y mantener pulsado el botón
- * lleva al menú de pausa.
+ * la pieza 90°, el botón permite hacer un hold de la pieza actual y cambiarla por la holdeada 
+ * anteriormente, mantener hacia abajo permite hacer "hard drop" de la pieza y mantener pulsado el
+ * botón lleva al menú de pausa.
  * 
  */
 int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
@@ -696,11 +699,14 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
     piece_t piece = createPiece();
     initPiece();
 
-    bool is_hold = false;
-       
     bool match = false;
     bool draw = false;
+
+    //blinking
     bool off = false;
+    timer_ras_t timerOff = {.timeOfTicks = 0.75};
+    timer_ras_t timerOn = {.timeOfTicks = 2.0};
+    startTimer(&timerOn);
     
     int score = 0;
     int times = 0;
@@ -761,6 +767,28 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
             times = 0;
         }
 
+        if(mode.blinking)
+        {
+            if(off)
+            {
+                if(checkTimer(&timerOff))
+                {
+                    off = false;
+                    startTimer(&timerOn);
+                    draw = true;
+                }
+            }
+            else
+            {
+                if(checkTimer(&timerOn))
+                {
+                    off = true;
+                    startTimer(&timerOff);
+                    draw = true;
+                }
+            }
+        }
+
         if (draw)
         {
             for (int i = 0; i < HEIGHT_OF_BOARD; i++)
@@ -772,12 +800,11 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
             }
 
             parkPiece(&piece, auxiliaryMatrix); // estacionamos la pieza que se esta moviendo para visualizarla
-            
-            showDisplay(auxiliaryMatrix, getNextPiece(),getHoldPiece());
 
+            showDisplay(off? blinkingMatrix : auxiliaryMatrix, getNextPiece(),getHoldPiece());
+        
             score += deleteLine(matrix, rows_tetris, &tetris);
-
-
+            
             draw = false;
         }
 
@@ -793,6 +820,7 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
 
     disp_clear();
     disp_update();
+
     playSoundFromMemory(soundGameOver, SDL_MIX_MAXVOLUME);
     SDL_Delay(2000);
 

@@ -48,14 +48,15 @@ void init(window_state_t *state);
  * Recibe: un puntero a char donde se va a guardar el estado del joystick.
  * Devuelve: Un bool que indica si logro recolectar algun estado valido (true) o no (false).
  * 
- * Nota: estados posibles: apuntar hacia arriba, abajo, derecha, izquierda, presionar el botón
- * mantener presionado el botón.
+ * Nota: estados posibles: apuntar hacia arriba, abajo, derecha, izquierda, presionar el botón,
+ * mantener presionado el botón, mantener hacia abajo.
  */
 bool joystick(char* direction);
 
 /* showDisplay()
  * Función encargada de ir actualizando la pantalla durante el juego.
- * Recibe: Una matriz con el tablero de juego y un int con el tipo de pieza siguiente.
+ * Recibe: Una matriz con el tablero de juego,un int con el tipo de pieza siguiente y uno con
+ * la pieza holdeada.
  * Devuelve: -
  */
 void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type, int type2);
@@ -86,8 +87,9 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode);
  * 
  * Nota: Las direcciones abajo, derecha, izquierda del joystick permiten mover la pieza en dichas
  * direcciones (invirtiendo der-izq si se encuentra en modo "Mirrored"), arriba te permite girar
- * la pieza 90°, el botón  permite hacer un "hard drop" de la pieza y mantener pulsado el botón
- * lleva al menú de pausa.
+ * la pieza 90°, el botón permite hacer un hold de la pieza actual y cambiarla por la holdeada 
+ * anteriormente, mantener hacia abajo permite hacer "hard drop" de la pieza y mantener pulsado el
+ * botón lleva al menú de pausa.
  * 
  */
 int playGameRas(game_mode_t mode, highscore_t *highscore,  window_state_t * state); 
