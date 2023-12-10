@@ -71,12 +71,16 @@ void init(window_state_t *state)
 
     initAudio();
     pthread_t musicTh1;
+
     pthread_create(&musicTh1,NULL,musicThread_menu,NULL);
     pthread_join(musicTh1,NULL);
+
     Audio*soundPlay=NULL;
     soundPlay = createAudio(PLAY_M, 0, SDL_MIX_MAXVOLUME);
+
     Audio*soundSelect=NULL;
     soundSelect = createAudio(SELECT_M, 0, SDL_MIX_MAXVOLUME);
+    
     Audio*soundCursor=NULL;
     soundCursor = createAudio(CURSOR_M, 0, SDL_MIX_MAXVOLUME);
 
@@ -273,6 +277,15 @@ bool joystick(char *direction)
             *direction = LONG_PRESS;
         }
     }
+    else if(*direction == DOWN)
+    {
+         wait(1);
+        coordenates = joy_read();
+        if (((-100 <= coordenates.x) && (coordenates.x <= 100)) && ((-128 <= coordenates.y) && (coordenates.y <= -100)))
+        {
+            *direction = LONG_DOWN;
+        }   
+    }
 
     if (prevDirection == *direction) // analiza si se hizo un movimiento del joystick valido o no
     {
@@ -290,7 +303,7 @@ bool joystick(char *direction)
  * Recibe: Una matriz con el tablero de juego y un int con el tipo de pieza siguiente.
  * Devuelve: -
  */
-void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type)
+void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int typeNext, int typeHold)
 {
     disp_clear(); // limpio el display
 
@@ -314,7 +327,7 @@ void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type)
         }
     }
 
-    switch (type) //dibuja la siguiente pieza
+    switch (typeNext) //dibuja la siguiente pieza
     {
     case PIECE_I:
         disp_write((dcoord_t){14, 1}, D_ON);
@@ -361,6 +374,56 @@ void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type)
     default:
         break;
     }
+
+    switch (typeHold) //dibuja la pieza holdea
+    {
+    case PIECE_I:
+        disp_write((dcoord_t){14, 6}, D_ON);
+        disp_write((dcoord_t){14, 7}, D_ON);
+        disp_write((dcoord_t){14, 8}, D_ON);
+        disp_write((dcoord_t){14, 9}, D_ON);
+        break;
+    case PIECE_J:
+        disp_write((dcoord_t){14, 6}, D_ON);
+        disp_write((dcoord_t){14, 7}, D_ON);
+        disp_write((dcoord_t){14, 8}, D_ON);
+        disp_write((dcoord_t){13, 8}, D_ON);
+        break;
+    case PIECE_L:
+        disp_write((dcoord_t){13, 6}, D_ON);
+        disp_write((dcoord_t){13, 7}, D_ON);
+        disp_write((dcoord_t){14, 8}, D_ON);
+        disp_write((dcoord_t){13, 8}, D_ON);
+        break;
+    case PIECE_O:
+        disp_write((dcoord_t){13, 6}, D_ON);
+        disp_write((dcoord_t){14, 6}, D_ON);
+        disp_write((dcoord_t){13, 7}, D_ON);
+        disp_write((dcoord_t){14, 7}, D_ON);
+        break;
+    case PIECE_S:
+        disp_write((dcoord_t){14, 6}, D_ON);
+        disp_write((dcoord_t){15, 6}, D_ON);
+        disp_write((dcoord_t){13, 7}, D_ON);
+        disp_write((dcoord_t){14, 7}, D_ON);
+        break;
+    case PIECE_T:
+        disp_write((dcoord_t){14, 6}, D_ON);
+        disp_write((dcoord_t){13, 7}, D_ON);
+        disp_write((dcoord_t){14, 7}, D_ON);
+        disp_write((dcoord_t){15, 7}, D_ON);
+        break;
+    case PIECE_Z:
+        disp_write((dcoord_t){13, 6}, D_ON);
+        disp_write((dcoord_t){14, 6}, D_ON);
+        disp_write((dcoord_t){14, 7}, D_ON);
+        disp_write((dcoord_t){15, 7}, D_ON);
+        break;
+    case EMPTY:
+        break;
+    default:
+        break;
+    }
     disp_update();
 
     return;
@@ -387,13 +450,18 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
     disp_update();
     
     initAudio();
+    
     pthread_t musicTh1;
+    
     pthread_create(&musicTh1,NULL,musicThread_menu,NULL);
     pthread_join(musicTh1,NULL);
+    
     Audio*soundPlay=NULL;
     soundPlay = createAudio(PLAY_M, 0, SDL_MIX_MAXVOLUME);
+    
     Audio*soundSelect=NULL;
     soundSelect = createAudio(SELECT_M, 0, SDL_MIX_MAXVOLUME);
+    
     Audio*soundCursor=NULL;
     soundCursor = createAudio(CURSOR_M, 0, SDL_MIX_MAXVOLUME);
 
@@ -453,7 +521,7 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
 
         else if (direction == BUTTON) // va modificando que modos de juego estan activos
         {
-             playSoundFromMemory(soundSelect, SDL_MIX_MAXVOLUME);
+            playSoundFromMemory(soundSelect, SDL_MIX_MAXVOLUME);
             switch (i)
             {
             case DIFFICULTY:
@@ -542,12 +610,16 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
 
     disp_clear();
     disp_update();
+    
     endAudio();
+
     freeAudio(soundPlay);
     freeAudio(soundCursor);
     freeAudio(soundSelect);
+    
     wait(1);
 }
+
 
 /* playGameRas()
  * Función encargada de manejar el juego, muestra tablero de juego actual y siguiente pieza y 
@@ -565,19 +637,27 @@ void gameModeSelRas(window_state_t *state, game_mode_t *gameMode)
 int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
 {
     initAudio();
+
     pthread_t musicTh;
+    
     pthread_create(&musicTh,NULL,musicThread_game,NULL);
     pthread_join(musicTh,NULL);
+    
     Audio*soundRotate=NULL;
     soundRotate = createAudio(ROTATE_M, 0, SDL_MIX_MAXVOLUME);
+    
     Audio*soundLand=NULL;
     soundLand = createAudio(SE_GAME_LANDING_M, 0, SDL_MIX_MAXVOLUME);
+    
     Audio*soundPause=NULL;
     soundPause = createAudio(SE_GAME_PAUSE_M, 0, SDL_MIX_MAXVOLUME);
+    
     Audio*soundMove=NULL;
     soundMove = createAudio(SE_GAME_MOVE_M, 0, SDL_MIX_MAXVOLUME);
+    
     Audio*soundGameOver=NULL;
     soundGameOver = createAudio(ME_GAMEOVER_M, 0, SDL_MIX_MAXVOLUME);
+    
     Audio*soundTetris=NULL;
     soundTetris = createAudio(TETRIS_M, 0, SDL_MIX_MAXVOLUME);
 
@@ -616,23 +696,29 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
     piece_t piece = createPiece();
     initPiece();
 
+    bool is_hold = false;
+       
     bool match = false;
     bool draw = false;
+    bool off = false;
+    
     int score = 0;
     int times = 0;
+
     char movement = '\0';
     bool tetris = false;
+    
     char rows_tetris[HEIGHT_OF_BOARD];
 
     while (!match)
     {
         if (joystick(&movement))
         {
-            if (movement != LONG_PRESS) //si no hizo pausa juega con el movimiento elegido
+            if (movement != LONG_PRESS && movement !=BUTTON) //si no hizo pausa juega con el movimiento elegido
             {
                 match = playTetris(movement, &piece, matrix, &score, mode);
                 draw = true;
-                if(movement == BUTTON)
+                if(movement == LONG_DOWN)
                 {
                     playSoundFromMemory(soundLand, SDL_MIX_MAXVOLUME);
                 }
@@ -646,7 +732,7 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
                     playSoundFromMemory(soundMove, SDL_MIX_MAXVOLUME);
                 }
             }
-            else
+            else if (movement == LONG_PRESS)
             {   
                 playSoundFromMemory(soundPause, SDL_MIX_MAXVOLUME);
                 SDL_Delay(2000);
@@ -657,6 +743,14 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
                     return score;
                 }
             }
+            else
+            {
+                playSoundFromMemory(soundMove, SDL_MIX_MAXVOLUME);
+               
+                    hold(&piece);
+                    
+            }
+               
         }
 
         match = playTetris('\0', &piece, matrix, &score, mode); // se fija de ver si es necesario bajar en una la pieza
@@ -679,7 +773,7 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
 
             parkPiece(&piece, auxiliaryMatrix); // estacionamos la pieza que se esta moviendo para visualizarla
             
-            showDisplay(auxiliaryMatrix, getNextPiece());
+            showDisplay(auxiliaryMatrix, getNextPiece(),getHoldPiece());
 
             score += deleteLine(matrix, rows_tetris, &tetris);
 
@@ -691,7 +785,7 @@ int playGameRas(game_mode_t mode, highscore_t *highscore, window_state_t *state)
         {
             playSoundFromMemory(soundTetris, SDL_MIX_MAXVOLUME);
             tetrisAnimation(rows_tetris);
-            showDisplay(auxiliaryMatrix, getNextPiece());
+            showDisplay(auxiliaryMatrix, getNextPiece(),getHoldPiece());
             tetris = false;
             draw = true;
         }

@@ -25,9 +25,10 @@
 #define RIGHT_RAS 'd'
 #define LEFT_RAS 'a'
 #define DOWN 's'
-#define BUTTON ' '
+#define BUTTON '1'
 #define WAIT '.'
 #define LONG_PRESS '0'
+#define LONG_DOWN ' '
 
 /************** PROTOTIPOS ***************/
 
@@ -57,7 +58,7 @@ bool joystick(char* direction);
  * Recibe: Una matriz con el tablero de juego y un int con el tipo de pieza siguiente.
  * Devuelve: -
  */
-void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type);
+void showDisplay(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD], int type, int type2);
 
 /* gameModeSelRas()
  * Función encargada de seleccionar el modo de juego, inicializa la pantalla con la palabra "MDE
