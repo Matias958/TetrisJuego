@@ -1,3 +1,13 @@
+/* TP FINAL PROGRAMACIÓN I - 2023|1C - TETRIS
+*Titulo: audio_ras.c
+*Descripcion: funciones utiles para el uso de threads para el 
+*             manejo de audio en la raspberry
+*Autores: Facundo Torres
+*         Julieta Libertad Rodriguez
+*         Matias Minitti
+*         Ramiro Nieto Abascal
+*/
+
 #include "audio_ras.h"
 
 void *musicThread_menu()
