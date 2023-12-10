@@ -259,13 +259,13 @@ int initializeElements(element_t* elem)
         return EXIT_FAILURE;
     }
 
-    if (!al_reserve_samples(3)) // reservamos 3 muestras
+    if (!al_reserve_samples(16)) // reservamos 16 muestras
     {
         fprintf(stderr, "Falla al reservar muestras!\n");
         return EXIT_FAILURE;
     }
 
-    elem->sampleMenu = al_load_sample("audio/menu.wav"); // cargamos el audio para el menu
+    elem->sampleMenu = al_load_sample("audio/menu.wav"); 
 
     if (!elem->sampleMenu)
     {
@@ -290,7 +290,7 @@ int initializeElements(element_t* elem)
     }
     al_attach_sample_instance_to_mixer(elem->sampleGameReg, al_get_default_mixer());
 
-    elem->sampleHighscore = al_load_sample("audio/highscore.wav"); // cargamos el audio para el menu de highscore
+    elem->sampleHighscore = al_load_sample("audio/highscore.wav"); 
 
     if (!elem->sampleHighscore)
     {
@@ -298,70 +298,70 @@ int initializeElements(element_t* elem)
         return EXIT_FAILURE;
     }
 
-    elem->effectTetris = al_load_sample("audio/tetris.wav"); // cargamos el audio para el efector de tetris
+    elem->effectTetris = al_load_sample("audio/tetris.wav"); 
     if (!elem->effectTetris)
     {
         printf("No se cargo el audio del efecto: tetris\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectPlay = al_load_sample("audio/play.wav"); // cargamos el audio para el efecto de play
+    elem->effectPlay = al_load_sample("audio/play.wav"); 
     if (!elem->effectPlay)
     {
         printf("No se cargo el audio del efecto: play\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectCursor = al_load_sample("audio/cursor.wav"); // cargamos el audio para el cursor
+    elem->effectCursor = al_load_sample("audio/cursor.wav"); 
     if (!elem->effectCursor)
     {
         printf("No se cargo el audio del efecto: cursor\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectSelect = al_load_sample("audio/select.wav"); // cargamos el audio para el effect select
+    elem->effectSelect = al_load_sample("audio/select.wav"); 
     if (!elem->effectCursor)
     {
         printf("No se cargo el audio del efecto: select\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectRotate = al_load_sample("audio/rotate.wav"); // cargamos el audio para el effect rotate
+    elem->effectRotate = al_load_sample("audio/rotate.wav"); 
     if (!elem->effectRotate)
     {
         printf("No se cargo el audio del efecto: rotacion\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectHold = al_load_sample("audio/se_game_hold.wav"); // cargamos el audio para el effect hold
+    elem->effectHold = al_load_sample("audio/se_game_hold.wav"); 
     if (!elem->effectHold)
     {
         printf("No se cargo el audio del efecto: hold\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectCantHold = al_load_sample("audio/se_sys_alert.wav"); // cargamos el audio para el effect hold
+    elem->effectCantHold = al_load_sample("audio/se_sys_alert.wav"); 
     if (!elem->effectCantHold)
     {
         printf("No se cargo el audio del efecto: cant hold\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectMove = al_load_sample("audio/se_game_move.wav"); // cargamos el audio para el effect move
+    elem->effectMove = al_load_sample("audio/se_game_move.wav"); 
     if (!elem->effectMove)
     {
         printf("No se cargo el audio del efecto: movimiento\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectLanding = al_load_sample("audio/se_game_landing.wav"); // cargamos el audio para el effect landing
+    elem->effectLanding = al_load_sample("audio/se_game_landing.wav"); 
     if (!elem->effectLanding)
     {
         printf("No se cargo el audio del efecto: caida\n");
         return EXIT_FAILURE;
     }
 
-    elem->effectPause = al_load_sample("audio/se_game_pause.wav"); // cargamos el audio para el effect pause
+    elem->effectPause = al_load_sample("audio/se_game_pause.wav"); 
     if (!elem->effectLanding)
     {
         printf("No se cargo el audio del efecto: pausa\n");
@@ -404,7 +404,7 @@ int initializeElements(element_t* elem)
     }
 
     /*INICIALIZACIÓN DEL DISPLAY*/
-    elem->display = al_create_display(SCREEN_W, SCREEN_H); // creamos un display de 1000 x 700
+    elem->display = al_create_display(SCREEN_W, SCREEN_H); // creamos el display
 
     if (!elem->display) // si el display no se creo...
     {

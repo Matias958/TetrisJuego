@@ -184,11 +184,11 @@ int getNextPiece(void)
 bool hold (piece_t *piece)
  {
     
-    if(haveHold == true)
+    if(haveHold == true) //si ya ha holdeado en este turno, no puede holdear
     {
         return false;
     }
-    else if (haveHold == false && holdPiece == EMPTY)
+    else if (haveHold == false && holdPiece == EMPTY) // si es la primera vez que holdea...
     {
         holdPiece = piece->type;
         *piece = nextPiece;

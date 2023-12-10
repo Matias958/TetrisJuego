@@ -354,6 +354,12 @@ static void drawActiveModes(element_t *elem, game_mode_t gameMode)
 
 }
 
+
+/*initBoardColors()
+* Función encargada de inicializar el arreglo de los colores del tablero
+* Recibe: arreglo a completar
+* Devuelve: -
+*/
 static void initBoardColors(ALLEGRO_COLOR squareColors[])
 {
 	squareColors[EMPTY] = al_map_rgb(66, 67, 62);
@@ -367,6 +373,11 @@ static void initBoardColors(ALLEGRO_COLOR squareColors[])
 	squareColors[BORDER] = al_map_rgb(124, 121, 108);
 }
 
+/*initBoardColors()
+* Función encargada de inicializar el arreglo de los colores del borde de las casillas del tablero
+* Recibe: arreglo a completar
+* Devuelve: -
+*/
 static void initBoardBorderColors(ALLEGRO_COLOR squareColors[])
 {
 	squareColors[EMPTY] = al_map_rgb(124, 121, 108);
@@ -393,9 +404,13 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	while (!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 	while (!al_play_sample(elem->controlsMusic, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 
+	//inicailizamos la semilla de rand
 	srand(time(NULL));
+
+	//frase de la partida tomada de manera aleatoria
 	int quote = rand() % NUM_OF_QUOTES;
 
+	//hacemos un efecto de transición
 	int trans;
 	for (trans = 255; trans > 0; trans -= 2)
 	{
@@ -405,7 +420,6 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 			*state = CLOSE_DISPLAY;
 			return;
 		}
-
 
 		al_draw_bitmap(elem->controls, 0, 0, 0);
 
@@ -430,18 +444,21 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	al_draw_bitmap(elem->controls, 0, 0, 0);
 	al_flip_display();
 
+	//inicializamos los timers de la carga
 	al_start_timer(elem->timerControls);
 	al_start_timer(elem->timerOff);
 
 	al_get_next_event(elem->eventQueue, &ev);
+
+	//carga de la pantalla en formato string
 	float carga = 0.0;
 	char buffer[5];
 	snprintf(buffer, sizeof(buffer), "%d%%", (int)(carga * 100));
 
-
+	//mostramos la pantalla de carga hasta que se produzca el evento timerControls o se presione un boton
 	while ((ev.type != ALLEGRO_EVENT_TIMER || ev.timer.source == elem->timerOff) && ev.type != ALLEGRO_EVENT_KEY_DOWN)
 	{
-		if (ev.timer.source == elem->timerOff)
+		if (ev.timer.source == elem->timerOff) //vamos actualizando la barra de carga cada timerOff segundos (1 seg)
 		{
 			carga += 0.2;
 			al_draw_bitmap(elem->controls, 0, 0, 0);
@@ -454,6 +471,8 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 		
 		al_draw_text(elem->gameModesDescriptionBorder, al_map_rgb(0,0,0) , SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
 		al_draw_text(elem->gameModesDescription, al_map_rgb(199, 0, 57), SCREEN_W / 2 - 10, 6 * SCREEN_H / 7.0 - 225, ALLEGRO_ALIGN_CENTER, "Quote of the game:");
+
+		//imprimimos la frase celebre del juego
 		int i;
 		for (i = 0; i < LINES_OF_QUOTES; i++)
 		{
@@ -462,7 +481,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 
 		al_draw_text(elem->gameModesDescription, al_color_name("white"), SCREEN_W / 2, 6 * SCREEN_H / 7.0 - 7, ALLEGRO_ALIGN_CENTER, buffer);
 
-		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) //si se cierra la pantalla salimos
 		{
 			*state = CLOSE_DISPLAY;
 			al_stop_timer(elem->timerControls);
@@ -471,9 +490,9 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 		}
 
 		al_flip_display();
-		while (!al_get_next_event(elem->eventQueue, &ev));
+		while (!al_get_next_event(elem->eventQueue, &ev));  //esperamos un evento
 
-		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+		if (ev.type == ALLEGRO_EVENT_KEY_DOWN) //si se presiona una tecla, rellenamos la barra y la mostramos 0.5 seg
 		{
 			//cargamos el fondo
 			al_draw_bitmap(elem->controls, 0, 0, 0);
@@ -504,6 +523,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 
 	while (!al_play_sample(elem->effectPlay, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
 
+	//hacemos la transición a la pantalla del juego
 	for (trans = 0; trans < 255; trans += 2)
 	{
 		al_get_next_event(elem->eventQueue, &ev);
@@ -538,10 +558,10 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 		
 	al_draw_bitmap(elem->gameBackround, 0, 0, 0);
 
-	al_stop_samples();
+	al_stop_samples(); //paramos todos los sonidos
 
-	al_set_sample_instance_gain(elem->sampleGameReg, 1);
-	al_set_sample_instance_speed(elem->sampleGameReg, 1.0);
+	al_set_sample_instance_gain(elem->sampleGameReg, 1);  //ponemos el volumen de la música al 100%
+	al_set_sample_instance_speed(elem->sampleGameReg, 1.0); //la velocidad a velocidad normal
 	al_play_sample_instance(elem->sampleGameReg);
 
 	// creamos e inicializamos un arreglo con los colores de las distintas piezas
@@ -550,7 +570,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	initBoardColors(squareColors);
 	initBoardBorderColors(squareBorderColors);
 
-
+	//matrices del juego
 	char matrix[BOARD_LENGHT][BOARD_WIDTH];
 	char auxiliaryMatrix[BOARD_LENGHT][BOARD_WIDTH];
 	char predictionMatrix[BOARD_LENGHT][BOARD_WIDTH];
@@ -596,12 +616,16 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 	{
 		al_start_timer(elem->timerOn);
 	}
+
+	//flags de estado
 	bool playing = true;
 	bool draw = true;
 	bool tetris = false;
 	bool off = false;
 
 	parkPiece(&piece, auxiliaryMatrix); // estacionamos la pieza que se esta moviendo para visualizarla
+
+	//hacemos la transición a la pantalla del juego
 	for (trans = 255; trans > 0; trans -= 2)
 	{
 		al_get_next_event(elem->eventQueue, &ev);
@@ -613,7 +637,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 
 		al_draw_bitmap(elem->gameBackround, 0, 0, 0);
 
-
+		//dibujamos todos los cuadros
 		showScore(elem, score, highscore);
 		showNextPiece(squareColors, squareBorderColors, elem);
 		drawActiveModes(elem, mode);
@@ -637,6 +661,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 
 	while (playing)
 	{
+		//si la musica se detuvo, comienzo desde el principio
 		if (!al_get_sample_instance_playing(elem->sampleGameReg))
 		{
 			al_play_sample_instance(elem->sampleGameReg);
@@ -683,7 +708,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 						{ 
 							al_play_sample(elem->effectHold, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL); 
 						}
-						else
+						else //sonido de que no se puede holdear y animación visual
 						{
 							al_play_sample(elem->effectCantHold, 2.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 							showHoldPiece(squareColors, squareBorderColors, elem, mode.difficulty == HARD? false : canHold(), true);
@@ -783,6 +808,7 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 
 				tetris = false;
 			}
+
 			//muestro el resto de informacion
 			showScore(elem, score, highscore);
 			showNextPiece(squareColors, squareBorderColors, elem);
@@ -794,9 +820,9 @@ void playGame(element_t* elem, game_mode_t mode, window_state_t* state, highscor
 		}
 	}
 
-	al_stop_sample_instance(elem->sampleGameReg);
+	al_stop_sample_instance(elem->sampleGameReg); //paramos la musica
 
-	if (mode.blinking)
+	if (mode.blinking) //si estaba en modo blinking, mostramos el estado final del tablero
 	{
 		al_stop_timer(elem->timerOn);
 		al_stop_timer(elem->timerOff);
@@ -835,7 +861,6 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 		al_flip_display();
 	}
 
-	// al_play_sample(elem->effectGameOver, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 	while(!al_play_sample(elem->sampleGameOver, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL));
 
 	// botones
@@ -855,7 +880,9 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 	int position = checkIfHighscore(score, highScore);
 	char buffer2[4];
 	snprintf(buffer2, sizeof(buffer2), "%d", position);
-	//si hay un nuevo highscore
+
+
+	//si hay un nuevo highscore se muestra la pantalla de ingreso de datos
 	if (position <= NUMBER_OF_PLAYERS)
 	{
 		while(!al_play_sample(elem->effectHighscore, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
@@ -950,7 +977,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 	al_draw_text(elem->buttonsBorder, al_color_name("black"), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTER, buffer);
 	al_draw_text(elem->buttons, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 6 + SIZE_OF_TITLE, ALLEGRO_ALIGN_CENTER, buffer);
 
-	if (position <= NUMBER_OF_PLAYERS)
+	if (position <= NUMBER_OF_PLAYERS) //si hubo un highscore, ponemos un aviso
 	{
 		al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCREEN_W / 2 - 10, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, "New #");
 		al_draw_text(elem->highscoreNews, al_color_name("yellow"), SCREEN_W / 2 + 50, SCREEN_H / 6 + SIZE_OF_TITLE + 45, ALLEGRO_ALIGN_CENTRE, buffer2);
@@ -1038,6 +1065,8 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 			draw = false;	   // cambiamos el estado de draw
 		}
 	}
+
+	//si salimos de highscore, sin cerrar el juego, hacemos una transición
 	if (*state != CLOSE_DISPLAY)
 	{
 		int trans;
@@ -1089,7 +1118,7 @@ static void gameOver(window_state_t *state, element_t *elem, int score, highscor
 static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 {
 	while(!al_play_sample(elem->effectPause, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL));
-	al_set_sample_instance_gain(elem->sampleGameReg, 0.2);
+	al_set_sample_instance_gain(elem->sampleGameReg, 0.2); // se baja el volumen de la musica
 
 	ALLEGRO_EVENT ev;
 	bool waitingForUpdate = true;
@@ -1122,6 +1151,8 @@ static void drawPauseMenu(window_state_t *state, element_t *elem, bool *playing)
 	int times = 0;
 	while (waitingForUpdate) //se queda mientras continue la pausa
 	{
+
+		//si la musica se detiene en este menu, se reproduce nuevamente
 		if (!al_get_sample_instance_playing(elem->sampleGameReg))
 		{
 			while(!al_play_sample_instance(elem->sampleGameReg));

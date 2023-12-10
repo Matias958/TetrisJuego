@@ -153,7 +153,7 @@ void showMenu(element_t *elem, window_state_t *state)
         }
     }
 
-
+    //si no se salio del juego, hacemos la salida de la ventana
     if (*state != CLOSE_DISPLAY)
     {
         int trans;

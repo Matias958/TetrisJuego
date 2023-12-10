@@ -33,7 +33,7 @@ bool playTetris(char movement, piece_t *piece, char matrix[HEIGHT_OF_BOARD][WIDT
 void createBoardforNotEmpty(char matrix[HEIGHT_OF_BOARD][WIDTH_OF_BOARD]);
 
 /*initPiece()
- * Funcion encargada inicializar la siguiente pieza
+ * Funcion encargada inicializar la siguiente pieza y la pieza holdeada
  * Recibe: --
  * Devuelve: --
  */

@@ -87,6 +87,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
     bool mouseClick = false;
     int times = 0;
 
+    //mostramos la transición a la pantalla de selección del juego
     int trans;
     for (trans = 255; trans > 0; trans --)
     {
@@ -298,6 +299,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
         // redibujamos si es necesario
         if (draw)
         {
+            //recuadros de los modos de juego
             int i;
             for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
             {
@@ -307,6 +309,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
 
             drawButtons(buttons, al_color_name("white"));
 
+            //imagenes y descripción de los modos de juego
             for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
             {
                 al_draw_bitmap(states[i] ? pictures_prs[i] : pictures[i], buttons[i]->x_center - buttons[i]->width + 2,
@@ -338,6 +341,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
                 }
             }
 
+            //logos de los modos de juego
             for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
             {
                 al_set_target_bitmap(elem->borderLogo);
@@ -362,6 +366,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
                                buttons[i]->y_center - buttons[i]->height - ((i == NOT_EMPTY) ? 50 : 42), 0);
             }
 
+            //dibujamos la dificultad, colocando estrellas amarillas y grises de acuerdo a la dif. activa
             int numberOfStars = gameMode->difficulty;
             for (i = 0; i < 3; i++)
             {
@@ -386,6 +391,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
         }
     }
 
+    //si no se cerro el display, hacemos la salida del la ventana de selección
     if (*state != CLOSE_DISPLAY)
     {
         int trans;
@@ -400,6 +406,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
 
             al_draw_bitmap(elem->menuBackround, 0, 0, 0);
 
+            //recuadros de los modos de juego
             int i;
             for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
             {
@@ -409,6 +416,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
 
             drawButtons(buttons, al_color_name("white"));
 
+            //imagenes y descripción de los modos de juego
             for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
             {
                 al_draw_bitmap(states[i] ? pictures_prs[i] : pictures[i], buttons[i]->x_center - buttons[i]->width + 2,
@@ -440,6 +448,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
                 }
             }
 
+            //logos de los modos de juego
             for (i = 0; i < NUMBER_OF_GAME_MODES; i++)
             {
                 al_set_target_bitmap(elem->borderLogo);
@@ -464,6 +473,7 @@ void showGameModeSel(element_t *elem, window_state_t *state, game_mode_t *gameMo
                     buttons[i]->y_center - buttons[i]->height - ((i == NOT_EMPTY) ? 50 : 42), 0);
             }
 
+            //dificultad de los modos de juego
             int numberOfStars = gameMode->difficulty;
             for (i = 0; i < 3; i++)
             {
