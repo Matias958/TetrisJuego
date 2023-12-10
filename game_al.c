@@ -98,9 +98,9 @@ static const int posPieza[7][4][2] = {
 };
 
 static const char* quotes[NUM_OF_QUOTES][LINES_OF_QUOTES] = { 
-																{ {"Be yourself, everyone else"}, {"is already taken " }, { "<Oscar Wilde>" }, {""}},
-																{ {"The fool doth think he is wise,"}, {" but the wise man knows"}, {"himself to be a fool."}, {"<William Shakespeare>"}},
-																{ {"I have not failed."}, {"I've just found 10,000 ways"}, {"that won't work."}, { "<Tomas A.Edison>"}}
+																{ "Be yourself, everyone else", "is already taken ",  "<Oscar Wilde>" , ""},
+																{ "The fool doth think he is wise,", " but the wise man knows", "himself to be a fool.", "<William Shakespeare>"},
+																{ "I have not failed.", "I've just found 10,000 ways", "that won't work.", "<Tomas A.Edison>"}
 															};
 															
 
@@ -252,17 +252,17 @@ static void showHoldPiece(ALLEGRO_COLOR squareColors[], ALLEGRO_COLOR squareBord
 	al_draw_filled_rectangle(NEXT_PIECE_WINDOW_POS_X, HOLD_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X, HOLD_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, al_map_rgb(66, 67, 62));
 	al_draw_rectangle(NEXT_PIECE_WINDOW_POS_X, HOLD_PIECE_WINDOW_POS_Y, NEXT_PIECE_WINDOW_POS_X + SIZE_OF_NEXT_PIECE_WINDOW_X,  HOLD_PIECE_WINDOW_POS_Y + SIZE_OF_NEXT_PIECE_WINDOW_Y, canHold? al_map_rgb(112, 142, 73) : al_map_rgb(172, 65, 83), tryToHold && !canHold? 9 : 6);
 
-	int nextPiece = getHoldPiece();
+	int heldPiece = getHoldPiece();
 	int i;
 
-	//dibujo la siguiente pieza
-	if (nextPiece != EMPTY)
+	//dibujo la pieza holdeada
+	if (heldPiece != EMPTY)
 	{ 
 		for (i = 0; i < 4; i++)
 		{
-			al_draw_filled_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareColors[nextPiece]);
+			al_draw_filled_rectangle(posPieza[heldPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[heldPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y, posPieza[heldPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[heldPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareColors[heldPiece]);
 
-			al_draw_rectangle(posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y, posPieza[nextPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[nextPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareBorderColors[nextPiece], 2);
+			al_draw_rectangle(posPieza[heldPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X, posPieza[heldPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y, posPieza[heldPiece - 1][i][0] + NEXT_PIECE_WINDOW_POS_X + SQUARE_SIG_SIZE, posPieza[heldPiece - 1][i][1] + HOLD_PIECE_WINDOW_POS_Y + SQUARE_SIG_SIZE, squareBorderColors[heldPiece], 2);
 		}
 	}
 
